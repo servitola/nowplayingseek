@@ -1,6 +1,6 @@
 ObjC.import('Foundation');
 
-const MR_COMMAND = { play: 0, pause: 1, toggle: 2, next: 4, prev: 5 };
+const MR_COMMAND = { play: 0, pause: 1, toggle: 2, next: 4, previous: 5 };
 
 const mediaRemote = {
     load() {

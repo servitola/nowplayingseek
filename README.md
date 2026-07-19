@@ -13,7 +13,7 @@ $ nowplayingseek duration
 11750.050
 $ nowplayingseek seek 12:34
 ▶ 12:34 / 3:15:50  UFC Fight Night 287  (com.colliderli.iina)
-$ nowplayingseek fwd 60
+$ nowplayingseek forward 60
 ▶ 13:34 / 3:15:50  UFC Fight Night 287  (com.colliderli.iina)
 ```
 
@@ -37,8 +37,8 @@ for `osascript`, which ships with macOS.
 | `position` | current position in seconds |
 | `duration` | total length in seconds |
 | `seek <time>` | jump to an exact position: `seek 754`, `seek 12:34`, `seek 1:02:03` |
-| `fwd [time]`, `back [time]` | relative seek, 10 s by default |
-| `toggle`, `play`, `pause`, `next`, `prev` | transport |
+| `forward [time]`, `backward [time]` | relative seek, 10 s by default |
+| `toggle`, `play`, `pause`, `next`, `previous` | transport |
 | `doctor` | exit 0 when Now Playing is readable |
 
 Exit codes: `0` done, `1` nothing is playing, `2` the player did not react, `64` bad
@@ -58,10 +58,10 @@ Karabiner-Elements, ⌃⌥→ and ⌃⌥←:
   "manipulators": [
     { "type": "basic",
       "from": { "key_code": "right_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek fwd 10" }] },
+      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward 10" }] },
     { "type": "basic",
       "from": { "key_code": "left_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek back 10" }] }
+      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward 10" }] }
   ]
 }
 ```
@@ -70,7 +70,7 @@ Holding the key works: steps add up even though key repeat is faster than Now Pl
 refreshes.
 
 Without third-party software: Shortcuts.app → new shortcut → "Run Shell Script" →
-`/opt/homebrew/bin/nowplayingseek fwd 10` → ⓘ → "Add Keyboard Shortcut".
+`/opt/homebrew/bin/nowplayingseek forward 10` → ⓘ → "Add Keyboard Shortcut".
 
 ## How it works, and why it is a script
 
@@ -86,7 +86,7 @@ Three things the API does not tell you:
 
 - `ElapsedTime` is a snapshot taken at `Timestamp`, not the position. The live position
   is `elapsed + rate × (now − timestamp)`.
-- There is no relative seek. `fwd` / `back` read, add, and seek to an absolute time. Now
+- There is no relative seek. `forward` / `backward` read, add, and seek to an absolute time. Now
   Playing refreshes 50–150 ms after a seek — over a second when a page buffers — so
   consecutive presses build on the previous target until it catches up.
 - `MRMediaRemoteSendCommand` returns `true` immediately and delivers asynchronously; a

@@ -12,3 +12,19 @@ README.md explains what the tool is and why it has to run under `osascript`. Rea
   `toggle` twice, `backward` at 0, `seek` past the end.
 - Release: bump `VERSION` in `src/cli.js`, tag `v<version>`, push, then update `url` and
   `sha256` in `~/projects/homebrew-tap/Formula/nowplayingseek.rb`.
+
+## Dead ends — measured 2026-07-21 on macOS 26.6, do not retry
+- **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
+  `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
+  `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper
+  because JXA cannot pass blocks. A seek addressed to Vivaldi or IINA landed on the elected
+  Music every time; only Music itself is addressed as asked. vorssaint-utils documents the same:
+  "The service may redirect unprivileged requests to the global player."
+- **`MRMediaRemoteSetOverriddenNowPlayingApplication` / `…SetNowPlayingApplicationOverrideEnabled`.**
+  Never call them. They elect nobody and leave `mediaremoted` with no elected app at all —
+  playback starting in other apps no longer elects them, and turning the override off does
+  not help. The only fix was `sudo killall mediaremoted`.
+- **A helper dylib inside `osascript`.** Refused: "mapping process is a platform binary, but
+  mapped file is not". perl accepts one, but needs an arm64e slice.
+
+The tool therefore drives the elected app and only that. This is a decision, not a gap.

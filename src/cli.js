@@ -1,6 +1,6 @@
 ObjC.import('stdlib');
 
-const VERSION = '2026.07.20';
+const VERSION = '2026.07.21';
 
 const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
 

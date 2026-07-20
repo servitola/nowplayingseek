@@ -1,9 +1,3 @@
-// MRMediaRemoteSendCommand returns true and hands the message to XPC asynchronously: a
-// process that exits right away never delivers it (measured: pause with no linger did
-// nothing, with 0.3 s it paused). next/previous have no state to poll for, so they linger.
-const COMMAND_DELIVERY_SECONDS = 0.3;
-const POLL_SECONDS = 0.03;
-
 const lastSeekStore = {
     path: $.NSTemporaryDirectory().js + 'nowplayingseek.last-seek.json',
 
@@ -12,49 +6,61 @@ const lastSeekStore = {
         try { return text.js ? JSON.parse(text.js) : null; } catch (e) { return null; }
     },
 
-    write(target, at) {
-        $(JSON.stringify({ target, at })).writeToFileAtomicallyEncodingError(this.path, true, $.NSUTF8StringEncoding, null);
+    write(lastSeek) {
+        $(JSON.stringify(lastSeek)).writeToFileAtomicallyEncodingError(this.path, true, $.NSUTF8StringEncoding, null);
     },
 };
 
-function waitUntil(condition) {
-    const deadline = Date.now() + VERIFY_TIMEOUT_SECONDS * 1000;
+function waitUntil(condition, timing) {
+    const deadline = Date.now() + timing.verify_timeout * 1000;
     while (Date.now() < deadline) {
-        delay(POLL_SECONDS);
+        delay(timing.poll_interval);
         if (condition()) return true;
     }
     return false;
 }
 
 const player = {
+    settings: null,
+
     requireState() {
         const state = mediaRemote.read();
         if (!state) throw new Failure(EXIT.nothingPlaying, 'nothing is playing');
         return state;
     },
 
-    seekTo(wanted, before) {
+    seekTo(wanted, before, streak) {
         if (before.position == null) throw new Failure(EXIT.ignored, `${before.app || 'player'} does not report a position`);
 
         const target = clampTarget(wanted, before.duration);
         const calledAt = Date.now() / 1000;
         mediaRemote.setElapsedTime(target);
-        lastSeekStore.write(target, calledAt);
+        lastSeekStore.write({ target, at: calledAt, ...streak });
 
         let after = null;
         const landed = waitUntil(() => {
             after = mediaRemote.read();
             const superseded = (lastSeekStore.read() || {}).target !== target;
-            return seekLanded(after, target, calledAt, superseded);
-        });
+            return seekLanded(after, target, calledAt, superseded, this.settings.timing.verify_timeout);
+        }, this.settings.timing);
         if (!landed) throw new Failure(EXIT.ignored, `${before.app || 'player'} ignored the seek (this player or page has no seek support)`);
         return after;
     },
 
-    seekBy(delta) {
+    seekBy(delta, progressive) {
+        const { timing, progressive: acceleration } = this.settings;
         const before = this.requireState();
-        const base = seekBase(before, lastSeekStore.read(), Date.now() / 1000);
-        return this.seekTo(base + delta, before);
+        const now = Date.now() / 1000;
+        const lastSeek = lastSeekStore.read();
+        const streak = {
+            direction: Math.sign(delta),
+            streakStart: streakStart(lastSeek, Math.sign(delta), now, acceleration.streak_gap),
+        };
+        const multiplier = progressive
+            ? multiplierAt(acceleration.pattern, now - streak.streakStart, acceleration.max_multiplier)
+            : 1;
+        const base = seekBase(before, lastSeek, now, timing.pending_seek_max);
+        return { state: this.seekTo(base + delta * multiplier, before, streak), multiplier };
     },
 
     send(command) {
@@ -63,10 +69,10 @@ const player = {
         const wantPlaying = before ? expectedPlaying(command, before.playing) : null;
 
         if (delivered && wantPlaying == null) {
-            delay(COMMAND_DELIVERY_SECONDS);
+            delay(this.settings.timing.command_delivery);
             return;
         }
-        const reacted = delivered && waitUntil(() => (mediaRemote.read() || {}).playing === wantPlaying);
+        const reacted = delivered && waitUntil(() => (mediaRemote.read() || {}).playing === wantPlaying, this.settings.timing);
         if (!reacted) throw new Failure(EXIT.ignored, `player did not react to "${command}"`);
     },
 };

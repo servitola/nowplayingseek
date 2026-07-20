@@ -9,7 +9,7 @@ $(TARGET): $(SOURCES)
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(SOURCES); } > $@
 	chmod +x $@
 
-.PHONY: build test install uninstall clean
+.PHONY: build test lint install uninstall clean
 
 build: $(TARGET)
 
@@ -17,6 +17,9 @@ test: $(TARGET)
 	osascript -l JavaScript test/core.test.js src/core.js
 	$(TARGET) --version
 	$(TARGET) --help > /dev/null
+
+lint:
+	pre-commit run --all-files
 
 install: $(TARGET)
 	install -d $(DESTDIR)$(PREFIX)/bin

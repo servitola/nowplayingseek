@@ -162,6 +162,7 @@ silently falls back to a default.
 
 ```sh
 make test     # pure-function tests, no playback needed
+make lint     # Biome, actionlint and whitespace hooks; needs pre-commit
 make build    # build/nowplayingseek
 ```
 

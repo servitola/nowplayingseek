@@ -66,6 +66,12 @@
                                     }
                                 ]
                             }
+                        },
+                        "noExcessiveLinesPerFile": {
+                            "level": "error",
+                            "options": {
+                                "maxLines": 200
+                            }
                         }
                     }
                 }
@@ -87,13 +93,32 @@
                                         "seekLanded",
                                         "streakStart",
                                         "multiplierAt",
-                                        "parseIni",
-                                        "resolveSettings",
-                                        "formatSettings",
                                         "expectedPlaying",
-                                        "formatStatus"
+                                        "formatStatus",
+                                        "Failure",
+                                        "parseTime"
                                     ],
-                                    "variable": ["MILLISECONDS_PER_SECOND"]
+                                    "variable": ["MILLISECONDS_PER_SECOND", "EXIT"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/config.js"],
+            "javascript": {
+                "globals": ["$", "ObjC", "Application", "Path", "delay", "EXIT", "Failure", "isMissing", "parseTime"]
+            },
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": {
+                            "level": "error",
+                            "options": {
+                                "ignore": {
+                                    "function": ["parseIni", "resolveSettings", "formatSettings"]
                                 }
                             }
                         }
@@ -194,6 +219,29 @@
                         "noMagicNumbers": "off"
                     }
                 }
+            }
+        },
+        {
+            "includes": ["test/harness.js"],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": {
+                            "level": "error",
+                            "options": {
+                                "ignore": {
+                                    "function": ["run", "failureOf", "same"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["test/*.test.js"],
+            "javascript": {
+                "globals": ["$", "ObjC", "Application", "Path", "delay", "GROUPS", "same", "failureOf"]
             }
         }
     ]

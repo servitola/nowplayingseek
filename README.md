@@ -166,7 +166,7 @@ make lint     # Biome, actionlint and whitespace hooks; needs pre-commit
 make build    # build/nowplayingseek
 ```
 
-`src/` is concatenated in dependency order because JXA has no modules: `core.js` (pure,
+`src/` is concatenated in dependency order because JXA has no modules: `core.js` and `config.js` (pure,
 tested), `mediaremote.js` (the only file that touches the private framework),
 `player.js` (seek and command verification), `cli.js`.
 

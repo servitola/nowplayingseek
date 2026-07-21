@@ -99,6 +99,17 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
+const FLAGS = { status: ['--json'], seek: null, forward: null, backward: null, config: null };
+
+function rejectUnknownArguments(name, args) {
+    const allowed = Object.hasOwn(FLAGS, name) ? FLAGS[name] : [];
+    const unknown = allowed === null ? [] : args.filter(arg => !allowed.includes(arg));
+    if (unknown.length > 0) {
+        const takes = allowed.length > 0 ? `only ${allowed.join(', ')}` : 'no arguments';
+        throw new Failure(EXIT.usage, `${name} takes ${takes}, got "${unknown.join(' ')}"`);
+    }
+}
+
 const seekCommand = direction => (args, name) => {
     const [time, ...extra] = args.filter(arg => arg !== PROGRESSIVE_FLAG);
     if (extra.length > 0) {
@@ -123,6 +134,9 @@ const COMMANDS = {
     forward: seekCommand(1),
     backward: seekCommand(-1),
     seek(args) {
+        if (args.length > 1) {
+            throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
+        }
         print(formatStatus(player.seekTo(timeArgument('seek', args[0]), player.requireState())));
     },
     doctor() {
@@ -135,7 +149,7 @@ const COMMANDS = {
         print('ok: Now Playing is readable');
     },
     config(args) {
-        if (args[0] === 'init') {
+        if (args.length === 1 && args[0] === 'init') {
             return print(`wrote ${configFile.init()}`);
         }
         if (args.length > 0) {
@@ -165,6 +179,7 @@ function run(argv) {
             throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);
         }
         player.settings = configFile.load().values;
+        rejectUnknownArguments(name, args);
         mediaRemote.load();
         COMMANDS[name](args, name);
     } catch (error) {

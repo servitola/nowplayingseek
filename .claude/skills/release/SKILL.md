@@ -19,8 +19,7 @@ first (`nowplayingseek position`) and put it back when you are done.
 
 ## Phase 1: Preflight
 
-1. `scripts/release.sh check` — branch `main`, clean tree, in sync with `origin/main`, `make lint`,
-   `make test`, CI green on HEAD. A `BLOCK` line stops the release; fix the cause, then re-run `check`.
+1. `scripts/release.sh check`. A `BLOCK` line stops the release; fix the cause, then re-run it.
    Local commits the CI has not seen are a blocker by design: pushing them is the owner's call.
 2. Read the run yourself when the script reports CI as not green: `gh run list --repo
    servitola/nowplayingseek --limit 5`, `gh run view <id> --log-failed`.
@@ -37,9 +36,8 @@ first (`nowplayingseek position`) and put it back when you are done.
 2. The version is today's date, `YYYY.MM.DD` (Cyprus time). Releasing twice in one day is not
    planned; if it ever happens, suffix the second release `.1` and first extend the version
    regex in `scripts/release.sh`, which does not accept a fourth dot-part yet (see below).
-3. `scripts/release.sh plan <version>` previews preflight, bump and formula without writing
-   anything (`--dry-run`, where used, is the first argument). Read the diff, then
-   `scripts/release.sh bump <version>`.
+3. `scripts/release.sh plan <version>` previews everything without writing (`--dry-run`, where
+   used, is the first argument). Read the diff, then `scripts/release.sh bump <version>`.
 4. `make test` (the CLI tests compare `--version` with `src/cli.js`), then commit exactly
    `src/cli.js` and `CHANGELOG.md` as `nowplayingseek <version>`. No tag yet: `push.followTags`
    is on for this machine, so a tag would ride along with the next push.
@@ -61,10 +59,9 @@ first (`nowplayingseek position`) and put it back when you are done.
 1. `git push origin main`, then wait for the `test` workflow on that commit: `gh run watch` or
    `gh run list --commit <sha>`. Red means fix on `main` and start over; no tag exists yet.
 2. `git tag -a v<version> -m "nowplayingseek <version>"`, `git push origin v<version>`.
-3. `scripts/release.sh --dry-run formula <version>` — it downloads
-   `https://github.com/servitola/nowplayingseek/archive/refs/tags/v<version>.tar.gz` and shows the
-   formula diff with the sha256 of that download. A `<sha256 of the tarball…>` placeholder in place
-   of 64 hex characters means GitHub is not serving the archive yet: wait and retry.
+3. `scripts/release.sh --dry-run formula <version>` shows the formula diff with the sha256 of the
+   tarball it downloaded. A `<sha256 of the tarball…>` placeholder in place of 64 hex characters
+   means GitHub is not serving the archive yet: wait and retry.
 
 **Checkpoint:** tag on GitHub, CI green on it, the dry run shows a real 64-hex sha256.
 
@@ -110,9 +107,6 @@ but formula not, sha256 mismatch, red tap CI, a bad release already installed.
 
 ## Final check
 
-- [ ] `scripts/release.sh check` was all `ok` before the bump
-- [ ] the owner's yes came after the summary and before the first push
-- [ ] sha256 in the formula came from the downloaded tarball
+- [ ] every phase checkpoint held, and the owner's yes came before the first push
 - [ ] source CI and tap CI are green on the release commits
-- [ ] `nowplayingseek --version` from Homebrew prints the new version
 - [ ] skipped live checks are named as skipped in the final report

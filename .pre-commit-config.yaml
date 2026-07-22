@@ -33,6 +33,6 @@ repos:
     hooks:
       - id: file-length
         name: no js file over 200 lines
-        language: script
-        entry: scripts/check-file-length.sh
+        language: system
+        entry: awk 'FNR > 200 { over[FILENAME] = FNR } END { for (f in over) { print f " has " over[f] " lines, the limit is 200"; bad = 1 } exit bad }'
         files: ^(src|test)/.*\.js$

@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/banner.webp" alt="A panda in headphones drags the scrubber of a glass Now Playing widget, a waveform glowing behind it" width="100%"></p>
+
 # nowplayingseek
 
 Control whatever macOS considers "now playing" — the thing in the Control Center media

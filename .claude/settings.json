@@ -1,0 +1,23 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(make build)",
+            "Bash(make test)",
+            "Bash(make lint)",
+            "Bash(make clean)",
+            "Bash(pre-commit run:*)",
+            "Bash(git status:*)",
+            "Bash(git diff:*)",
+            "Bash(git log:*)",
+            "Bash(git show:*)",
+            "Bash(osascript -l JavaScript build/test.js:*)",
+            "Bash(sh test/cli.test.sh:*)",
+            "Bash(build/nowplayingseek --version)",
+            "Bash(build/nowplayingseek --help)",
+            "Bash(build/nowplayingseek config)",
+            "Bash(scripts/release.sh --dry-run:*)",
+            "Bash(gh run list:*)",
+            "Bash(gh run view:*)"
+        ]
+    }
+}

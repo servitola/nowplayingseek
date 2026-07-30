@@ -21,9 +21,12 @@ first (`nowplayingseek position`) and put it back when you are done.
 
 1. `scripts/release.sh check`. A `BLOCK` line stops the release; fix the cause, then re-run it.
    Local commits the CI has not seen are a blocker by design: pushing them is the owner's call.
-2. Read the run yourself when the script reports CI as not green: `gh run list --repo
+2. The last CI run carries no annotations — a deprecation warning today is a red run later. This
+   prints nothing when clean:
+   `for id in $(gh api repos/servitola/nowplayingseek/commits/main/check-runs --jq '.check_runs[].id'); do gh api repos/servitola/nowplayingseek/check-runs/$id/annotations --jq '.[].message'; done`
+3. Read the run yourself when the script reports CI as not green: `gh run list --repo
    servitola/nowplayingseek --limit 5`, `gh run view <id> --log-failed`.
-3. Walk the live checklist in `AGENTS.md` ("Testing") with a player running. `status` exit 1 means
+4. Walk the live checklist in `AGENTS.md` ("Testing") with a player running. `status` exit 1 means
    nothing is playing: ask the owner to start something. Record which items ran; an item that did
    not run is reported as skipped, not passed.
 
@@ -58,12 +61,17 @@ first (`nowplayingseek position`) and put it back when you are done.
 
 1. `git push origin main`, then wait for the `test` workflow on that commit: `gh run watch` or
    `gh run list --commit <sha>`. Red means fix on `main` and start over; no tag exists yet.
-2. `git tag -a v<version> -m "nowplayingseek <version>"`, `git push origin v<version>`.
-3. `scripts/release.sh --dry-run formula <version>` shows the formula diff with the sha256 of the
+2. `git tag -a v<version> -m "nowplayingseek <version>"`, `git push origin v<version>`. The workflow
+   does not run on tags; the tag is green because the commit under it is.
+3. GitHub release, no assets — Homebrew builds from the source tarball, and an unsigned copy of the
+   script would only be a second thing to trust:
+   `gh release create v<version> --verify-tag --latest --title "nowplayingseek <version>" --notes "$(scripts/release.sh notes <version>)"`,
+   then `gh release list` shows it as Latest.
+4. `scripts/release.sh --dry-run formula <version>` shows the formula diff with the sha256 of the
    tarball it downloaded. A `<sha256 of the tarball…>` placeholder in place of 64 hex characters
    means GitHub is not serving the archive yet: wait and retry.
 
-**Checkpoint:** tag on GitHub, CI green on it, the dry run shows a real 64-hex sha256.
+**Checkpoint:** tag and release on GitHub, the dry run shows a real 64-hex sha256.
 
 ## Phase 5: Tap
 
@@ -75,20 +83,32 @@ Homebrew's own clone of the GitHub side: read-only, commits go to the checkout b
    you type the next commands into does not.
 1. `scripts/release.sh formula <version>` rewrites `url` and `sha256` in `Formula/nowplayingseek.rb`.
 2. `brew style "$TAP_DIR/Formula/nowplayingseek.rb"`.
-3. Commit only that file as `nowplayingseek <version>` — the checkout may hold the owner's
+3. Prove the formula before anyone else gets it. Homebrew audits and installs only from its own
+   clone, so stage the file there and put the clone back afterwards, or `brew update` cannot
+   fast-forward:
+   ```sh
+   export HOMEBREW_NO_AUTO_UPDATE=1; clone=$(brew --repo servitola/tap)
+   cp "$TAP_DIR/Formula/nowplayingseek.rb" "$clone/Formula/"
+   brew audit --strict --online servitola/tap/nowplayingseek
+   brew upgrade --build-from-source servitola/tap/nowplayingseek && brew test servitola/tap/nowplayingseek
+   git -C "$clone" checkout -- Formula/nowplayingseek.rb
+   ```
+4. Commit only that file as `nowplayingseek <version>` — the checkout may hold the owner's
    unrelated edits — and `git -C "$TAP_DIR" push origin main`.
-4. Wait for the mirror (`git ls-remote https://github.com/servitola/homebrew-tap main` equals the
-   new commit), then for `brew test-bot`: `gh run list --repo servitola/homebrew-tap --limit 3`.
+5. Wait for the mirror (`git ls-remote https://github.com/servitola/homebrew-tap main` equals the
+   new commit; it took about 20 s), then for `brew test-bot`: `gh run list --repo servitola/homebrew-tap --limit 3`.
    It audits the formula with `--strict --online`, installs it from source and runs `brew test`.
 
 **Checkpoint:** tap CI green on the formula commit.
 
 ## Phase 6: Install and verify here
 
-1. `brew update && brew upgrade servitola/tap/nowplayingseek`.
-2. `brew audit --strict --online servitola/tap/nowplayingseek` and `brew test servitola/tap/nowplayingseek`.
-3. `/opt/homebrew/bin/nowplayingseek --version` prints `<version>`.
-4. With something playing: `nowplayingseek status`, `nowplayingseek forward 10`, then `backward 10`.
+1. `brew update && brew upgrade servitola/tap/nowplayingseek`. After Phase 5 step 3 the upgrade has
+   nothing left to do; what this proves is that the published tap and the installed keg agree —
+   `brew outdated` stays empty and `brew info` names `<version>`.
+2. `/opt/homebrew/bin/nowplayingseek --version` prints `<version>`; `nowplayingseek doctor` is ok.
+3. With something playing: `status --json`, `forward 10`, `backward 10`, `forward 10 --progressive`,
+   then `seek` back to where it was.
 
 **Checkpoint:** the installed binary reports `<version>` and both live commands exit 0.
 

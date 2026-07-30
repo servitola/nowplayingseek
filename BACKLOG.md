@@ -1,6 +1,6 @@
 # Backlog
 
-What is left, most pressing first. State as of 2026-07-23; delete a line when it is done.
+What is left, most pressing first. State as of 2026-07-31; delete a line when it is done.
 
 ## Release 2026.07.31
 - Waits for the owner's "выпускай" and then goes by the `release` skill. First the local commits

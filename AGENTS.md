@@ -2,9 +2,10 @@
 
 A command-line tool that reads and drives whatever macOS elected as Now Playing; people bind it
 to hotkeys and call it from scripts, the owner holds a key to scrub through long videos.
-`README.md` is the manual. Read its "How it works" and "Limits" before touching
-`src/mediaremote.js` or `src/player.js` — each bullet there was a bug first. What is unfinished
-or undecided is in `BACKLOG.md`; this file holds only what stays true.
+`README.md` is the front door and `docs/` is the manual. Read `docs/how-it-works.md` before
+touching `src/mediaremote.js` or `src/player.js` — each bullet there was a bug first. The README
+stays under 100 lines: a new recipe, question or explanation goes into `docs/` and gets at most
+a link. What is unfinished or undecided is in `BACKLOG.md`; this file holds only what stays true.
 
 ## Stack and layout
 
@@ -68,7 +69,7 @@ tree fails with "files were modified by this hook".
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows
 what it would do. Nothing is pushed, tagged or published without the owner's word.
 
-## Dead ends — measured 2026-07-31 on macOS 26.6, do not retry
+## Dead ends — measured 2026-08-02 on macOS 26.6, do not retry
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
   `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
   `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper

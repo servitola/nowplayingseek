@@ -50,24 +50,12 @@ function streakStart(lastSeek, direction, now, gap) {
     return sameHold ? lastSeek.streakStart : now;
 }
 
-function multiplierAt(pattern, held, max) {
-    const reached = pattern.points.filter(point => held >= point.after);
-    if (reached.length === 0) {
-        return 1;
-    }
-    const last = reached.at(-1);
-    const beyond =
-        pattern.pace && reached.length === pattern.points.length
-            ? Math.floor((held - last.after) / pattern.pace.every) * pattern.pace.adds
-            : 0;
-    return Math.min(max, last.multiplier + beyond);
+function multiplierAt(held, { max_multiplier, ramp }) {
+    return 1 + (max_multiplier - 1) * (1 - Math.exp(-((held / ramp) ** 2)));
 }
 
-// A held key is two processes: the press loops, the release tells it to stop through a record
-// both can see. A newer press takes the record over, which stops the older loop as well.
 const holdContinues = (record, token) => Boolean(record) && record.holder === token;
 
-// On a quick tap the release can reach the record before the press does.
 const releasedSince = (record, startedAt) => Boolean(record) && !isMissing(record.releasedAt) && record.releasedAt >= startedAt;
 
 function nextHoldTarget(target, delta, multiplier, duration) {

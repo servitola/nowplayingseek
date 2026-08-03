@@ -37,6 +37,12 @@ Three things the API does not tell you:
 - `MRMediaRemoteSendCommand` returns `true` immediately and delivers asynchronously; a
   process that exits right away never sends the command. The tool polls for the effect.
 
+A key held down is two processes, because hotkey tools run a command once per press: `--hold`
+on the key down keeps stepping, `release` on the key up tells it to stop through a file in the
+temporary directory. A newer `--hold` takes that file over, which stops the older one. On a
+quick tap the `release` can get there first; the `--hold` sees a release newer than itself and
+makes its one step.
+
 ## Limits
 
 - It drives the app macOS elected as Now Playing — the one in the Control Center widget —

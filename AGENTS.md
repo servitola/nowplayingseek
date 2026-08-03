@@ -16,9 +16,9 @@ is a plain global in the files after it. The order is the dependency order:
 | File | Holds |
 | --- | --- |
 | `src/core.js` | pure: time, position and seek arithmetic, exit codes, `Failure` |
-| `src/config.js` | pure: the `SETTINGS` table, ini and pattern parsing |
+| `src/config.js` | pure: the `SETTINGS` table, ini parsing |
 | `src/mediaremote.js` | the only file that touches the private `MediaRemote.framework` |
-| `src/player.js` | seek and transport with polling for the effect; the last-seek store |
+| `src/player.js` | one seek loop for a tap and a hold, transport, polling for the effect |
 | `src/configfile.js` | finds, loads and writes `config.ini` |
 | `src/cli.js` | commands, usage, `run(argv)` — the entry point `osascript` calls |
 
@@ -57,13 +57,13 @@ tree fails with "files were modified by this hook".
 - `make test` needs nothing playing. `test/cli.test.sh` runs each case under its own
   `XDG_CONFIG_HOME` (`NSHomeDirectory` ignores `HOME`) and covers exit 0, 64 and 78; exit 1 and 2
   depend on what is playing and are not tested.
-- Anything touching playback is checked by hand with a player running — note the position and put it
-  back: `seek`, a held hotkey (five `forward` 30 ms apart must give +50 s), `toggle` twice,
-  `backward` at 0, a hold (`forward 10 --hold &`, `release` 1.2 s later must give +50 s; `release`
-  80 ms later, +10 s; with `[hold] max_time = 1` and no `release` it must return by itself), `seek`
-  past the end, and thirty `forward 1 --progressive` 60 ms apart under `XDG_CONFIG_HOME` with
-  `pattern = 0.5s:x2, 1s:x3, ...` — the `×N` suffixes must climb and the distance moved must equal
-  their sum. Do `seek` past the end last and on something disposable: it ends the item, and a page
+- Anything touching playback is checked by hand with a player running — look at `playing` first and
+  never on something the owner is watching; note the position and put it back: `seek`, a held hotkey
+  (five `forward` 30 ms apart must give +50 s), `toggle` twice, `backward` at 0, a hold (`forward 10
+  --hold &`, `release` 1.2 s later must give +60 s; `release` 80 ms later, +10 s; with `[hold]
+  max_time = 1` and no `release` it must return by itself), a progressive hold (`forward --hold
+  --progressive`, `release` 3 s later: about +180 s and the line ends with `×1.6`), and `seek` past
+  the end. Do `seek` past the end last and on something disposable: it ends the item, and a page
   with autoplay loads the next one in its place.
 - A change to the tests is proven by breaking the code once and watching them fail.
 

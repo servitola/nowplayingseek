@@ -11,8 +11,15 @@ version, so keep that heading as it is.
   held — Karabiner-Elements is one. `[hold] interval` and `max_time` set the pace and the fuse.
 
 ### Changed
-- The default ladder of `--progressive` is `4s:x2, 8s:x3, ...` instead of `5s:x2, 10s:x3, ...`: the
-  old one felt sluggish on a held key. A `pattern` in the config file is not affected.
+- `--progressive` grows smoothly: every step is a little longer than the last, a tap and the
+  first second stay precise, and it settles at ×3 — `max_multiplier` and the new `ramp`. The
+  staircase lurched at every jump and ran up to ×10.
+- `backward` at the very start and `forward` at the very end do nothing and exit 0 instead of
+  asking the player for a seek to where it already is.
+
+### Removed
+- The `pattern` ladder of 2026.07.31. A config file that has a `pattern` line is now refused with its
+  line number: delete the line.
 
 ### Fixed
 - The Karabiner-Elements recipe never repeated while the key was held, so `--progressive` had

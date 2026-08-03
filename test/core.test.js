@@ -77,6 +77,24 @@ function testStreak(core) {
     same(core.streakStart({ target: 110, at: 50 }, 1, 50.05, 1), 50.05, 'an absolute seek or a 2026.07.21 store breaks the hold');
 }
 
+function testHold(core) {
+    same(core.holdContinues({ holder: 'a' }, 'a'), true, 'hold: nobody took over');
+    same(core.holdContinues({ holder: 'b' }, 'a'), false, 'hold: another press took over');
+    same(core.holdContinues({ releasedAt: 50 }, 'a'), false, 'hold: the key was released');
+    same(core.holdContinues(null, 'a'), false, 'hold: the record is gone');
+
+    same(core.releasedSince({ releasedAt: 50.2 }, 50), true, 'tap: the release beat the press to the record');
+    same(core.releasedSince({ releasedAt: 49 }, 50), false, 'an old release does not stop a new press');
+    same(core.releasedSince({ holder: 'b' }, 50), false, 'a running hold is not a release');
+    same(core.releasedSince(null, 50), false, 'no record, no release');
+
+    same(core.nextHoldTarget(100, 10, 2, 600), 120, 'hold: a step times the multiplier');
+    same(core.nextHoldTarget(595, 10, 1, 600), 600, 'hold: the last step is clamped to the end');
+    same(core.nextHoldTarget(600, 10, 1, 600), null, 'hold: nothing further at the end');
+    same(core.nextHoldTarget(0, -10, 3, 600), null, 'hold: nothing further at the start');
+    same(core.nextHoldTarget(100, 10, 1, 0), 110, 'hold: a live stream has no end');
+}
+
 function testTransport(core) {
     same(core.expectedPlaying('toggle', true), false, 'toggle while playing');
     same(core.expectedPlaying('toggle', false, 2.5), true, 'toggle while paused');
@@ -115,4 +133,4 @@ function testStatus(core) {
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
-GROUPS.push(testPosition, testSeekBase, testSeekLanded, testStreak, testTransport, testTime, testStatus);
+GROUPS.push(testPosition, testSeekBase, testSeekLanded, testStreak, testHold, testTransport, testTime, testStatus);

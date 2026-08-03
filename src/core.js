@@ -63,6 +63,18 @@ function multiplierAt(pattern, held, max) {
     return Math.min(max, last.multiplier + beyond);
 }
 
+// A held key is two processes: the press loops, the release tells it to stop through a record
+// both can see. A newer press takes the record over, which stops the older loop as well.
+const holdContinues = (record, token) => Boolean(record) && record.holder === token;
+
+// On a quick tap the release can reach the record before the press does.
+const releasedSince = (record, startedAt) => Boolean(record) && !isMissing(record.releasedAt) && record.releasedAt >= startedAt;
+
+function nextHoldTarget(target, delta, multiplier, duration) {
+    const next = clampTarget(target + delta * multiplier, duration);
+    return next === target ? null : next;
+}
+
 function expectedPlaying(command, wasPlaying) {
     if (command === 'toggle') {
         return !wasPlaying;

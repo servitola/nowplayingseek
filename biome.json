@@ -89,6 +89,7 @@
                                         "seekLanded",
                                         "streakStart",
                                         "multiplierAt",
+                                        "nextHoldTarget",
                                         "expectedPlaying",
                                         "parseTime",
                                         "formatStatus",
@@ -96,7 +97,7 @@
                                         "resolveSettings",
                                         "formatSettings"
                                     ],
-                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND"]
+                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND", "holdContinues", "releasedSince"]
                                 }
                             }
                         }
@@ -105,7 +106,7 @@
             }
         },
         {
-            "includes": ["src/mediaremote.js", "src/player.js", "src/cli.js"],
+            "includes": ["src/mediaremote.js", "src/player.js", "src/configfile.js", "src/cli.js"],
             "javascript": {
                 "globals": [
                     "$",
@@ -123,6 +124,9 @@
                     "seekLanded",
                     "streakStart",
                     "multiplierAt",
+                    "holdContinues",
+                    "releasedSince",
+                    "nextHoldTarget",
                     "expectedPlaying",
                     "parseTime",
                     "formatStatus",
@@ -130,7 +134,8 @@
                     "resolveSettings",
                     "formatSettings",
                     "mediaRemote",
-                    "player"
+                    "player",
+                    "configFile"
                 ]
             },
             "linter": {
@@ -141,7 +146,7 @@
                             "options": {
                                 "ignore": {
                                     "function": ["run"],
-                                    "variable": ["mediaRemote", "player"]
+                                    "variable": ["mediaRemote", "player", "configFile"]
                                 }
                             }
                         }

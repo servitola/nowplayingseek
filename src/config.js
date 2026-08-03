@@ -20,14 +20,16 @@ const SETTINGS = {
             about: 'forward / backward without a time',
         },
     },
+    // 4 s and 0.2 s are the owner's, tuned by feel on a film with a held Karabiner hotkey; the first
+    // guesses, 5 s and 0.25 s, felt sluggish.
     progressive: {
         pattern: {
-            text: '5s:x2, 10s:x3, ...',
+            text: '4s:x2, 8s:x3, ...',
             parse: parsePattern,
             expects: '"<held seconds>:<multiplier>" points in ascending order, optionally ending with "..."',
             about:
                 'forward / backward --progressive: once the key has been held this long, the step is multiplied.\n'
-                + 'A trailing "..." keeps going at the pace of the last two points: 15s:x4, 20s:x5 and so on.',
+                + 'A trailing "..." keeps going at the pace of the last two points: 12s:x4, 16s:x5 and so on.',
         },
         max_multiplier: { text: '10', parse: positive(parseNumber), expects: 'a number above zero', about: 'where "..." stops growing' },
         streak_gap: {
@@ -35,6 +37,20 @@ const SETTINGS = {
             parse: positive(parseNumber),
             expects: 'seconds above zero',
             about: 'presses in one direction no further apart than this count as one hold',
+        },
+    },
+    hold: {
+        interval: {
+            text: '0.2',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'forward / backward --hold: pause between steps while the key is down',
+        },
+        max_time: {
+            text: '30',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'a --hold stops by itself after this long, in case the release never arrives',
         },
     },
     timing: {

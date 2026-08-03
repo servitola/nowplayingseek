@@ -48,10 +48,22 @@ function testSettings(core) {
     const defaults = core.resolveSettings([]);
     same(defaults.values.seek.step, 10, 'settings: default step');
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
+    same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
+    same(defaults.values.hold.max_time, 30, 'settings: default hold fuse');
     same(
         core.multiplierAt(defaults.values.progressive.pattern, 10, defaults.values.progressive.max_multiplier),
         3,
         'settings: default pattern'
+    );
+    same(
+        core.multiplierAt(defaults.values.progressive.pattern, 4, defaults.values.progressive.max_multiplier),
+        2,
+        'settings: the default ladder doubles at 4 s'
+    );
+    same(
+        core.multiplierAt(defaults.values.progressive.pattern, 3.9, defaults.values.progressive.max_multiplier),
+        1,
+        'settings: and not before'
     );
     const custom = core.resolveSettings(core.parseIni(ini));
     same(custom.values.seek.step, 90, 'settings: step accepts mm:ss');

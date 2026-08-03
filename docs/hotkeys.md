@@ -6,7 +6,8 @@ The tool does not grab keys itself; bind it with whatever you already use. Give 
 full path — hotkey daemons run commands with a bare environment.
 
 Karabiner-Elements, ⌃⌥→ and ⌃⌥←. Karabiner runs a `shell_command` once per press and does not
-repeat it while the key is held, so the press starts a loop and the release stops it:
+repeat it while the key is held, so the key down starts a [`--hold`](advanced.md#hold) and the
+key up ends it:
 
 ```json
 {
@@ -14,25 +15,18 @@ repeat it while the key is held, so the press starts a loop and the release stop
   "manipulators": [
     { "type": "basic",
       "from": { "key_code": "right_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo forward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = forward ] && [ $n -lt 300 ]; do /opt/homebrew/bin/nowplayingseek forward 10 --progressive >/dev/null 2>&1 & sleep 0.25; n=$((n+1)); done" }],
-      "to_after_key_up": [{ "shell_command": "rm -f \"${TMPDIR:-/tmp/}nowplayingseek.hold\"" }] },
+      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward --hold --progressive" }],
+      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release" }] },
     { "type": "basic",
       "from": { "key_code": "left_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo backward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = backward ] && [ $n -lt 300 ]; do /opt/homebrew/bin/nowplayingseek backward 10 --progressive >/dev/null 2>&1 & sleep 0.25; n=$((n+1)); done" }],
-      "to_after_key_up": [{ "shell_command": "rm -f \"${TMPDIR:-/tmp/}nowplayingseek.hold\"" }] }
+      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward --hold --progressive" }],
+      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release" }] }
   ]
 }
 ```
 
-A tap is one step; held, the key makes four steps a second. Three numbers set the feel:
-
-- `sleep 0.25` — the pace while held; `0.5` is a calm two steps a second.
-- `10` — the step. With `--progressive` it grows while you hold, and how fast is the
-  [`pattern`](advanced.md#progressive-seek) setting: the default doubles it after 5 s, and
-  `pattern = 3.75s:x2, 7.5s:x3, ...` in the config file gets there a third sooner.
-- `300` — a fuse: the loop ends by itself if the release never arrives.
-
-For a key that should not repeat, the whole command is `/opt/homebrew/bin/nowplayingseek forward 10`.
+A tap is one step; held, the key makes five steps a second, and with `--progressive` they grow.
+The pace, the step and the ladder are in the [config file](advanced.md#config-file).
 
 A rotary knob is two keys to the system, one per direction — volume up and down out of
 the box. Reassign them in the keyboard's firmware (VIA, QMK) to keys you do not use, such
@@ -45,13 +39,12 @@ Without third-party software: Shortcuts.app → new shortcut → "Run Shell Scri
 Hammerspoon, in `~/.hammerspoon/init.lua`:
 
 ```lua
-local function seek(direction)
-  return function()
-    hs.task.new("/opt/homebrew/bin/nowplayingseek", nil, { direction, "10", "--progressive" }):start()
-  end
+local function run(...)
+  local arguments = { ... }
+  return function() hs.task.new("/opt/homebrew/bin/nowplayingseek", nil, arguments):start() end
 end
-hs.hotkey.bind({ "ctrl", "alt" }, "right", seek("forward"), nil, seek("forward"))
-hs.hotkey.bind({ "ctrl", "alt" }, "left", seek("backward"), nil, seek("backward"))
+hs.hotkey.bind({ "ctrl", "alt" }, "right", run("forward", "--hold", "--progressive"), run("release"))
+hs.hotkey.bind({ "ctrl", "alt" }, "left", run("backward", "--hold", "--progressive"), run("release"))
 ```
 
 skhd, in `~/.config/skhd/skhdrc`:

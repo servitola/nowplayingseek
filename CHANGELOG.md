@@ -5,18 +5,21 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.08.05 — 2026-08-05
+
 ### Added
 - `forward` / `backward --hold` and `release`: a hotkey's key down starts seeking, its key up stops
   it. For hotkey tools that run a command once per press and do not repeat it while the key is
   held — Karabiner-Elements is one. `[hold] interval` and `max_time` set the pace and the fuse.
 - `forward` / `backward --knob`: one click of a keyboard knob. The faster the knob spins, the
   longer the step — 3 s a click when turned slowly, up to five times that on a flick; `[knob]` in
-  the config file. With a Karabiner-Elements rule in docs/hotkeys.md.
+  the config file. With a Karabiner-Elements rule in docs/hotkeys.md. The numbers are a starting
+  point: they were checked with simulated clicks, not yet tuned on a real knob.
 
 ### Changed
-- `--progressive` grows smoothly: every step is a little longer than the last, a tap and the
-  held key glides off in small steps and settles at ×2.5 — `start`, `max_multiplier` and `ramp`. The
-  staircase lurched at every jump and ran up to ×10.
+- `--progressive` grows smoothly: a press is one whole step, a held key then glides off in small
+  steps, every one a little longer than the last, and settles at ×2.5 — `start`, `max_multiplier`
+  and `ramp` in the config file. The staircase lurched at every jump and ran up to ×10.
 - `backward` at the very start and `forward` at the very end do nothing and exit 0 instead of
   asking the player for a seek to where it already is.
 

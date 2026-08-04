@@ -1,6 +1,6 @@
 ObjC.import('stdlib');
 
-const VERSION = '2026.07.31';
+const VERSION = '2026.08.05';
 const PROGRESSIVE_FLAG = '--progressive';
 const HOLD_FLAG = '--hold';
 const KNOB_FLAG = '--knob';

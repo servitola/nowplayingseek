@@ -52,8 +52,9 @@ expect 'no arguments prints help' 0 stdout 'exit codes:'
 
 expect 'unknown command' 64 stderr 'unknown command "frobnicate"' frobnicate
 expect 'unknown command shows usage' 64 stderr 'exit codes:' frobnicate
-expect 'unknown flag after a time' 64 stderr 'forward takes one time, --progressive and --hold, got "--progresive" on top' forward 10 --progresive
+expect 'unknown flag after a time' 64 stderr 'forward takes one time, --progressive, --hold and --knob, got "--progresive" on top' forward 10 --progresive
 expect 'hold with garbage' 64 stderr 'forward needs seconds or mm:ss, got "abc"' forward abc --hold --progressive
+expect 'a knob cannot be held' 64 stderr 'forward: --knob is one click of a knob, it goes without --hold and --progressive' forward --knob --hold
 expect 'release with an argument' 64 stderr 'release takes no arguments, got "now"' release now
 expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm:ss, got "--fast"' backward --fast
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
@@ -97,6 +98,8 @@ write_config '[progressive]' 'pattern = 5s:x2, 10s:x3, ...'
 expect 'the 2026.07.31 ladder is gone' 78 stderr 'line 2: unknown setting [progressive] pattern' config
 write_config '[progressive]' 'ramp = 0'
 expect 'ramp of zero' 78 stderr 'line 2: [progressive] ramp = "0" — expected seconds above zero' config
+write_config '[knob]' 'fast = 0'
+expect 'knob pace of zero' 78 stderr 'line 2: [knob] fast = "0" — expected clicks a second above zero' config
 write_config '[hold]' 'interval = 0'
 expect 'hold interval of zero' 78 stderr 'line 2: [hold] interval = "0" — expected seconds above zero' config
 write_config '[progressive]' 'max_multiplier = fast'

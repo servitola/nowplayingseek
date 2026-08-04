@@ -1,6 +1,6 @@
 # Backlog
 
-What is left, most pressing first. State as of 2026-08-04; delete a line when it is done.
+What is left, most pressing first. State as of 2026-08-05; delete a line when it is done.
 
 ## Bugs and oddities
 - Once in ten tries `forward 1` right after two `toggle`s exited 2 ("ignored the seek"). Four

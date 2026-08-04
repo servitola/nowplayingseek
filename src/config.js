@@ -10,12 +10,12 @@ const SETTINGS = {
     },
     progressive: {
         max_multiplier: setting(
-            '3',
+            '2.5',
             'forward / backward --progressive: the step grows a little with every step while the key is\n'
                 + 'held, and settles at this many times its size',
             'a number above zero'
         ),
-        ramp: setting('5', 'held this long, the step is two thirds of the way to max_multiplier'),
+        ramp: setting('6', 'held this long, the step is two thirds of the way to max_multiplier'),
         streak_gap: setting('1', 'presses in one direction no further apart than this count as one hold'),
     },
     hold: {

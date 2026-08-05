@@ -6,10 +6,11 @@ const HOLD_FLAG = '--hold';
 const KNOB_FLAG = '--knob';
 const SEEK_FLAGS = [PROGRESSIVE_FLAG, HOLD_FLAG, KNOB_FLAG];
 const PRINTED_DECIMALS = 3;
+const RAW_INDENT = 2;
 
 const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
 
-  status [--json]                   title, app, position / duration
+  status [--json | --raw]           title, app, position / duration; --raw is everything macOS knows, as JSON
   position                          current position, seconds
   duration                          total length, seconds
   forward [time=10]                 seek forward
@@ -55,7 +56,7 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
-const FLAGS = { status: ['--json'], seek: null, forward: null, backward: null, config: null };
+const FLAGS = { status: ['--json', '--raw'], seek: null, forward: null, backward: null, config: null };
 
 function rejectUnknownArguments(name, args) {
     const allowed = Object.hasOwn(FLAGS, name) ? FLAGS[name] : [];
@@ -87,6 +88,9 @@ const seekCommand = direction => (args, name) => {
 const COMMANDS = {
     status(args) {
         const state = player.requireState();
+        if (args.includes('--raw')) {
+            return print(JSON.stringify(mediaRemote.raw(), null, RAW_INDENT));
+        }
         print(args.includes('--json') ? JSON.stringify(state) : formatStatus(state));
     },
     position() {

@@ -60,7 +60,7 @@ expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
 expect 'config with an unknown argument' 64 stderr 'config takes "init" or nothing, got "--force"' config --force
 expect 'config init with an argument on top' 64 stderr 'config takes "init" or nothing, got "init --force"' config init --force
-expect 'status with a misspelt flag' 64 stderr 'status takes only --json, got "--jsno"' status --jsno
+expect 'status with a misspelt flag' 64 stderr 'status takes only --json, --raw, got "--jsno"' status --jsno
 expect 'position with an argument' 64 stderr 'position takes no arguments, got "now"' position now
 expect 'transport with an argument' 64 stderr 'pause takes no arguments, got "10"' pause 10
 expect 'doctor with an argument' 64 stderr 'doctor takes no arguments, got "--verbose"' doctor --verbose

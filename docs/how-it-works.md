@@ -54,7 +54,7 @@ makes its one step.
   `…ToApp`, `…ToClient` and `MRNowPlayingRequest` all accept a target, and for an
   unentitled caller `mediaremoted` silently redirects every one of them to the elected
   app; only Apple's own Music is addressed as asked (measured on macOS 26.6).
-- Seeking needs the player's cooperation. YouTube in Chromium browsers and IINA work. A
+- Seeking needs the player's cooperation. YouTube in Chromium browsers, IINA and VLC work. A
   web page without a MediaSession `seekto` handler swallows the call; you get exit 2.
 - Private API. Tested on macOS 26.6 only. Apple can close this door in any update — run
   `nowplayingseek doctor` while something is playing to find out.

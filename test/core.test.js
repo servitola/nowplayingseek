@@ -12,6 +12,13 @@ function testPosition(core) {
     same(core.clampTarget(5000, 0), 5000, 'zero duration is treated as unknown');
 }
 
+function testRate(core) {
+    same(core.effectiveRate(true, 1), 1, 'playing at normal speed');
+    same(core.effectiveRate(true, 1.5), 1.5, 'playing faster');
+    same(core.effectiveRate(false, 1), 0, 'VLC keeps PlaybackRate 1 while paused: the play state wins');
+    same(core.effectiveRate(false, 0), 0, 'paused and says so');
+}
+
 function testSeekBase(core) {
     const stale = { position: 100, timestamp: 40 };
     const lastSeek = { target: 110, at: 50 };
@@ -154,4 +161,4 @@ function testStatus(core) {
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
-GROUPS.push(testPosition, testSeekBase, testSeekLanded, testStreak, testKnob, testHold, testTransport, testTime, testStatus);
+GROUPS.push(testPosition, testRate, testSeekBase, testSeekLanded, testStreak, testKnob, testHold, testTransport, testTime, testStatus);

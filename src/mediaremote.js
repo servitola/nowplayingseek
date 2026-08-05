@@ -1,5 +1,6 @@
 ObjC.import('Foundation');
 
+const KEY_PREFIX = 'kMRMediaRemoteNowPlayingInfo';
 const MR_COMMAND = { play: 0, pause: 1, toggle: 2, next: 4, previous: 5 };
 
 const mediaRemote = {
@@ -27,7 +28,9 @@ const mediaRemote = {
         };
         const stamp = info.valueForKey('kMRMediaRemoteNowPlayingInfoTimestamp');
         const timestamp = stamp.js ? stamp.timeIntervalSince1970 : null;
-        const rate = value('PlaybackRate') || 0;
+        const reportedRate = value('PlaybackRate') || 0;
+        const playing = request.respondsToSelector('localIsPlaying') ? Boolean(request.localIsPlaying) : reportedRate > 0;
+        const rate = effectiveRate(playing, reportedRate);
         const { client } = request.localNowPlayingPlayerPath;
 
         return {
@@ -37,10 +40,27 @@ const mediaRemote = {
             app: client.js ? client.bundleIdentifier.js : null,
             duration: value('Duration'),
             position: livePosition(value('ElapsedTime'), rate, timestamp, Date.now() / MILLISECONDS_PER_SECOND),
-            playing: rate > 0,
+            playing,
             rate,
             timestamp,
         };
+    },
+
+    raw() {
+        const request = $.NSClassFromString('MRNowPlayingRequest');
+        const item = request?.localNowPlayingItem;
+        if (!item?.js) {
+            return null;
+        }
+        const info = item.nowPlayingInfo;
+        const { app, playing } = this.read();
+        const everything = { app, playing };
+        for (const key of ObjC.deepUnwrap(info.allKeys).sort()) {
+            const value = info.valueForKey(key);
+            const plain = value.isKindOfClass($.NSData) ? `<${value.length} bytes>` : ObjC.deepUnwrap(value);
+            everything[key.replace(KEY_PREFIX, '')] = plain instanceof Date ? plain.toISOString() : plain;
+        }
+        return everything;
     },
 
     setElapsedTime(seconds) {

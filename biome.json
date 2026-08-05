@@ -99,7 +99,7 @@
                                         "resolveSettings",
                                         "formatSettings"
                                     ],
-                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND", "holdContinues", "releasedSince"]
+                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND", "holdContinues", "releasedSince", "effectiveRate"]
                                 }
                             }
                         }
@@ -121,6 +121,7 @@
                     "Failure",
                     "isMissing",
                     "livePosition",
+                    "effectiveRate",
                     "clampTarget",
                     "seekBase",
                     "seekLanded",

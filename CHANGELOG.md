@@ -10,6 +10,9 @@ version, so keep that heading as it is.
   the artwork, the file's URL where the player gives one.
 
 ### Fixed
+- Rolling from one held key to the other: letting go of the first stopped the second. `release`
+  now takes a direction — `release forward`, `release backward` — and the recipes pass it; a bare
+  `release` still stops both.
 - VLC keeps `PlaybackRate` at 1 while paused, so `status` showed it playing with a position that
   ran ahead, and `pause` / `toggle` paused it and then exited 2. The play state now comes from
   macOS's own flag, not from the rate.

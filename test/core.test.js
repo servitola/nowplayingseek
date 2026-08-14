@@ -106,10 +106,12 @@ function testKnob(core) {
 }
 
 function testHold(core) {
-    same(core.holdContinues({ holder: 'a' }, 'a'), true, 'hold: nobody took over');
-    same(core.holdContinues({ holder: 'b' }, 'a'), false, 'hold: another press took over');
-    same(core.holdContinues({ releasedAt: 50 }, 'a'), false, 'hold: the key was released');
-    same(core.holdContinues(null, 'a'), false, 'hold: the record is gone');
+    const mine = { holder: 'a' };
+    same(core.holdContinues(mine, 'a', null, 50), true, 'hold: nobody took over, nothing released');
+    same(core.holdContinues({ holder: 'b' }, 'a', null, 50), false, 'hold: another press took over');
+    same(core.holdContinues(null, 'a', null, 50), false, 'hold: the record is gone');
+    same(core.holdContinues(mine, 'a', { releasedAt: 51 }, 50), false, 'hold: this key was released');
+    same(core.holdContinues(mine, 'a', { releasedAt: 49 }, 50), true, 'hold: a release older than the press is not ours');
 
     same(core.releasedSince({ releasedAt: 50.2 }, 50), true, 'tap: the release beat the press to the record');
     same(core.releasedSince({ releasedAt: 49 }, 50), false, 'an old release does not stop a new press');

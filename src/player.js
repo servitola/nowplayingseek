@@ -22,6 +22,7 @@ function jsonFile(name) {
 
 const lastSeekFile = jsonFile('last-seek');
 const holdFile = jsonFile('hold');
+const releaseFiles = { 1: jsonFile('release-forward'), [-1]: jsonFile('release-backward') };
 
 function waitUntil(condition, timing) {
     const deadline = Date.now() + timing.verify_timeout * MILLISECONDS_PER_SECOND;
@@ -73,7 +74,7 @@ const player = {
             rate: knob ? knobRate(lastSeek, direction, now(), curve.streak_gap) : undefined,
         };
         const growth = this.growth({ progressive, knob }, streak);
-        const once = !hold || releasedSince(holdFile.read(), PROCESS_STARTED);
+        const once = !hold || releasedSince(releaseFiles[direction].read(), PROCESS_STARTED);
         if (!once) {
             holdFile.write({ holder: HOLD_TOKEN });
         }
@@ -91,7 +92,7 @@ const player = {
             last = { at, multiplier };
             mediaRemote.setElapsedTime(target);
             lastSeekFile.write({ target, at, app: before.app, ...streak });
-        } while (!once && this.stillHeld());
+        } while (!once && this.stillHeld(direction));
 
         return last ? { state: this.awaitLanding(target, last.at, before), multiplier: last.multiplier } : { state: before, multiplier: 1 };
     },
@@ -106,14 +107,17 @@ const player = {
         return () => 1;
     },
 
-    stillHeld() {
+    stillHeld(direction) {
         const { interval, max_time } = this.settings.hold;
         delay(interval);
-        return holdContinues(holdFile.read(), HOLD_TOKEN) && now() - PROCESS_STARTED < max_time;
+        const held = holdContinues(holdFile.read(), HOLD_TOKEN, releaseFiles[direction].read(), PROCESS_STARTED);
+        return held && now() - PROCESS_STARTED < max_time;
     },
 
-    release() {
-        holdFile.write({ releasedAt: now() });
+    release(directions) {
+        for (const direction of directions) {
+            releaseFiles[direction].write({ releasedAt: now() });
+        }
     },
 
     awaitLanding(target, calledAt, before) {

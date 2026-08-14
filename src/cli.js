@@ -26,7 +26,7 @@ exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command,
 advanced (docs/advanced.md):
   forward | backward --progressive  the step grows the longer the key is held
   forward | backward --hold         keep seeking until "release" — for a hotkey's key down
-  release                           stop a --hold — for the key up
+  release [forward | backward]      stop a --hold — for the key up
   forward | backward --knob         one click of a keyboard knob: the faster it spins, the longer the step
   config                            print the settings in effect and the config file path
   config init                       write ~/.config/nowplayingseek/config.ini with the defaults`;
@@ -56,7 +56,8 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
-const FLAGS = { status: ['--json', '--raw'], seek: null, forward: null, backward: null, config: null };
+const DIRECTIONS = { forward: 1, backward: -1 };
+const FLAGS = { status: ['--json', '--raw'], release: Object.keys(DIRECTIONS), seek: null, forward: null, backward: null, config: null };
 
 function rejectUnknownArguments(name, args) {
     const allowed = Object.hasOwn(FLAGS, name) ? FLAGS[name] : [];
@@ -126,8 +127,9 @@ const COMMANDS = {
         const found = configFile.exists() ? '' : ' — not found, these are the defaults';
         print(`; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`);
     },
-    release() {
-        player.release();
+    release(args) {
+        const asked = args.map(arg => DIRECTIONS[arg]);
+        player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));
     },
     toggle: sendCommand,
     play: sendCommand,

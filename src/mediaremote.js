@@ -22,6 +22,9 @@ const mediaRemote = {
         }
 
         const info = item.nowPlayingInfo;
+        if (!info.js) {
+            return null;
+        }
         const value = key => {
             const v = info.valueForKey(`kMRMediaRemoteNowPlayingInfo${key}`);
             return v.js === undefined ? null : v.js;
@@ -37,7 +40,7 @@ const mediaRemote = {
             title: value('Title'),
             artist: value('Artist'),
             album: value('Album'),
-            app: client.js ? client.bundleIdentifier.js : null,
+            app: client?.js ? client.bundleIdentifier.js : null,
             duration: value('Duration'),
             position: livePosition(value('ElapsedTime'), rate, timestamp, Date.now() / MILLISECONDS_PER_SECOND),
             playing,
@@ -53,7 +56,11 @@ const mediaRemote = {
             return null;
         }
         const info = item.nowPlayingInfo;
-        const { app, playing } = this.read();
+        const state = this.read();
+        if (!state) {
+            return null;
+        }
+        const { app, playing } = state;
         const everything = { app, playing };
         for (const key of ObjC.deepUnwrap(info.allKeys).sort()) {
             const value = info.valueForKey(key);

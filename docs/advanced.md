@@ -67,7 +67,7 @@ before it, so switching direction needs no release in between, and a hold ends b
 ```ini
 [hold]
 interval = 0.2
-max_time = 30
+max_time = 10
 ```
 
 It does not wait for a step to land before the next one, only for the last: the exit code tells

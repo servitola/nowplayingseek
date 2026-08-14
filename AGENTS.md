@@ -54,6 +54,9 @@ tree fails with "files were modified by this hook".
 
 ## Testing
 
+- `make test-live` opens VLC on five minutes of generated silence, pauses it and walks the playback
+  cases; it refuses to start while something is playing and stops the moment Now Playing goes to
+  another app. Run it before a release; whatever it does not cover stays in the hand checklist below.
 - `make test` needs nothing playing. `test/cli.test.sh` runs each case under its own
   `XDG_CONFIG_HOME` (`NSHomeDirectory` ignores `HOME`) and covers exit 0, 64 and 78; exit 1 and 2
   depend on what is playing and are not tested.

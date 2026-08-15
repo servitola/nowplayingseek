@@ -16,12 +16,16 @@ is a plain global in the files after it. The order is the dependency order:
 | File | Holds |
 | --- | --- |
 | `src/core.js` | pure: time, position and seek arithmetic, exit codes, `Failure` |
+| `src/dialect-words.js` | pure: the seek words of playerctl and mpc, playerctl's format strings |
 | `src/config.js` | pure: the `SETTINGS` table, ini parsing |
 | `src/mediaremote.js` | the only file that touches the private `MediaRemote.framework` |
 | `src/files.js` | the temp files processes talk through — last seek, hold, release — and the lock |
 | `src/player.js` | one seek loop for a tap and a hold, transport, polling for the effect |
 | `src/configfile.js` | finds, loads and writes `config.ini` |
 | `src/as-nowplaying-cli.js` | the dialect of nowplaying-cli: its words, texts and exit codes over our reads |
+| `src/as-media-control*.js` | the dialect of media-control: `get` and `stream` in its JSON, its controls, its help page |
+| `src/as-others.js` | playerctl, mpc and shpotify behind their names; refuses what Now Playing cannot do |
+| `src/dialects.js` | which first word speaks which dialect |
 | `src/cli.js` | commands, usage, `run(argv)` — the entry point `osascript` calls |
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js`;

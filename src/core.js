@@ -1,6 +1,7 @@
 const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = 3600;
 const MILLISECONDS_PER_SECOND = 1000;
+const MICROSECONDS = 1e6;
 const SHORTEST_CLICK = 0.01;
 const END_MARGIN = 5;
 
@@ -100,6 +101,28 @@ function nextHoldTarget(target, delta, multiplier, duration) {
     const upper = duration > 0 ? duration - margin : Number.POSITIVE_INFINITY;
     const next = Math.max(0, Math.min(upper, target + delta * multiplier));
     return Math.sign(next - target) === Math.sign(delta) ? next : null;
+}
+
+const STREAM_IDENTITY = ['processIdentifier', 'bundleIdentifier', 'parentApplicationBundleIdentifier', 'title', 'artist', 'album'];
+
+function streamChange(previous, current, diffing) {
+    if (JSON.stringify(previous) === JSON.stringify(current)) {
+        return null;
+    }
+    if (!current) {
+        return { diff: false, payload: {} };
+    }
+    const sameItem = diffing && previous && STREAM_IDENTITY.every(key => previous[key] === current[key]);
+    if (!sameItem) {
+        return { diff: false, payload: current };
+    }
+    const payload = {};
+    for (const key of new Set([...Object.keys(previous), ...Object.keys(current)])) {
+        if (previous[key] !== current[key]) {
+            payload[key] = Object.hasOwn(current, key) ? current[key] : null;
+        }
+    }
+    return { diff: true, payload };
 }
 
 function expectedPlaying(command, wasPlaying) {

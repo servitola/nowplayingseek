@@ -1,6 +1,7 @@
 ObjC.import('Foundation');
 
 const KEY_PREFIX = 'kMRMediaRemoteNowPlayingInfo';
+const MR_SETTERS = { shuffle: 'MRMediaRemoteSetShuffleMode', repeat: 'MRMediaRemoteSetRepeatMode', speed: 'MRMediaRemoteSetPlaybackSpeed' };
 const MR_COMMAND = { play: 0, pause: 1, toggle: 2, next: 4, previous: 5 };
 
 const mediaRemote = {
@@ -9,6 +10,9 @@ const mediaRemote = {
         $.NSBundle.bundleWithPath('/System/Library/PrivateFrameworks/MediaRemote.framework/').load;
         ObjC.bindFunction('MRMediaRemoteSetElapsedTime', ['void', ['double']]);
         ObjC.bindFunction('MRMediaRemoteSendCommand', ['bool', ['int', 'id']]);
+        for (const setter of Object.values(MR_SETTERS)) {
+            ObjC.bindFunction(setter, ['void', ['int']]);
+        }
     },
 
     read() {
@@ -80,6 +84,23 @@ const mediaRemote = {
     },
 
     send(command) {
-        return $.MRMediaRemoteSendCommand(MR_COMMAND[command], $());
+        return this.sendId(MR_COMMAND[command]);
+    },
+
+    sendId(id) {
+        return $.MRMediaRemoteSendCommand(id, $());
+    },
+
+    setMode(what, value) {
+        $[MR_SETTERS[what]](value);
+    },
+
+    process() {
+        const client = $.NSClassFromString('MRNowPlayingRequest')?.localNowPlayingPlayerPath?.client;
+        if (!client?.js) {
+            return null;
+        }
+        const parent = client.respondsToSelector('parentApplicationBundleIdentifier') ? client.parentApplicationBundleIdentifier.js : null;
+        return { pid: client.processIdentifier, bundle: client.bundleIdentifier.js, parent };
     },
 };

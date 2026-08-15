@@ -56,12 +56,12 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
-const DIALECTS = { 'nowplaying-cli': asNowplayingCli };
 const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
 const FLAGS = {
     status: ['--json', '--raw'],
     get: null,
+    stream: null,
     release: Object.keys(DIRECTIONS),
     seek: null,
     forward: null,
@@ -116,6 +116,9 @@ const COMMANDS = {
     forward: seekCommand(1),
     backward: seekCommand(-1),
     seek(args) {
+        if (args.includes('--micros')) {
+            return asMediaControl.seek(args);
+        }
         if (args.length > 1) {
             throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
         }
@@ -144,7 +147,8 @@ const COMMANDS = {
         const asked = args.map(arg => DIRECTIONS[arg]);
         player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));
     },
-    get: args => asNowplayingCli.get(args),
+    get: args => (args.some(arg => !arg.startsWith('-')) ? asNowplayingCli.get(args) : mediaControlReads.get(args)),
+    stream: args => mediaControlReads.stream(args),
     'get-raw': () => asNowplayingCli.run(['get-raw']),
     togglePlayPause: () => player.send('toggle'),
     toggle: sendCommand,
@@ -164,10 +168,11 @@ function run(argv) {
     }
 
     try {
-        if (Object.hasOwn(DIALECTS, name)) {
+        const dialect = dialectFor(argv, Object.keys(COMMANDS));
+        if (dialect) {
             player.settings = configFile.load().values;
             mediaRemote.load();
-            return DIALECTS[name].run(args);
+            return dialect();
         }
         if (!Object.hasOwn(COMMANDS, name)) {
             throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);

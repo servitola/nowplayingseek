@@ -82,6 +82,7 @@ Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
 - [Hotkeys, knobs and pedals](docs/hotkeys.md)
 - [The curve of a held key, the knob, the config file](docs/advanced.md)
 - [For scripts and AI agents](docs/scripting.md)
+- [Moving over](docs/migrating.md) from nowplaying-cli, media-control, playerctl, mpc, shpotify
 - [Compared with](docs/compared.md) nowplaying-cli, media-control, a player's own keys
 - [How it works](docs/how-it-works.md): why a script and not a binary
 - [Questions](docs/questions.md)

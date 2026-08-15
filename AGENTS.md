@@ -18,8 +18,10 @@ is a plain global in the files after it. The order is the dependency order:
 | `src/core.js` | pure: time, position and seek arithmetic, exit codes, `Failure` |
 | `src/config.js` | pure: the `SETTINGS` table, ini parsing |
 | `src/mediaremote.js` | the only file that touches the private `MediaRemote.framework` |
+| `src/files.js` | the temp files processes talk through — last seek, hold, release — and the lock |
 | `src/player.js` | one seek loop for a tap and a hold, transport, polling for the effect |
 | `src/configfile.js` | finds, loads and writes `config.ini` |
+| `src/as-nowplaying-cli.js` | the dialect of nowplaying-cli: its words, texts and exit codes over our reads |
 | `src/cli.js` | commands, usage, `run(argv)` — the entry point `osascript` calls |
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js`;
@@ -66,7 +68,7 @@ tree fails with "files were modified by this hook".
   --hold &`, `release` 1.2 s later must give +60 s; `release` 80 ms later, +10 s; with `[hold]
   max_time = 1` and no `release` it must return by itself), a progressive hold (`forward --hold
   --progressive`, `release` 3 s later: about +88 s and the line ends with `×0.8`), a knob (five
-  `forward --knob` 0.5 s apart: about +16 s; ten 50 ms apart: about +115 s), and `seek` past the
+  `forward --knob` 0.5 s apart: about +10 s; ten 50 ms apart: +35…80 s), and `seek` past the
   end. Do `seek` past the end last and on something disposable: it ends the item, and a page with
   autoplay loads the next one in its place.
 - A change to the tests is proven by breaking the code once and watching them fail.

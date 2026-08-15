@@ -169,7 +169,7 @@ for _ in 1 2 3 4 5; do
 	sleep 0.5
 done
 wait
-expect_move 'knob, slow clicks' 120 15 18
+expect_move 'knob, slow clicks' 120 10 12
 
 at 1:00
 for _ in 1 2 3 4 5 6 7 8 9 10; do
@@ -177,7 +177,7 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
 	sleep 0.05
 done
 wait
-expect_move 'knob, a flick' 60 60 160
+expect_move 'knob, a flick' 60 35 80
 
 at 4:50
 expect_exit 'forward near the end' 0 forward 30
@@ -193,6 +193,22 @@ expect_exit 'backward at the start' 0 backward
 expect_exit 'status --raw' 0 status --raw
 cases=$((cases + 1))
 grep -q '"Duration": 300' "$work/out" || fail "status --raw lacks the duration: $(cat "$work/out")"
+
+# The dialect of nowplaying-cli, against the real one when it is installed. Only reads.
+at 2:00
+cases=$((cases + 1))
+[ "$("$bin" get elapsedTime)" = "$("$bin" position | sed 's/0*$//; s/\.$//')" ] || fail "get elapsedTime is $("$bin" get elapsedTime), position is $("$bin" position)"
+cases=$((cases + 1))
+[ "$("$bin" nowplaying-cli get playbackRate)" = 0 ] || fail 'a paused VLC has a playbackRate other than 0'
+if command -v nowplaying-cli >/dev/null; then
+	set -- title artist album duration clientBundleIdentifier genre nosuchprop Title
+	cases=$((cases + 1))
+	[ "$(nowplaying-cli get "$@")" = "$("$bin" get "$@")" ] || fail "get differs from nowplaying-cli: $(nowplaying-cli get "$@" | tr '\n' '|') vs $("$bin" get "$@" | tr '\n' '|')"
+	cases=$((cases + 1))
+	[ "$(nowplaying-cli get --json "$@" | sort)" = "$("$bin" nowplaying-cli get --json "$@" | sort)" ] || fail 'get --json differs from nowplaying-cli'
+	cases=$((cases + 1))
+	[ "$(nowplaying-cli bogus)" = "$("$bin" nowplaying-cli bogus)" ] || fail 'the help text differs from nowplaying-cli'
+fi
 
 if [ "$failures" -gt 0 ]; then
 	echo "$failures of $cases live cases failed" >&2

@@ -114,7 +114,7 @@
                 "src/files.js",
                 "src/player.js",
                 "src/configfile.js",
-
+                "src/as-nowplaying-cli.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -150,11 +150,14 @@
                     "mediaRemote",
                     "player",
                     "configFile",
+                    "asNowplayingCli",
+                    "KEY_PREFIX",
                     "now",
                     "locked",
                     "lastSeekFile",
                     "holdFile",
-                    "releaseFiles"
+                    "releaseFiles",
+                    "print"
                 ]
             },
             "linter": {

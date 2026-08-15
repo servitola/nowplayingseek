@@ -11,6 +11,9 @@ version, so keep that heading as it is.
   the artwork, the file's URL where the player gives one.
 
 ### Changed
+- The knob is gentler: 2 s a click, up to ×4, and `fast = 18` clicks a second — reasoned from encoder
+  datasheets and keyboard firmware, where a quick turn is 8–15 clicks a second and a flick 20–40.
+  With the old numbers one quick rotation crossed three and a half minutes.
 - `forward`, a hold and the knob stop 5 s short of the end: landing on the very end finished the
   item, and a page with autoplay loaded the next one. `seek <time>` stays exact.
 - A hold ends by itself after 10 s, not 30 (`[hold] max_time`): that is ten minutes of film, and a

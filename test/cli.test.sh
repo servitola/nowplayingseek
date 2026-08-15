@@ -74,6 +74,23 @@ expect 'seek with 75 seconds in mm:ss' 64 stderr 'got "1:75"' seek 1:75
 expect 'forward with garbage' 64 stderr 'forward needs seconds or mm:ss, got "abc"' forward abc
 expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or mm:ss, got "abc"' backward abc --progressive
 
+# The dialect of nowplaying-cli: its words, its texts, its exit codes.
+expect 'as nowplaying-cli: an unknown word is help and exit 0' 0 stdout 'get, get-raw, play, pause, togglePlayPause, next, previous, seek <secs>' nowplaying-cli bogus
+expect 'as nowplaying-cli: no arguments is help' 0 stdout 'nowplaying-cli get --json title album artist' nowplaying-cli
+expect 'as nowplaying-cli: seek without a number is help' 0 stdout 'Example Usage: ' nowplaying-cli seek
+expect 'as nowplaying-cli: a bad seek time' 1 stderr 'Invalid seek time: abc' nowplaying-cli seek abc
+expect 'as nowplaying-cli: a bad seek time names the usage' 1 stderr 'Usage: nowplaying-cli seek <secs>' nowplaying-cli seek 60abc
+cases=$((cases + 1))
+[ -z "$(XDG_CONFIG_HOME=$xdg "$bin" nowplaying-cli get)" ] || fail 'as nowplaying-cli: get with no property prints something'
+cases=$((cases + 1))
+[ "$(XDG_CONFIG_HOME=$xdg "$bin" nowplaying-cli get nosuchprop)" = null ] || fail 'as nowplaying-cli: an unknown property is not the word null'
+cases=$((cases + 1))
+[ "$(XDG_CONFIG_HOME=$xdg "$bin" get nosuchprop)" = null ] || fail 'get, its word taken directly: an unknown property is not the word null'
+cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" get --json nosuchprop | grep -qF '"nosuchprop" : null' || fail 'get --json is not in Foundation house style'
+cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" get-raw | head -1 | grep -q '^{' || fail 'get-raw does not print a JSON object'
+
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config
 expect 'config without a file: defaults' 0 stdout 'max_multiplier = 2.5' config

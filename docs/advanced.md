@@ -48,9 +48,9 @@ second, that gets two thirds of the way there.
 
 ```ini
 [knob]
-step = 3
-max_multiplier = 5
-fast = 12
+step = 2
+max_multiplier = 4
+fast = 18
 ```
 
 ## Hold

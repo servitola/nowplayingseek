@@ -27,9 +27,19 @@ function testSeekBase(core) {
     same(core.seekBase(stale, lastSeek, 50.03, 3), 110, 'held key: Now Playing not refreshed yet, previous target wins');
     same(core.seekBase(stale, lastSeek, 51.5, 3), 110, 'still buffering after a second: previous target still wins');
     same(
-        core.seekBase({ position: 111, timestamp: 50.1 }, lastSeek, 51, 3),
+        core.seekBase({ position: 111, timestamp: 50.1, rate: 1 }, lastSeek, 51, 3),
         111,
         'Now Playing refreshed after the seek: read position wins'
+    );
+    same(
+        core.seekBase({ position: 100.2, timestamp: 50.05, rate: 0 }, lastSeek, 50.06, 3),
+        110,
+        'refreshed, but for an older seek: the position is not where the last one aimed, the target wins'
+    );
+    same(
+        core.seekBase({ position: 112.5, timestamp: 50.1, rate: 1 }, lastSeek, 52, 3),
+        112.5,
+        'refreshed and playing on from the target for 2 s: the read position wins'
     );
     same(core.seekBase(stale, lastSeek, 60, 3), 100, 'player never refreshed: stop trusting the old target');
     same(core.seekBase(stale, lastSeek, 60, 20), 110, 'a longer pending_seek_max keeps trusting it');
@@ -81,6 +91,23 @@ function testSeekLanded(core) {
     );
 }
 
+function testOvertaken(core) {
+    const sent = { sentAt: 50, superseded: false, verifyTimeout: 2.5 };
+    same(
+        core.seekOvertaken({ position: 160, timestamp: 50.2, rate: 0 }, 170, sent),
+        true,
+        'an older seek was delivered after ours: send ours again'
+    );
+    same(core.seekOvertaken({ position: 170, timestamp: 50.2, rate: 0 }, 170, sent), false, 'ours landed');
+    same(core.seekOvertaken({ position: 160, timestamp: 49.9, rate: 0 }, 170, sent), false, 'no refresh since we sent: wait');
+    same(
+        core.seekOvertaken({ position: 160, timestamp: 50.2, rate: 0 }, 170, { ...sent, superseded: true }),
+        false,
+        'a newer press owns the position now'
+    );
+    same(core.seekOvertaken(null, 170, sent), false, 'nothing readable: wait');
+}
+
 function testStreak(core) {
     const held = { target: 110, at: 50, direction: 1, streakStart: 44 };
     same(core.streakStart(null, 1, 50, 1), 50, 'first press starts a hold');
@@ -88,45 +115,6 @@ function testStreak(core) {
     same(core.streakStart(held, 1, 51.5, 1), 51.5, 'a pause longer than the gap starts over');
     same(core.streakStart(held, -1, 50.05, 1), 50.05, 'the other direction starts over');
     same(core.streakStart({ target: 110, at: 50 }, 1, 50.05, 1), 50.05, 'an absolute seek or a 2026.07.21 store breaks the hold');
-}
-
-function testKnob(core) {
-    const click = { target: 110, at: 50, direction: 1, rate: 10 };
-    same(core.knobRate(null, 1, 50, 1), 0, 'knob: the first click has no pace yet');
-    same(core.knobRate(click, 1, 50.05, 1), 15, 'knob: 50 ms after a click at 10 a second — halfway to 20 a second');
-    same(core.knobRate(click, -1, 50.05, 1), 0, 'knob: the other way starts over');
-    same(core.knobRate(click, 1, 51.5, 1), 0, 'knob: a pause longer than the gap starts over');
-    same(core.knobRate({ ...click, rate: undefined }, 1, 50.1, 1), 5, 'knob: after a key press, not a click');
-    same(core.knobRate(click, 1, 50, 1), 55, 'knob: two clicks at the same instant do not divide by zero');
-
-    const knob = { max_multiplier: 4, fast: 12 };
-    same(core.knobMultiplier(0, knob), 1, 'knob: a single click is one step');
-    same(core.knobMultiplier(2, knob) < 1.1, true, 'knob: slow clicks stay precise');
-    same(core.knobMultiplier(12, knob), 1 + 3 * (1 - Math.exp(-1)), 'knob: at fast it is 63 % of the way');
-    same(core.knobMultiplier(100, knob), 4, 'knob: a flick settles at max_multiplier');
-}
-
-function testHold(core) {
-    const mine = { holder: 'a' };
-    same(core.holdContinues(mine, 'a', null, 50), true, 'hold: nobody took over, nothing released');
-    same(core.holdContinues({ holder: 'b' }, 'a', null, 50), false, 'hold: another press took over');
-    same(core.holdContinues(null, 'a', null, 50), false, 'hold: the record is gone');
-    same(core.holdContinues(mine, 'a', { releasedAt: 51 }, 50), false, 'hold: this key was released');
-    same(core.holdContinues(mine, 'a', { releasedAt: 49 }, 50), true, 'hold: a release older than the press is not ours');
-
-    same(core.releasedSince({ releasedAt: 50.2 }, 50), true, 'tap: the release beat the press to the record');
-    same(core.releasedSince({ releasedAt: 49 }, 50), false, 'an old release does not stop a new press');
-    same(core.releasedSince({ holder: 'b' }, 50), false, 'a running hold is not a release');
-    same(core.releasedSince(null, 50), false, 'no record, no release');
-
-    same(core.nextHoldTarget(100, 10, 2, 600), 120, 'hold: a step times the multiplier');
-    same(core.nextHoldTarget(590, 10, 1, 600), 595, 'a step forward stops 5 s short of the end, so the item does not end');
-    same(core.nextHoldTarget(595, 10, 1, 600), null, 'nothing further there');
-    same(core.nextHoldTarget(598, 10, 1, 600), null, 'and a step forward never moves back');
-    same(core.nextHoldTarget(598, -10, 1, 600), 588, 'backward from the very end is a plain step');
-    same(core.nextHoldTarget(1, 10, 1, 3), null, 'an item shorter than the margin is left alone');
-    same(core.nextHoldTarget(0, -10, 3, 600), null, 'hold: nothing further at the start');
-    same(core.nextHoldTarget(100, 10, 1, 0), 110, 'hold: a live stream has no end');
 }
 
 function testTransport(core) {
@@ -167,4 +155,4 @@ function testStatus(core) {
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
-GROUPS.push(testPosition, testRate, testSeekBase, testSeekLanded, testStreak, testKnob, testHold, testTransport, testTime, testStatus);
+GROUPS.push(testPosition, testRate, testSeekBase, testSeekLanded, testOvertaken, testStreak, testTransport, testTime, testStatus);

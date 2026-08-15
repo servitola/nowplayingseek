@@ -17,6 +17,10 @@ version, so keep that heading as it is.
   release that never arrives costs that much less.
 
 ### Fixed
+- Presses 30 ms apart — key repeat, a knob — lost one press in two runs out of three: separate
+  processes read the same last seek, took a refresh meant for an older seek as their own, and the
+  player received the seeks out of order. A lock, a stricter reading of a refresh, and a re-send
+  by the newest process: five presses are +50 s in twenty runs out of twenty.
 - A hold stops when another app becomes Now Playing, instead of sending it the old app's targets.
 - `pause`, `toggle`, `play`, `next`, `previous` exit 1 when nothing is playing; they exited 0.
 - `forward 0` is refused (exit 64); with `--hold` it was a stack trace.

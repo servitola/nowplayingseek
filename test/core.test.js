@@ -91,6 +91,13 @@ function testSeekLanded(core) {
     );
 }
 
+function testAlreadyThere(core) {
+    same(core.alreadyThere(810.364, 810.364), true, 'a seek to where it stands has nothing to wait for');
+    same(core.alreadyThere(810.2, 810.5), true, 'nor one within half a second');
+    same(core.alreadyThere(810, 811), false, 'a second away is a seek');
+    same(core.alreadyThere(null, 0), false, 'an unknown position is not there');
+}
+
 function testOvertaken(core) {
     const sent = { sentAt: 50, superseded: false, verifyTimeout: 2.5 };
     same(
@@ -160,4 +167,15 @@ function testStatus(core) {
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
-GROUPS.push(testPosition, testRate, testSeekBase, testSeekLanded, testOvertaken, testStreak, testTransport, testTime, testStatus);
+GROUPS.push(
+    testPosition,
+    testRate,
+    testSeekBase,
+    testSeekLanded,
+    testAlreadyThere,
+    testOvertaken,
+    testStreak,
+    testTransport,
+    testTime,
+    testStatus
+);

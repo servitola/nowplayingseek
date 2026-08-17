@@ -45,19 +45,19 @@ const player = {
     seekBy(delta, mode) {
         const before = this.requirePosition();
         const direction = Math.sign(delta);
-        const once = !mode.hold || releasedSince(releaseFiles[direction].read(), PROCESS_STARTED);
-        if (!once) {
+        const tap = !mode.hold || releasedSince(releaseFiles[direction].read(), PROCESS_STARTED);
+        if (!tap) {
             holdFile.write({ holder: HOLD_TOKEN });
         }
 
-        const run = locked(() => this.begin(before, delta, mode));
-        while (run.last && !once && this.stillHeld(direction, before.app, run.last.at)) {
-            if (!this.step(run, delta, before)) {
+        const seeking = locked(() => this.begin(before, delta, mode));
+        while (seeking.last && !tap && this.stillHeld(direction, before.app, seeking.last.at)) {
+            if (!this.step(seeking, delta, before)) {
                 break;
             }
         }
-        return run.last
-            ? { state: this.awaitLanding(run.target, run.last.at, before), multiplier: run.last.multiplier }
+        return seeking.last
+            ? { state: this.awaitLanding(seeking.target, seeking.last.at, before), multiplier: seeking.last.multiplier }
             : { state: before, multiplier: 1 };
     },
 
@@ -70,27 +70,27 @@ const player = {
             streakStart: streakStart(lastSeek, direction, now(), curve.streak_gap),
             rate: mode.knob ? knobRate(lastSeek, direction, now(), curve.streak_gap) : undefined,
         };
-        const run = {
+        const seeking = {
             target: seekBase(before, lastSeek, now(), timing.pending_seek_max),
             last: null,
             streak,
             growth: this.growth(mode, streak),
         };
-        this.step(run, delta, before);
-        return run;
+        this.step(seeking, delta, before);
+        return seeking;
     },
 
-    step(run, delta, before) {
+    step(seeking, delta, before) {
         const at = now();
-        const multiplier = run.growth(at, run.last !== null);
-        const next = nextHoldTarget(run.target, delta, multiplier, before.duration);
+        const multiplier = seeking.growth(at, seeking.last !== null);
+        const next = nextHoldTarget(seeking.target, delta, multiplier, before.duration);
         if (isMissing(next)) {
             return false;
         }
-        run.target = next;
-        run.last = { at, multiplier };
+        seeking.target = next;
+        seeking.last = { at, multiplier };
         mediaRemote.setElapsedTime(next);
-        lastSeekFile.write({ target: next, at, app: before.app, ...run.streak });
+        lastSeekFile.write({ target: next, at, app: before.app, ...seeking.streak });
         return true;
     },
 
@@ -106,10 +106,10 @@ const player = {
 
     stillHeld(direction, app, steppedAt) {
         const { interval, max_time } = this.settings.hold;
+        delay(Math.max(SHORTEST_INTERVAL, interval - (now() - steppedAt)));
         if (mediaRemote.read()?.app !== app) {
             return false;
         }
-        delay(Math.max(SHORTEST_INTERVAL, interval - (now() - steppedAt)));
         const held = holdContinues(holdFile.read(), HOLD_TOKEN, releaseFiles[direction].read(), PROCESS_STARTED);
         return held && now() - PROCESS_STARTED < max_time;
     },
@@ -124,11 +124,13 @@ const player = {
         const { timing } = this.settings;
         let after = null;
         let sentAt = calledAt;
+        let resent = 0;
         const landed = waitUntil(() => {
             after = mediaRemote.read();
             const superseded = lastSeekFile.read()?.target !== target;
-            if (seekOvertaken(after, target, { sentAt, superseded, verifyTimeout: timing.verify_timeout })) {
+            if (seekOvertaken(after, target, { sentAt, superseded, resent, verifyTimeout: timing.verify_timeout })) {
                 sentAt = now();
+                resent += 1;
                 mediaRemote.setElapsedTime(target);
             }
             return seekLanded(after, target, { calledAt, superseded, verifyTimeout: timing.verify_timeout });

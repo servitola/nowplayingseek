@@ -147,7 +147,7 @@ const COMMANDS = {
         const asked = args.map(arg => DIRECTIONS[arg]);
         player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));
     },
-    get: args => (args.some(arg => !arg.startsWith('-')) ? asNowplayingCli.get(args) : mediaControlReads.get(args)),
+    get: args => (args.some(arg => !arg.startsWith('-') || arg === '--json') ? asNowplayingCli.get(args) : mediaControlReads.get(args)),
     stream: args => mediaControlReads.stream(args),
     'get-raw': () => asNowplayingCli.run(['get-raw']),
     togglePlayPause: () => player.send('toggle'),

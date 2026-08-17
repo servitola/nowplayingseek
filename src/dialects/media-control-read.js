@@ -3,7 +3,8 @@ const MC_DASHES = /^-+/;
 const MC_LONG = /^--/;
 const MC_FRACTION = /\.\d+Z$/;
 const STREAM_POLL = 0.2;
-const MC_OPTIONS = ['now', 'micros', 'no-artwork', 'allow-missing-title', 'human-readable', 'no-diff', 'debounce'];
+const MC_SHARED_OPTIONS = ['micros', 'no-artwork', 'allow-missing-title', 'human-readable'];
+const MC_OPTIONS = { get: [...MC_SHARED_OPTIONS, 'now'], stream: [...MC_SHARED_OPTIONS, 'no-diff', 'debounce'] };
 const MC_PASSED_ON = [
     'chapterNumber',
     'composer',
@@ -38,11 +39,11 @@ const mcFail = message => {
     $.exit(1);
 };
 
-function mcOptions(args) {
+function mcOptions(command, args) {
     const options = {};
     for (const arg of args) {
         const [name, value] = arg === '-h' ? ['human-readable'] : arg.replace(MC_LONG, '').split('=');
-        if (!(arg.startsWith('-') && MC_OPTIONS.includes(name))) {
+        if (!(arg.startsWith('-') && MC_OPTIONS[command].includes(name))) {
             mcFail(`Unrecognized option '${arg.replace(MC_DASHES, '')}'`);
         }
         options[name] = value === undefined ? true : value;
@@ -69,7 +70,7 @@ function mcTimes(payload, state, raw, options) {
 const mediaControlReads = {
     payload(options) {
         const state = mediaRemote.read();
-        const raw = mediaRemote.raw();
+        const raw = mediaRemote.raw(state);
         const process = mediaRemote.process();
         const titled = Boolean(state?.title) || options['allow-missing-title'];
         if (!(state && raw && process && titled)) {
@@ -99,12 +100,12 @@ const mediaControlReads = {
     },
 
     get(args) {
-        const options = mcOptions(args);
+        const options = mcOptions('get', args);
         print(JSON.stringify(this.payload(options), null, options['human-readable'] ? 2 : 0));
     },
 
     stream(args) {
-        const options = mcOptions(args);
+        const options = mcOptions('stream', args);
         const emit = (diff, payload) => print(JSON.stringify({ type: 'data', diff, payload }, null, options['human-readable'] ? 2 : 0));
         let previous = null;
         emit(false, {});

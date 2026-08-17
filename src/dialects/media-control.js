@@ -72,7 +72,8 @@ const asMediaControl = {
             mcFail(`Missing mode for command '${command}'`);
         }
         const word = mcStripZeros(text);
-        const mode = MC_INTEGER.test(word) ? Number(word) : MC_MODES[command][word];
+        const named = Object.hasOwn(MC_MODES[command], word) ? MC_MODES[command][word] : undefined;
+        const mode = MC_INTEGER.test(word) ? Number(word) : named;
         if (mode === undefined) {
             mcFail(`Invalid mode for command '${command}': '${text}'`);
         }
@@ -113,7 +114,7 @@ const asMediaControl = {
             shuffle: () => this.mode('shuffle', args[0]),
             repeat: () => this.mode('repeat', args[0]),
             speed: () => this.speed(args[0]),
-            test: () => COMMANDS.doctor(),
+            test: () => $.exit(mediaRemote.read() ? 0 : 1),
             version: () => print(`media-control ${MC_VERSION}, spoken by nowplayingseek ${VERSION}`),
             '--version': () => print(`media-control ${MC_VERSION}, spoken by nowplayingseek ${VERSION}`),
             help: () => print(MC_HELP),

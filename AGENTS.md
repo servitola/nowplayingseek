@@ -10,27 +10,33 @@ a link. What is unfinished or undecided is in `BACKLOG.md`; this file holds only
 ## Stack and layout
 
 JavaScript for Automation under `/usr/bin/osascript`: no dependencies, no `package.json`, no
-modules. `make` concatenates `src/` into one executable script, so a symbol declared in one file
-is a plain global in the files after it. The order is the dependency order:
+modules. `make` concatenates the sources into one executable script, so a symbol declared in one
+file is a plain global in the files after it. The order in the `Makefile` is the order of the
+layers, and a layer uses only the layers above it in this list:
 
-| File | Holds |
-| --- | --- |
-| `src/core.js` | pure: time, position and seek arithmetic, exit codes, `Failure` |
-| `src/dialect-words.js` | pure: the seek words of playerctl and mpc, playerctl's format strings |
-| `src/config.js` | pure: the `SETTINGS` table, ini parsing |
-| `src/mediaremote.js` | the only file that touches the private `MediaRemote.framework` |
-| `src/files.js` | the temp files processes talk through — last seek, hold, release — and the lock |
-| `src/player.js` | one seek loop for a tap and a hold, transport, polling for the effect |
-| `src/configfile.js` | finds, loads and writes `config.ini` |
-| `src/as-nowplaying-cli.js` | the dialect of nowplaying-cli: its words, texts and exit codes over our reads |
-| `src/as-media-control*.js` | the dialect of media-control: `get` and `stream` in its JSON, its controls, its help page |
-| `src/as-others.js` | playerctl, mpc and shpotify behind their names; refuses what Now Playing cannot do |
-| `src/dialects.js` | which first word speaks which dialect |
-| `src/cli.js` | commands, usage, `run(argv)` — the entry point `osascript` calls |
+```
+src/logic/      knows nothing of macOS — every function here has a unit test
+    time.js         parse and print a time; exit codes; Failure
+    seek.js         where a step starts, whether it landed, whether an older seek overtook it
+    hold.js         a held key and its release; the --progressive curve; the pace of a knob
+    stream.js       what changed between two reads
+    words.js        the seek words of playerctl and mpc; playerctl's format strings
+    config.js       the SETTINGS table; ini
+src/system/     the only place with $ and ObjC
+    mediaremote.js  read Now Playing, send commands — the private framework lives here alone
+    files.js        the temp files processes talk through, and the lock
+    configfile.js   find, load and write config.ini
+src/player.js   a step, a hold, waiting for the player — ties logic to system
+src/dialects/   one file a tool; they call player and system, never each other's insides
+    nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
+    shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)
+src/cli.js      our own commands, usage, `run(argv)` — the entry point `osascript` calls
+```
 
-`test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js`;
-`test/cli.test.sh` drives the built tool. Both lists are spelled out in the `Makefile`: a new file
-in `src/` or `test/` is not built or run until it is added there.
+`test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js` and run
+over `src/logic/`; `test/cli.test.sh` drives the built tool without a player; `test/live.test.sh`
+drives VLC. The lists are spelled out in the `Makefile`: a new file is not built or run until it is
+added there, and its globals are listed in `biome.json`.
 
 ## Commands and gates
 
@@ -44,15 +50,15 @@ tree fails with "files were modified by this hook".
   Versions are pinned in `.pre-commit-config.yaml`.
 - What is switched off, and why a symbol from another file is not "undeclared", is in `biome.json`
   → `overrides`: a symbol used across files goes into the group's `globals`, one a file only
-  exports into `noUnusedVariables.ignore`. The pure files get no `$` and no `ObjC`. A rule goes off
+  exports into `noUnusedVariables.ignore`. `src/logic/` gets no `$` and no `ObjC`. A rule goes off
   only when it cannot hold for JXA — say why in the commit.
 - No `*.js` in `src/` or `test/` over 200 physical lines (Biome's own rule skips the lines of a
   template literal, the hook does not). Functions: 50 lines, 4 parameters, complexity 15.
 
 ## Architecture rules
 
-- A new decision goes into `core.js` or `config.js` as a pure function with a test; `player.js`
-  only wires reads, calls and polling around them.
+- A new decision goes into `src/logic/` as a pure function with a test; `player.js` only wires
+  reads, calls and polling around them.
 - A new tunable is one entry in `SETTINGS` — default, parser, `about` line. The config reader,
   `config`, `config init` and the unknown-key check derive from that table.
 - Argument errors are raised before the player is touched, so that they can be tested.
@@ -82,7 +88,7 @@ tree fails with "files were modified by this hook".
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows
 what it would do. Nothing is pushed, tagged or published without the owner's word.
 
-## Dead ends — measured 2026-08-16 on macOS 26.6, do not retry
+## Dead ends — measured 2026-08-18 on macOS 26.6, do not retry
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
   `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
   `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper

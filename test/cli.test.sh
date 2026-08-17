@@ -37,6 +37,8 @@ expect() {
 		fail "$name: exit $got_exit, expected $want_exit"
 	elif ! grep -qF -- "$want_text" "$work/$stream"; then
 		fail "$name: $stream lacks \"$want_text\", got: $(cat "$work/$stream")"
+	elif grep -qF "execution error" "$work/stderr"; then
+		fail "$name: a stack trace instead of an error: $(cat "$work/stderr")"
 	elif [ "$want_exit" -ne 0 ] && [ -s "$work/stdout" ]; then
 		fail "$name: a failure printed to stdout: $(cat "$work/stdout")"
 	fi
@@ -89,6 +91,10 @@ cases=$((cases + 1))
 cases=$((cases + 1))
 XDG_CONFIG_HOME=$xdg "$bin" get --json nosuchprop | grep -qF '"nosuchprop" : null' || fail 'get --json is not in Foundation house style'
 cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" get --json | head -1 | grep -q '^{' || fail 'get --json with no property is not the empty object of nowplaying-cli'
+cases=$((cases + 1))
+[ "$(XDG_CONFIG_HOME=$xdg "$bin" get '' 2>&1)" = null ] || fail "an empty property name: $(XDG_CONFIG_HOME=$xdg "$bin" get '' 2>&1 | head -2)"
+cases=$((cases + 1))
 XDG_CONFIG_HOME=$xdg "$bin" get-raw | head -1 | grep -q '^{' || fail 'get-raw does not print a JSON object'
 
 # The dialect of media-control.
@@ -105,6 +111,9 @@ expect 'as media-control: seek with a word' 1 stderr "'abc' is not a valid numbe
 expect 'as media-control: a negative seek, in its microseconds' 1 stderr 'Negative values are not allowed: -5000000' media-control seek -5
 expect 'as media-control: shuffle with an unknown word' 1 stderr "Invalid mode for command 'shuffle': 'xyz'" media-control shuffle xyz
 expect 'as media-control: shuffle with a number out of range' 1 stderr 'Invalid shuffle mode: 9' media-control shuffle 9
+expect 'as media-control: a mode that is a property of every object' 1 stderr "Invalid mode for command 'shuffle': 'constructor'" media-control shuffle constructor
+expect 'as media-control: --now belongs to get' 1 stderr "Unrecognized option 'now'" media-control stream --now
+expect 'as media-control: --no-diff belongs to stream' 1 stderr "Unrecognized option 'no-diff'" media-control get --no-diff
 expect 'as media-control: repeat without a mode' 1 stderr "Missing mode for command 'repeat'" media-control repeat
 expect 'as media-control: a negative speed' 1 stderr 'Negative values are not allowed: -1' media-control speed -1
 expect 'as media-control: a fractional speed' 1 stderr "'1.5' is not a valid integer" media-control speed 1.5
@@ -116,6 +125,10 @@ XDG_CONFIG_HOME=$xdg "$bin" get --now | grep -qE '^(null|\{)' || fail 'get with 
 
 # playerctl, mpc and shpotify, behind their names.
 expect 'as playerctl: a player cannot be chosen' 1 stderr 'choosing a player is out of its reach' playerctl -p spotify play
+expect 'as playerctl: a player named after the verb' 1 stderr 'choosing a player is out of its reach' playerctl play-pause -p spotify
+expect 'as playerctl: a player named the long way' 1 stderr 'choosing a player is out of its reach' playerctl next --player=vlc
+expect 'as playerctl: no words' 64 stderr 'playerctl needs a word' playerctl
+expect 'as playerctl: a word that is a property of every object' 64 stderr 'does not know' playerctl constructor
 expect 'as playerctl: volume' 1 stderr 'volume is out of its reach' playerctl volume 0.5
 expect 'as playerctl: the sign goes after the number' 64 stderr 'does not know "position +30" in the dialect of playerctl' playerctl position +30
 expect 'as mpc: volume' 1 stderr 'volume is out of its reach' mpc volume +5

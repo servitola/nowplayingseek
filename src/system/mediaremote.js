@@ -10,9 +10,6 @@ const mediaRemote = {
         $.NSBundle.bundleWithPath('/System/Library/PrivateFrameworks/MediaRemote.framework/').load;
         ObjC.bindFunction('MRMediaRemoteSetElapsedTime', ['void', ['double']]);
         ObjC.bindFunction('MRMediaRemoteSendCommand', ['bool', ['int', 'id']]);
-        for (const setter of Object.values(MR_SETTERS)) {
-            ObjC.bindFunction(setter, ['void', ['int']]);
-        }
     },
 
     read() {
@@ -58,14 +55,14 @@ const mediaRemote = {
         return item?.js && item.nowPlayingInfo.js ? item.nowPlayingInfo : null;
     },
 
-    raw() {
+    raw(known) {
         const request = $.NSClassFromString('MRNowPlayingRequest');
         const item = request?.localNowPlayingItem;
         if (!item?.js) {
             return null;
         }
         const info = item.nowPlayingInfo;
-        const state = this.read();
+        const state = known || this.read();
         if (!state) {
             return null;
         }
@@ -92,6 +89,15 @@ const mediaRemote = {
     },
 
     setMode(what, value) {
+        let known = true;
+        try {
+            ObjC.bindFunction(MR_SETTERS[what], ['void', ['int']]);
+        } catch {
+            known = false;
+        }
+        if (!known) {
+            throw new Failure(EXIT.ignored, `this macOS has no way to set ${what}`);
+        }
         $[MR_SETTERS[what]](value);
     },
 

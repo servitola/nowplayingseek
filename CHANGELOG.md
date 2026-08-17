@@ -25,6 +25,10 @@ version, so keep that heading as it is.
   release that never arrives costs that much less.
 
 ### Fixed
+- A hold checked which app was elected before its pause and stepped after it: an app elected in
+  between got the old one's target. It looks after the pause now.
+- The three private calls behind `shuffle`, `repeat` and `speed` were looked up at start: one of
+  them missing on some macOS would have stopped every command. They are looked up when used.
 - Presses 30 ms apart — key repeat, a knob — lost one press in two runs out of three: separate
   processes read the same last seek, took a refresh meant for an older seek as their own, and the
   player received the seeks out of order. A lock, a stricter reading of a refresh, and a re-send

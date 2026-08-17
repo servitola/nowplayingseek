@@ -70,7 +70,14 @@
             }
         },
         {
-            "includes": ["src/core.js", "src/dialect-words.js", "src/config.js"],
+            "includes": [
+                "src/logic/time.js",
+                "src/logic/seek.js",
+                "src/logic/hold.js",
+                "src/logic/stream.js",
+                "src/logic/words.js",
+                "src/logic/config.js"
+            ],
             "javascript": {
                 "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS"]
             },
@@ -124,16 +131,19 @@
         },
         {
             "includes": [
-                "src/mediaremote.js",
-                "src/files.js",
+                "src/system/mediaremote.js",
+                "src/system/files.js",
                 "src/player.js",
-                "src/configfile.js",
-                "src/as-nowplaying-cli.js",
-                "src/as-media-control-help.js",
-                "src/as-media-control-read.js",
-                "src/as-media-control.js",
-                "src/as-others.js",
-                "src/dialects.js",
+                "src/system/configfile.js",
+                "src/dialects/nowplaying-cli.js",
+                "src/dialects/media-control-help.js",
+                "src/dialects/media-control-read.js",
+                "src/dialects/media-control.js",
+                "src/dialects/shared.js",
+                "src/dialects/playerctl.js",
+                "src/dialects/mpc.js",
+                "src/dialects/shpotify.js",
+                "src/dialects/index.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -196,7 +206,11 @@
                     "asPlayerctl",
                     "asMpc",
                     "asShpotify",
-                    "dialectFor"
+                    "dialectFor",
+                    "appName",
+                    "refuse",
+                    "unknown",
+                    "move"
                 ]
             },
             "linter": {
@@ -206,7 +220,7 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "function": ["run", "locked", "jsonFile", "dialectFor"],
+                                    "function": ["run", "locked", "jsonFile", "dialectFor", "refuse", "unknown", "move"],
                                     "variable": [
                                         "mediaRemote",
                                         "player",
@@ -222,7 +236,8 @@
                                         "releaseFiles",
                                         "asPlayerctl",
                                         "asMpc",
-                                        "asShpotify"
+                                        "asShpotify",
+                                        "appName"
                                     ]
                                 }
                             }
@@ -232,7 +247,7 @@
             }
         },
         {
-            "includes": ["src/mediaremote.js", "src/as-media-control-read.js"],
+            "includes": ["src/system/mediaremote.js", "src/dialects/media-control-read.js"],
             "linter": {
                 "rules": {
                     "security": {

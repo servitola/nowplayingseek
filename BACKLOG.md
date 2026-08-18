@@ -1,6 +1,6 @@
 # Backlog
 
-What is left, most pressing first. State as of 2026-08-18; delete a line when it is done.
+What is left, most pressing first. State as of 2026-08-19; delete a line when it is done.
 
 ## Bugs and oddities
 - Once in ten tries `forward 1` right after two `toggle`s exited 2 ("ignored the seek"). Four
@@ -10,7 +10,7 @@ What is left, most pressing first. State as of 2026-08-18; delete a line when it
   a MediaSession handler that tests `seekTime` for truthiness.
 - At knob or key-repeat pace a Now Playing refresh caused by an older seek carries a timestamp later
   than the newest `lastSeek.at`, so `seekBase` trusts a stale position and a click is lost. From the
-  review of 2026-08-18, plausible, not measured; a fix would also require the position to be near the
+  review of 2026-08-19, plausible, not measured; a fix would also require the position to be near the
   last target for the first 0.3 s.
 - `seekLanded` allows 1 s of drift: a player that snaps to a keyframe further back exits 2 although
   it sought. Not seen in practice.

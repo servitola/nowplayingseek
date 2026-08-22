@@ -46,6 +46,15 @@ expect() {
 
 version=$(sed -n "s/^const VERSION = '\(.*\)';$/\1/p" src/cli.js)
 
+# `make install` also gives the tool its short name.
+cases=$((cases + 1))
+prefix=$(mktemp -d "$work/prefix.XXXXXX")
+make -s install PREFIX="$prefix" >/dev/null 2>&1
+[ "$("$prefix/bin/nps" --version)" = "$version" ] || fail "nps, the short name: $("$prefix/bin/nps" --version 2>&1 | head -1)"
+make -s uninstall PREFIX="$prefix" >/dev/null 2>&1
+cases=$((cases + 1))
+[ -e "$prefix/bin/nps" ] || [ -L "$prefix/bin/nps" ] && fail 'uninstall leaves nps behind'
+
 fresh_home
 expect 'version' 0 stdout "$version" --version
 expect 'help' 0 stdout 'exit codes:' --help

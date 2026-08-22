@@ -75,11 +75,13 @@
                 "src/logic/seek.js",
                 "src/logic/hold.js",
                 "src/logic/stream.js",
+                "src/logic/item.js",
+                "src/logic/paint.js",
                 "src/logic/words.js",
                 "src/logic/config.js"
             ],
             "javascript": {
-                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS"]
+                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS", "formatTime"]
             },
             "linter": {
                 "rules": {
@@ -110,7 +112,11 @@
                                         "clock",
                                         "playerctlPosition",
                                         "mpcSeek",
-                                        "playerctlFormat"
+                                        "playerctlFormat",
+                                        "paintStatus",
+                                        "paintJson",
+                                        "orderRaw",
+                                        "formatChapter"
                                     ],
                                     "variable": [
                                         "EXIT",
@@ -121,7 +127,10 @@
                                         "MICROSECONDS",
                                         "PERCENT",
                                         "SECONDS_PER_MINUTE",
-                                        "alreadyThere"
+                                        "alreadyThere",
+                                        "paintUsage",
+                                        "paintIni",
+                                        "paintError"
                                     ]
                                 }
                             }
@@ -134,6 +143,7 @@
             "includes": [
                 "src/system/mediaremote.js",
                 "src/system/files.js",
+                "src/system/terminal.js",
                 "src/player.js",
                 "src/system/configfile.js",
                 "src/dialects/nowplaying-cli.js",
@@ -145,6 +155,7 @@
                 "src/dialects/mpc.js",
                 "src/dialects/shpotify.js",
                 "src/dialects/index.js",
+                "src/usage.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -212,7 +223,16 @@
                     "refuse",
                     "unknown",
                     "move",
-                    "alreadyThere"
+                    "alreadyThere",
+                    "paintStatus",
+                    "terminal",
+                    "paintUsage",
+                    "paintIni",
+                    "paintJson",
+                    "paintError",
+                    "USAGE",
+                    "orderRaw",
+                    "formatChapter"
                 ]
             },
             "linter": {
@@ -239,7 +259,9 @@
                                         "asPlayerctl",
                                         "asMpc",
                                         "asShpotify",
-                                        "appName"
+                                        "appName",
+                                        "terminal",
+                                        "USAGE"
                                     ]
                                 }
                             }

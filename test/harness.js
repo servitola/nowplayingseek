@@ -26,7 +26,7 @@ function run(argv) {
     const source = argv.map(path => $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, null).js).join('\n');
     const core = eval(`${source};({ livePosition, clampTarget, seekBase, seekLanded, expectedPlaying,
         parseTime, formatTime, formatStatus, Failure, EXIT, streakStart, multiplierAt,
-        parseIni, resolveSettings, formatSettings, holdContinues, releasedSince, nextHoldTarget, knobRate, knobMultiplier, effectiveRate, seekOvertaken, alreadyThere, streamChange, playerctlPosition, mpcSeek, playerctlFormat, clock })`);
+        parseIni, resolveSettings, formatSettings, holdContinues, releasedSince, nextHoldTarget, knobRate, knobMultiplier, effectiveRate, seekOvertaken, alreadyThere, formatChapter, orderRaw, streamChange, playerctlPosition, mpcSeek, playerctlFormat, clock, paintStatus, paintUsage, paintIni, paintJson })`);
 
     for (const group of GROUPS) {
         group(core);

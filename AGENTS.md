@@ -20,17 +20,21 @@ src/logic/      knows nothing of macOS — every function here has a unit test
     seek.js         where a step starts, whether it landed, whether an older seek overtook it
     hold.js         a held key and its release; the --progressive curve; the pace of a knob
     stream.js       what changed between two reads
+    item.js         the order of --raw; the chapter as 6/13
+    paint.js        what a terminal gets: the status line, the help page, JSON, ini — bold, dim, one hue
     words.js        the seek words of playerctl and mpc; playerctl's format strings
     config.js       the SETTINGS table; ini
 src/system/     the only place with $ and ObjC
     mediaremote.js  read Now Playing, send commands — the private framework lives here alone
     files.js        the temp files processes talk through, and the lock
+    terminal.js     is stdout a terminal; an app's name from its bundle id
     configfile.js   find, load and write config.ini
 src/player.js   a step, a hold, waiting for the player — ties logic to system
 src/dialects/   one file a tool; they call player and system, never each other's insides
     nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
     shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)
-src/cli.js      our own commands, usage, `run(argv)` — the entry point `osascript` calls
+src/cli.js      our own commands, `run(argv)` — the entry point `osascript` calls
+src/usage.js    the help page; after cli.js, because it names the version
 ```
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js` and run
@@ -99,6 +103,10 @@ what it would do. Nothing is pushed, tagged or published without the owner's wor
   Never call them. They elect nobody and leave `mediaremoted` with no elected app at all —
   playback starting in other apps no longer elects them, and turning the override off does
   not help. The only fix was `sudo killall mediaremoted`.
+- **Chapters.** `MRMediaRemoteCommandNextChapter` / `PreviousChapter` (100, 101) are delivered and IINA
+  ignores them: it registers no chapter handler with the system. `ChapterNumber` and
+  `TotalChapterCount` can be read; chapter times cannot. Moving by chapter needs a driver for the
+  player, which the owner has ruled out.
 - **A helper dylib inside `osascript`.** Refused: "mapping process is a platform binary, but
   mapped file is not". perl accepts one, but needs an arm64e slice.
 

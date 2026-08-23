@@ -16,7 +16,9 @@ version, so keep that heading as it is.
 - In a terminal everything is painted for the eye: the help page in sections with the commands in
   one colour and their arguments dim, `status --json` and `--raw` indented with keys, numbers and
   nulls told apart, `config` with its comments dim, an error with its first word in red. A pipe
-  gets exactly what it got before.
+  gets exactly what it got before. Next to a value a program needs, the terminal writes what a
+  person would: a length as a clock, the time as this Mac writes dates, the media type in a word, a
+  file URL as a path, the app by its name.
 - In a terminal the status line is painted: the position bold, the length dim, a bar of where you
   are, the title bold, the chapter when the player tells it (`ch 6/13`), the app by its name — `· IINA`, not `(com.colliderli.iina)`. A pipe gets the
   line it always got, and `NO_COLOR` or `TERM=dumb` switch the paint off.

@@ -116,7 +116,8 @@
                                         "paintStatus",
                                         "paintJson",
                                         "orderRaw",
-                                        "formatChapter"
+                                        "formatChapter",
+                                        "humanNotes"
                                     ],
                                     "variable": [
                                         "EXIT",
@@ -232,7 +233,8 @@
                     "paintError",
                     "USAGE",
                     "orderRaw",
-                    "formatChapter"
+                    "formatChapter",
+                    "humanNotes"
                 ]
             },
             "linter": {
@@ -271,7 +273,7 @@
             }
         },
         {
-            "includes": ["src/system/mediaremote.js", "src/dialects/media-control-read.js"],
+            "includes": ["src/system/mediaremote.js", "src/dialects/media-control-read.js", "test/item.test.js"],
             "linter": {
                 "rules": {
                     "security": {

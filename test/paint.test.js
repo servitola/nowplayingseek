@@ -100,5 +100,8 @@ function testPaintJson(core) {
     same(painted.includes(`${inked(36, '"title"')}: "Seven \\"Samurai\\""`), true, 'json: a key is in the accent, a string is left alone');
     same(painted.includes(`${inked(36, '"artist"')}: ${inked(2, 'null')}`), true, 'json: null is dim');
     same(painted.includes(`${inked(36, '"position"')}: ${inked(1, '3961.5')}`), true, 'json: a number is bold');
+    const noted = core.paintJson(value, { position: '1:06:01', nested: 'never shown twice' });
+    same(noted.includes(`${inked(1, '3961.5')},${inked(2, '  1:06:01')}`), true, 'json: a note follows its line, dim');
+    same(plain(core.paintJson(value, {})), JSON.stringify(value, null, 2), 'json: no notes, no change');
 }
 GROUPS.push(testPaint, testPaintText, testPaintJson);

@@ -16,3 +16,11 @@ function move(place) {
     }
     player.seekBy(place.by, {});
 }
+
+function setOrToggle(tool, what, word, words) {
+    if (word === undefined || word.toLowerCase() === 'toggle') {
+        return asMediaControl.send(MC_COMMANDS.indexOf(`toggle-${what}`));
+    }
+    const mode = words[word.toLowerCase()];
+    return mode ? asMediaControl.mode(what, String(mode)) : unknown(tool, [what, word]);
+}

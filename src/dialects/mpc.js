@@ -23,6 +23,8 @@ const asMpc = {
             status: state => this.status(state),
             current: state => print(this.current(state)),
             stop: () => asMediaControl.send(MC_COMMANDS.indexOf('stop')),
+            repeat: () => setOrToggle('mpc', 'repeat', args[0], { on: 3, off: 1 }),
+            random: () => setOrToggle('mpc', 'shuffle', args[0], { on: 3, off: 1 }),
             seek: state => {
                 const place = mpcSeek(args[0] || '', state.duration || 0);
                 return place ? move(place) : unknown('mpc', [command, ...args]);

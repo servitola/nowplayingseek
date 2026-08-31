@@ -29,7 +29,9 @@ runs both tools against one player and compares the lines.
 If a script depends on every quirk — help and exit 0 for an unknown word, silence after `seek` —
 say the old name first and get the whole dialect: `nowplayingseek nowplaying-cli bogus`.
 
-One thing is not the same. `get elapsedTime` answers with the position.
+Three things are not the same. `get elapsedTime` answers with the position, `playbackRate` is 0
+while paused whatever the player claims, and `get-raw` carries every key macOS holds, where theirs
+carries thirteen.
 
 ## From media-control
 
@@ -59,7 +61,7 @@ For the rest — `help`, `version`, `test` — say `nowplayingseek media-control
 
 ## From playerctl
 
-[playerctl](https://github.com/altdesktop/playerctl) has never run on a Mac: it speaks D-Bus, and
+[playerctl](https://github.com/altdesktop/playerctl) has no build for the Mac: it speaks D-Bus, and
 there is none. If your fingers learnt it on Linux, they may keep what they learnt.
 
 ```diff
@@ -72,8 +74,9 @@ there is none. If your fingers learnt it on Linux, they may keep what they learn
 ```
 
 Or, once: `alias playerctl='nowplayingseek playerctl'`. `status`, `play`, `pause`, `play-pause`,
-`next`, `previous`, `stop`, `position` to read, to set and to move by, `metadata` with a key or a
-format string, `duration()`, `lc()` and `uc()`.
+`next`, `previous`, `stop`, `shuffle`, `loop`, `position` to read, to set and to move by, `metadata`
+with a key or a format string, and the helpers `duration`, `lc`, `uc`, `trunc`, `default`, `emoji`,
+`markup_escape`.
 
 ## From mpc and shpotify
 
@@ -91,9 +94,10 @@ format string, `duration()`, `lc()` and `uc()`.
 + nowplayingseek spotify status
 ```
 
-`mpc`: `toggle`, `play`, `pause`, `next`, `prev`, `stop`, `current`, `status`, and `seek` with a
-sign, a clock or a percentage. `spotify`: `status` and its parts, `play`, `pause` — which toggles,
-as it does there — `next`, `prev`, `pos`, `replay`. Neither is limited to its old player any more.
+`mpc`: `toggle`, `play`, `pause`, `next`, `prev`, `stop`, `current`, `status`, `repeat`, `random`, and
+`seek` with a sign, a clock or a percentage. `spotify`: `status` and its parts, `play`, `pause` —
+which toggles, as it does there — `next`, `prev`, `pos`, `replay`, `stop`, `toggle shuffle|repeat`.
+Neither is limited to its old player any more.
 
 ## From one line of AppleScript
 
@@ -121,5 +125,8 @@ Honesty, in one place.
   needs something to have played since login.
 - **Key order in JSON.** The keys are the same; their order is the system's business.
 
-Everything else in those interfaces is supported. If something is not, it is a bug:
-[open an issue](https://github.com/servitola/nowplayingseek/issues).
+Each dialect is a remote for the one player macOS elected, not the original tool rebuilt. What was
+left out rather than faked: mpc's queue, database, playlists, outputs and stickers; playerctl's
+`--follow`, `--all-players`, `--list-all` and arithmetic in format strings; shpotify's search and
+play-by-name. Everything named on this page is supported word for word, and if it is not, that is
+a bug: [open an issue](https://github.com/servitola/nowplayingseek/issues).

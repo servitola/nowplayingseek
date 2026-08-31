@@ -8,7 +8,8 @@
 | Works while another app has the focus | yes | yes | yes | no |
 | Step grows while the key is held | `--progressive` | no | no | no |
 | `12:34` as a time | yes | seconds only | seconds only | — |
-| Track metadata, artwork, live stream of changes | title, artist, album | yes | yes, the most complete | — |
+| Metadata | everything macOS holds, as JSON; no artwork bytes | yes, with artwork | yes, with artwork | — |
+| A stream of changes | `stream`, by polling | no | yes, pushed | — |
 | Install | one script, personal tap | homebrew-core | homebrew-core | — |
 
 If you need artwork or a stream of Now Playing updates for a status bar, take `media-control`.

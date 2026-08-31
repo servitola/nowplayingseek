@@ -99,7 +99,7 @@ function testAlreadyThere(core) {
 }
 
 function testOvertaken(core) {
-    const sent = { sentAt: 50, superseded: false, verifyTimeout: 2.5 };
+    const sent = { sentAt: 50, superseded: false, verifyTimeout: 2.5, app: undefined };
     same(
         core.seekOvertaken({ position: 160, timestamp: 50.2, rate: 0 }, 170, sent),
         true,
@@ -113,6 +113,16 @@ function testOvertaken(core) {
         'a newer press owns the position now'
     );
     same(core.seekOvertaken(null, 170, sent), false, 'nothing readable: wait');
+    same(
+        core.seekOvertaken({ position: 22, timestamp: 50.2, rate: 1, app: 'quicktime' }, 170, { ...sent, app: 'vlc' }),
+        false,
+        'another app was elected while we waited: its position is not ours to correct'
+    );
+    same(
+        core.seekOvertaken({ position: 160, timestamp: 50.2, rate: 0, app: 'vlc' }, 170, { ...sent, app: 'vlc' }),
+        true,
+        'the same app, overtaken: send again'
+    );
     same(
         core.seekOvertaken({ position: 160, timestamp: 50.2, rate: 0 }, 170, { ...sent, resent: 2 }),
         false,

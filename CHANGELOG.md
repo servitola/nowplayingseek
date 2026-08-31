@@ -10,6 +10,9 @@ version, so keep that heading as it is.
   the four artwork keys into one `Artwork` object at the end.
 
 ### Fixed
+- A step waiting to see itself land could send its target again to an app elected in the meantime:
+  seen once in three tries, a second player thrown 10 s back while a hold on the first was ending.
+  The wait now ends when the elected app changes, and a re-send never crosses apps.
 - `status --raw` wrote a file's URL as `{}`.
 
 ### Added

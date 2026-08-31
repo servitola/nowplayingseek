@@ -183,7 +183,7 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
 	sleep 0.05
 done
 wait
-expect_move 'knob, a flick' 60 35 80
+expect_move 'knob, a flick' 60 40 60
 
 at 4:50
 expect_exit 'forward near the end' 0 forward 30

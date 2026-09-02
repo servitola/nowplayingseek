@@ -84,7 +84,8 @@ Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
 
 ## Development
 
-`make build`, `make test`, `make test-live` (VLC, silent), `make lint`, `make install PREFIX=~/.local`.
+`make build`, `make test`, `make test-live` and `make test-world` (VLC and QuickTime, silent),
+`make lint`, `make install PREFIX=~/.local`.
 Layout, rules and dead ends: [AGENTS.md](AGENTS.md). What is left: [BACKLOG.md](BACKLOG.md).
 
 ## Licence

@@ -158,8 +158,8 @@ expect 'config without a file: defaults' 0 stdout 'max_multiplier = 2.5' config
 expect 'config init' 0 stdout "wrote $xdg/nowplayingseek/config.ini" config init
 expect 'config after init: file is found' 0 stdout "; $xdg/nowplayingseek/config.ini" config
 grep -qF 'not found' "$work/stdout" && fail 'config after init still says "not found"'
-XDG_CONFIG_HOME=$xdg "$bin" config | sed 1,2d | cmp -s - "$xdg/nowplayingseek/config.ini" ||
-	fail 'config init wrote something other than the defaults config prints'
+grep -v '^[;[]' "$xdg/nowplayingseek/config.ini" | grep -q '=' && fail 'config init wrote a value that is in force: a later default would never reach this file'
+grep -q '^; max_time = ' "$xdg/nowplayingseek/config.ini" || fail 'config init did not list max_time, commented'
 
 printf '[seek]\nstep = 7\n' >"$xdg/nowplayingseek/config.ini"
 expect 'second config init refuses' 78 stderr "$xdg/nowplayingseek/config.ini already exists" config init

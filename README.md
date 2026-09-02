@@ -38,7 +38,7 @@ Homebrew 7 wants third-party taps trusted: the full name above trusts this one f
 Give `forward` and `backward` a key each. A press is ten seconds.
 
 Hold the key and it moves off in small steps, gathers pace, then settles. Release, and it stops.
-A short hold stays short. A long one covers ten minutes.
+A short hold stays short. A long one crosses the film.
 
 Shortcuts.app, [Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd:
 [docs/hotkeys.md](docs/hotkeys.md).

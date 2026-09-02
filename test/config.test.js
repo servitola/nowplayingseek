@@ -37,7 +37,7 @@ function testSettings(core) {
     same(defaults.values.seek.step, 10, 'settings: default step');
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
     same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
-    same(defaults.values.hold.max_time, 10, 'settings: default hold fuse');
+    same(defaults.values.hold.max_time, 60, 'settings: default hold fuse');
     same(defaults.values.knob.step, 2, 'settings: default knob step');
     same(defaults.values.knob.fast, 18, 'settings: default knob pace');
     same(defaults.values.progressive.max_multiplier, 2.5, 'settings: default max multiplier');
@@ -68,4 +68,12 @@ function testSettings(core) {
         'settings: the printed config reads back the same'
     );
 }
-GROUPS.push(testMultiplier, testIni, testSettings);
+function testTemplate(core) {
+    const template = core.settingsTemplate();
+    same(core.parseIni(template).length, 0, 'template: nothing in it is in force, so a later default still reaches its owner');
+    same(template.includes('; step = 10'), true, 'template: every key is there, commented, with its default');
+    same(template.includes('[hold]'), true, 'template: the sections are real');
+    const uncommented = template.replace('; step = 10', 'step = 7');
+    same(core.resolveSettings(core.parseIni(uncommented)).values.seek.step, 7, 'template: uncomment a line and it is in force');
+}
+GROUPS.push(testMultiplier, testIni, testSettings, testTemplate);

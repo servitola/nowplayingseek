@@ -142,6 +142,9 @@ const COMMANDS = {
         const listing = `; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`;
         print(terminal.colours() ? paintIni(listing) : listing);
     },
+    watch() {
+        watching.run({ live: true });
+    },
     release(args) {
         const asked = args.map(arg => DIRECTIONS[arg]);
         player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));

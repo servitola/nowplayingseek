@@ -1,6 +1,6 @@
 # Backlog
 
-What is left, most pressing first. State as of 2026-09-03; delete a line when it is done.
+What is left, most pressing first. State as of 2026-09-05; delete a line when it is done.
 
 ## Bugs and oddities
 - Once in ten tries `forward 1` right after two `toggle`s exited 2 ("ignored the seek"). Four
@@ -13,6 +13,8 @@ What is left, most pressing first. State as of 2026-09-03; delete a line when it
 - `[hold] interval`, `max_multiplier` and the rest accept any number above zero, `1:30` included.
 
 ## Code
+- `stream` and `watch` end only when a write fails: with nothing changing and the reader gone, they
+  linger until the next event. `media-control get` reads the player's client twice a payload.
 - Biome is pinned to 2.5.13 because npm on the owner's machine refuses releases younger than
   7 days; 2.5.14 was 2 days old. Bump `rev`, `additional_dependencies` and `$schema` together.
 

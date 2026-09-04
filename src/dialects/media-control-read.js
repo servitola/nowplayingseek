@@ -106,16 +106,21 @@ const mediaControlReads = {
 
     stream(args) {
         const options = mcOptions('stream', args);
+        if (terminal.colours() && !options['human-readable']) {
+            return watching.run({ live: false });
+        }
         const emit = (diff, payload) => print(JSON.stringify({ type: 'data', diff, payload }, null, options['human-readable'] ? 2 : 0));
         let previous = null;
         emit(false, {});
         for (;;) {
             let current = this.payload(options);
-            if (JSON.stringify(current) !== JSON.stringify(previous) && options.debounce > 0) {
+            let change = streamChange(previous, current, !options['no-diff']);
+            const flipped = Boolean(previous && current) && previous.playing !== current.playing;
+            if (change && options.debounce > 0 && !flipped) {
                 delay(options.debounce / MILLISECONDS_PER_SECOND);
                 current = this.payload(options);
+                change = streamChange(previous, current, !options['no-diff']);
             }
-            const change = streamChange(previous, current, !options['no-diff']);
             if (change) {
                 emit(change.diff, change.payload);
             }

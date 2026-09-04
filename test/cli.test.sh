@@ -69,6 +69,7 @@ expect 'a knob cannot be held' 64 stderr 'forward: --knob is one click of a knob
 expect 'release with a wrong argument' 64 stderr 'release takes only forward, backward, got "now"' release now
 expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm:ss, got "--fast"' backward --fast
 expect 'a step of zero' 64 stderr 'forward needs a step above zero' forward 0 --hold
+expect 'watch with an argument' 64 stderr 'watch takes no arguments, got "closely"' watch closely
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
 expect 'config with an unknown argument' 64 stderr 'config takes "init" or nothing, got "--force"' config --force
 expect 'config init with an argument on top' 64 stderr 'config takes "init" or nothing, got "init --force"' config init --force

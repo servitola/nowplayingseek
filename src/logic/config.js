@@ -32,6 +32,9 @@ const SETTINGS = {
         interval: setting('0.2', 'forward / backward --hold: pause between steps while the key is down'),
         max_time: setting('60', 'a --hold stops by itself after this long, in case the release never arrives'),
     },
+    watch: {
+        interval: setting('1', 'watch: how often the line of where you are is redrawn'),
+    },
     timing: {
         verify_timeout: setting('2.5', 'how long to wait for the player to do what was asked before exit 2'),
         pending_seek_max: setting('3', 'how long a held key keeps building on its previous target while Now Playing has not refreshed'),

@@ -5,12 +5,16 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.09.05 — 2026-09-05
+
 ### Changed
 - `config init` writes every key commented out. A file of live defaults kept its owner on the
   numbers of the day it was written: the fuse stayed at 10 s on the very machine it was raised on.
 - What a person reads next to a value — a clock, the app's name, the local time — is one `human`
   object at the end of `status --json` and `--raw`, in a pipe as well. Written after the values in a
-  terminal, as it briefly was, it made the copied text invalid JSON.
+  terminal, as it briefly was, it made the copied text invalid JSON. The object repeats the names
+  `app`, `position`, `duration` and `timestamp`: `jq` is not affected, a script that cuts `"app":` out
+  with a regular expression must take the first one.
 - A hold goes on for a minute before it ends by itself, not ten seconds (`[hold] max_time`). Ten
   seconds cut a long seek short and made the hand start over from a slow step. The fuse is for a
   release that never arrives, and that can no longer be lost on the way — it has a file of its own

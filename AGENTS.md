@@ -79,6 +79,11 @@ tree fails with "files were modified by this hook".
   against that software: VLC, QuickTime Player, macOS's gate, Homebrew, nowplaying-cli. A belief
   found on a player belongs there, with the sentence it supports; `CHANGED` names what to revisit.
   The live suite's last case hands Now Playing to QuickTime during a hold on VLC.
+- `make test` cannot reach a real player: the argument cases and `test/fake.test.sh` run a build in
+  which `src/system/mediaremote.js` is replaced by `test/fake-mediaremote.js` — a player that is a
+  file, whose log says what it was told. It can obey, ignore, or be absent, which VLC cannot. A
+  mutation run found 18 regressions of argument checks that would otherwise have driven the owner's
+  film.
 - `make test` needs nothing playing. `test/cli.test.sh` runs each case under its own
   `XDG_CONFIG_HOME` (`NSHomeDirectory` ignores `HOME`) and covers exit 0, 64 and 78, and exit 1 of
   the refusals; exit 1 for nothing playing and exit 2 depend on the player and are in the live suite.

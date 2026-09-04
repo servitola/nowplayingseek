@@ -26,6 +26,9 @@ version, so keep that heading as it is.
 - `status --raw` wrote a file's URL as `{}`.
 
 ### Added
+- Tests that were attacked before they were trusted: 454 deliberate breakages of the code, of which
+  the suites caught 68 %. The survivors now have tests (294 unit cases, was 207), and the argument
+  cases run against a player that is a file, so a broken check can no longer reach a real one.
 - `watch`: stays, and shows where the item is, redrawn once a second, with a line for whatever
   happens to it — played, paused, seeked to, a new item, nothing playing. The line is redrawn with a
   carriage return and nothing else, because `osascript` cannot catch Ctrl-C to tidy a terminal up;

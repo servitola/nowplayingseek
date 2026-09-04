@@ -41,6 +41,8 @@ expect() {
 		fail "$name: a stack trace instead of an error: $(cat "$work/stderr")"
 	elif [ "$want_exit" -ne 0 ] && [ -s "$work/stdout" ]; then
 		fail "$name: a failure printed to stdout: $(cat "$work/stdout")"
+	elif grep -q "$(printf '\033')" "$work/stdout" "$work/stderr"; then
+		fail "$name: colour codes went into a pipe"
 	fi
 }
 
@@ -85,6 +87,17 @@ expect 'seek with a negative time' 64 stderr 'got "-5"' seek -5
 expect 'seek with 75 seconds in mm:ss' 64 stderr 'got "1:75"' seek 1:75
 expect 'forward with garbage' 64 stderr 'forward needs seconds or mm:ss, got "abc"' forward abc
 expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or mm:ss, got "abc"' backward abc --progressive
+
+expect 'a knob does not grow either' 64 stderr 'forward: --knob is one click of a knob' forward --knob --progressive
+expect 'every unknown argument is named' 64 stderr 'status takes only --json, --raw, got "--jsno --rwa"' status --jsno --rwa
+expect 'an error carries the name of the tool' 64 stderr 'nowplayingseek: unknown command' frobnicate
+expect 'help: the exit codes' 0 stdout 'exit codes: 0 done · 1 nothing is playing · 2 the player did not listen · 64 usage · 78 config' --help
+expect 'help: seek' 0 stdout '  seek <time>  ' --help
+expect 'help: release' 0 stdout '  release forward  ' --help
+cases=$((cases + 1))
+grep -qF "## $version" CHANGELOG.md || grep -qF '## Unreleased' CHANGELOG.md || fail "the changelog knows neither $version nor Unreleased"
+cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" get | grep -qE '^(null|\{)' || fail 'a bare get is not the JSON of media-control'
 
 # The dialect of nowplaying-cli: its words, its texts, its exit codes.
 expect 'as nowplaying-cli: an unknown word is help and exit 0' 0 stdout 'get, get-raw, play, pause, togglePlayPause, next, previous, seek <secs>' nowplaying-cli bogus
@@ -133,6 +146,16 @@ XDG_CONFIG_HOME=$xdg "$bin" media-control get --no-artwork | grep -qE '^(null|\{
 cases=$((cases + 1))
 XDG_CONFIG_HOME=$xdg "$bin" get --now | grep -qE '^(null|\{)' || fail 'get with no property, its word taken directly, is not the JSON of media-control'
 
+expect 'as nowplaying-cli: seek with two words is help' 0 stdout 'Example Usage: ' nowplaying-cli seek abc def
+expect 'as nowplaying-cli: every line of its help' 0 stdout "$(printf '\tnowplaying-cli pause\n\tnowplaying-cli seek 60')" nowplaying-cli
+expect 'as media-control: leading zeros are dropped, as it does' 1 stderr 'Unknown command ID: 99' media-control send 0099
+expect 'as media-control: 00 is 0' 1 stderr 'Invalid shuffle mode: 0' media-control shuffle 00
+expect 'as media-control: 14 is one past the last id' 1 stderr 'Unknown command ID: 14' media-control send 14
+expect 'as media-control: speed without a number' 1 stderr "Missing speed for command 'speed'" media-control speed
+expect 'as media-control: an option needs its dashes' 1 stderr "Unrecognized option 'now'" media-control get now
+cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" media-control get --micros >/dev/null 2>&1 || fail 'as media-control: get --micros is refused'
+
 # playerctl, mpc and shpotify, behind their names.
 expect 'as playerctl: a player cannot be chosen' 1 stderr 'choosing a player is out of its reach' playerctl -p spotify play
 expect 'as playerctl: a player named after the verb' 1 stderr 'choosing a player is out of its reach' playerctl play-pause -p spotify
@@ -147,6 +170,8 @@ expect 'as playerctl: a loop word it does not have' 64 stderr 'does not know "re
 expect 'as playerctl: open' 1 stderr 'opening a file or a URL is out of its reach' playerctl open https://example.com
 expect 'as shpotify: quit' 1 stderr 'quitting the player is out of its reach' spotify quit
 expect 'as shpotify: toggle what' 64 stderr 'does not know "toggle volume" in the dialect of spotify' spotify toggle volume
+expect 'as shpotify: vol' 1 stderr 'volume is out of its reach' spotify vol up
+expect 'as shpotify: a word that is a property of every object' 64 stderr 'does not know "constructor"' spotify constructor
 expect 'as shpotify: play by name' 1 stderr 'playing by name is out of its reach' spotify play 'Seven Samurai'
 expect 'as shpotify: an unknown word' 64 stderr 'does not know "dance now" in the dialect of spotify' spotify dance now
 expect 'as shpotify: share' 1 stderr 'a link to share is out of its reach' spotify share url
@@ -165,6 +190,18 @@ grep -q '^; max_time = ' "$xdg/nowplayingseek/config.ini" || fail 'config init d
 printf '[seek]\nstep = 7\n' >"$xdg/nowplayingseek/config.ini"
 expect 'second config init refuses' 78 stderr "$xdg/nowplayingseek/config.ini already exists" config init
 expect 'second config init kept the file' 0 stdout 'step = 7' config
+
+fresh_home
+mkdir -p "$xdg/nowplayingseek"
+printf '\377\376' >"$xdg/nowplayingseek/config.ini"
+expect 'a config that is not text' 78 stderr 'not readable as UTF-8 text' config
+fresh_home
+xdg=$xdg/deeper/still
+expect 'config init makes the directories on the way' 0 stdout "wrote $xdg/nowplayingseek/config.ini" config init
+fresh_home
+chmod 500 "$xdg"
+expect 'config init where it cannot write' 78 stderr "cannot write $xdg/nowplayingseek/config.ini" config init
+chmod 700 "$xdg"
 
 write_config '[seek]' 'stpe = 5'
 expect 'unknown key' 78 stderr "$xdg/nowplayingseek/config.ini: line 2: unknown setting [seek] stpe" config

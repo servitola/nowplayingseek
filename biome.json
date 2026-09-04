@@ -340,6 +340,41 @@
                     }
                 }
             }
+        },
+        {
+            "includes": ["test/edges.test.js", "test/edges-text.test.js"],
+            "linter": {
+                "rules": {
+                    "security": {
+                        "noSecrets": "off"
+                    },
+                    "style": {
+                        "useNamingConvention": "off"
+                    },
+                    "complexity": {
+                        "noExcessiveLinesPerFunction": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["test/fake-mediaremote.js"],
+            "javascript": {
+                "globals": ["$", "ObjC", "effectiveRate", "MILLISECONDS_PER_SECOND"]
+            },
+            "linter": {
+                "rules": {
+                    "security": {
+                        "noSecrets": "off"
+                    },
+                    "style": {
+                        "useNamingConvention": "off"
+                    },
+                    "correctness": {
+                        "noUnusedVariables": "off"
+                    }
+                }
+            }
         }
     ]
 }

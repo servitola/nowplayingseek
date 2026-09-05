@@ -7,9 +7,11 @@ const MICROSECONDS = 1e6;
 const TIME_PATTERN = /^\d+(\.\d+)?$|^\d+(:[0-5]?\d){1,2}$/;
 const EXIT = { ok: 0, nothingPlaying: 1, ignored: 2, usage: 64, config: 78 };
 
-function Failure(code, message) {
-    this.code = code;
-    this.message = message;
+class Failure {
+    constructor(code, message) {
+        this.code = code;
+        this.message = message;
+    }
 }
 
 const isMissing = value => value === null || value === undefined;

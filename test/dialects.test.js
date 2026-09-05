@@ -33,6 +33,7 @@ function testDialectWords(core) {
     same(core.playerctlFormat('{{ default(album, "no album") }}', fields), 'no album', 'playerctl: default fills what is empty');
     same(core.playerctlFormat('{{ default(artist, "nobody") }}', fields), 'Hayasaka', 'playerctl: default keeps what is there');
     same(core.playerctlFormat('{{ emoji(status) }}', fields), '▶️', 'playerctl: emoji of the status');
+    same(core.playerctlFormat('{{ emoji(title) }}', fields), fields.title, 'playerctl: emoji of what is not a status is the text itself');
     same(core.playerctlFormat('{{ markup_escape(title) }}', { title: 'A & <B>' }), 'A &amp; &lt;B&gt;', 'playerctl: markup_escape');
     same(
         failureOf(core, () => core.playerctlFormat('{{ volume }}', fields)),

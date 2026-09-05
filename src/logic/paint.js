@@ -37,7 +37,19 @@ function paintStatus(state, options) {
     return paintStatusParts({ ...state, title: fitToWidth(state.title, room) }, options);
 }
 
-const paintChange = (change, clock) => `${ink('dim', clock)}  ${ink('bold', `${change.icon} ${change.words}`)}`;
+const LABEL_WIDTH = 7;
+
+// One line of the log. A play, a pause or a seek says where it happened, so the line stands alone.
+function paintChange(change, clock, state, app) {
+    const when = ink('dim', clock);
+    if (!(change.label && state)) {
+        return `${when}  ${ink('bold', `${change.icon} ${change.words}`)}${app ? ink('dim', `  · ${app}`) : ''}`;
+    }
+    const timed = state.duration > 0;
+    const where = ink('bold', formatTime(state.position)) + (timed ? ink('dim', ` / ${formatTime(state.duration)}`) : '');
+    const what = ink('bold', `${change.icon} ${change.label.padEnd(LABEL_WIDTH)}`);
+    return [`${when}  ${what}`, where, timed ? paintedBar(state.position || 0, state.duration) : null].filter(Boolean).join('  ');
+}
 
 const NOTE_INDENT = '    ';
 const USAGE_ENTRY = /^( {2})(\S.*?)( {2,}.*)?$/;

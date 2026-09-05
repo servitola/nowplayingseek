@@ -5,6 +5,12 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Changed
+- `stream` and `watch` in a terminal write a log, one line for one event: the time, what happened,
+  and where — `13:06:54  ⏸ paused   05:19 / 08:47  ━━━━━━━━━───────`. The name of the item is a
+  line of its own, written when it changes. Before, an event and a full status line took turns,
+  and it was hard to tell which line a pause belonged to. A pipe gets what it got.
+
 ### Added
 - For development: `make coverage` (lines of logic the unit tests never reach — none now),
   `make typecheck` (TypeScript's checker over the built file) and `make globals`, which writes the

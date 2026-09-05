@@ -2,6 +2,8 @@
 
 [← README](../README.md)
 
+<p align="center"><img src="banner-migrating.webp" alt="The panda crosses a glass bridge from a small dim player to a large bright one, a suitcase in its paw" width="100%"></p>
+
 A migration guide. It is short, because the migration is one word.
 
 ## From nowplaying-cli

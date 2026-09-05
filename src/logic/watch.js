@@ -20,10 +20,19 @@ function describeChange(previous, current, started = false) {
         return { icon: '♪', words: named(current) };
     }
     if (previous.playing !== current.playing) {
-        return current.playing ? { icon: '▶', words: 'played' } : { icon: '⏸', words: 'paused' };
+        return current.playing ? { icon: '▶', words: 'played', label: 'played' } : { icon: '⏸', words: 'paused', label: 'paused' };
     }
     const expected = previous.position + (previous.rate || 0) * (current.at - previous.at);
-    return Math.abs(current.position - expected) > LEAP ? { icon: '⇥', words: `seeked to ${formatTime(current.position)}` } : null;
+    return Math.abs(current.position - expected) > LEAP
+        ? { icon: '⇥', words: `seeked to ${formatTime(current.position)}`, label: 'seeked' }
+        : null;
+}
+
+const describeState = state => (state.playing ? { icon: '▶', label: 'playing' } : { icon: '⏸', label: 'paused' });
+
+// A new item is two lines of the log: what it is, then what it is doing.
+function logOf(change, current) {
+    return change.label || !current ? [change] : [change, describeState(current)];
 }
 
 function fitToWidth(text, columns) {

@@ -112,7 +112,7 @@ const mediaControlReads = {
         const emit = (diff, payload) => print(JSON.stringify({ type: 'data', diff, payload }, null, options['human-readable'] ? 2 : 0));
         let previous = null;
         emit(false, {});
-        for (;;) {
+        while (!terminal.readerGone()) {
             let current = this.payload(options);
             let change = streamChange(previous, current, !options['no-diff']);
             const flipped = Boolean(previous && current) && previous.playing !== current.playing;

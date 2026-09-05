@@ -43,7 +43,12 @@ const SETTINGS = {
     },
 };
 
-function parseSetting(text) {
+const CLOCK_WELCOME = 'mm:ss';
+
+function parseSetting(text, expects) {
+    if (text.includes(':') && !expects.includes(CLOCK_WELCOME)) {
+        return null;
+    }
     const value = parseTime(text);
     return value > 0 ? value : null;
 }
@@ -77,7 +82,7 @@ function resolveSettings(entries) {
         values[section] = {};
         texts[section] = {};
         for (const [key, spec] of Object.entries(specs)) {
-            values[section][key] = parseSetting(spec.text);
+            values[section][key] = parseSetting(spec.text, spec.expects);
             texts[section][key] = spec.text;
         }
     }
@@ -86,7 +91,7 @@ function resolveSettings(entries) {
         if (!known) {
             throw new Failure(EXIT.config, `line ${line}: unknown setting [${section}] ${key}`);
         }
-        const value = parseSetting(text);
+        const value = parseSetting(text, SETTINGS[section][key].expects);
         if (isMissing(value)) {
             throw new Failure(EXIT.config, `line ${line}: [${section}] ${key} = "${text}" — expected ${SETTINGS[section][key].expects}`);
         }

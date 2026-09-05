@@ -109,7 +109,7 @@ commit the result; a picture that shows yesterday's output is a false claim.
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows
 what it would do. Nothing is pushed, tagged or published without the owner's word.
 
-## Dead ends — measured 2026-09-05 on macOS 26.6, do not retry
+## Dead ends — measured 2026-09-06 on macOS 26.6, do not retry
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
   `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
   `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper

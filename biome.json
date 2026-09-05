@@ -306,7 +306,13 @@
             }
         },
         {
-            "includes": ["src/system/mediaremote.js", "src/dialects/media-control-read.js", "test/item.test.js", "test/watch.test.js"],
+            "includes": [
+                "src/system/mediaremote.js",
+                "src/dialects/media-control-read.js",
+                "test/item.test.js",
+                "test/watch.test.js",
+                "test/config.test.js"
+            ],
             "linter": {
                 "rules": {
                     "security": {

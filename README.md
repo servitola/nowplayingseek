@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/banner.webp" alt="Logotip" width="100%"></p>
+<p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="100%"></p>
 
 # nowplayingseek
 
@@ -11,7 +11,7 @@ From a key, with any app in front: a browser tab, IINA, VLC, Music, Spotify.
 
 macOS has no such key. This is the command behind it.
 
-<p align="center"><img src="docs/demo.svg" alt="In a terminal: nps status prints the position in bold, the length, a bar, the title, the chapter and the app; nps backward moves ten seconds; nps seek 1:02:03 jumps; nps status --json prints the same as coloured JSON" width="620"></p>
+<p align="center"><img src="docs/images/demo.svg" alt="In a terminal: nps status prints the position in bold, the length, a bar, the title, the chapter and the app; nps backward moves ten seconds; nps seek 1:02:03 jumps; nps status --json prints the same as coloured JSON" width="620"></p>
 
 ## Why
 
@@ -82,12 +82,7 @@ Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
 - [Compared with](docs/compared.md) nowplaying-cli, media-control, a player's own keys
 - [How it works](docs/how-it-works.md): why a script and not a binary
 - [Questions](docs/questions.md)
-
-## Development
-
-`make build`, `make test`, `make test-live` and `make test-world` (VLC and QuickTime, silent),
-`make lint`, `make install PREFIX=~/.local`.
-Layout, rules and dead ends: [AGENTS.md](AGENTS.md). What is left: [BACKLOG.md](BACKLOG.md).
+- [Development](docs/development.md)
 
 ## Licence
 

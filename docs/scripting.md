@@ -2,7 +2,7 @@
 
 [← README](../README.md)
 
-<p align="center"><img src="banner-scripting.webp" alt="The panda types at a glass terminal; a ribbon of light runs from it to a player tile" width="100%"></p>
+<p align="center"><img src="images/banner-scripting.webp" alt="The panda types at a glass terminal; a ribbon of light runs from it to a player tile" width="100%"></p>
 
 Every command of ours is one line in, and the exit code is the truth (behind the names of
 nowplaying-cli and media-control it is 0, as theirs is): `0` it happened,

@@ -1,8 +1,9 @@
 const USAGE = `nowplayingseek ${VERSION} — seek whatever is playing on the Mac
 
 Look
-  status [--json | --raw]        what plays, where, in which app; --raw is all macOS knows
+  status                         what plays, where, in which app
   watch                          stay, and show where it is and what happens to it
+  stream                         stay, and log what happens; in a pipe, the JSON of media-control
   position                       seconds from the start
   duration                       seconds in all
 
@@ -14,6 +15,12 @@ Move
 
 Play
   toggle | play | pause | next | previous
+
+Answer
+  --json                         where things stand as JSON, indented
+  --minify                       as JSON on one line, for a script that reads lines
+  --raw                          as the keys macOS itself holds: chapters, artwork, the file
+    on any command above; with no flag the answer is a line for people
 
 For a hotkey
   forward --hold --progressive   key down: keep going, a little further with every step

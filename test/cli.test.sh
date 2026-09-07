@@ -75,10 +75,10 @@ expect 'watch with an argument' 64 stderr 'watch takes no arguments, got "closel
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
 expect 'config with an unknown argument' 64 stderr 'config takes "init" or nothing, got "--force"' config --force
 expect 'config init with an argument on top' 64 stderr 'config takes "init" or nothing, got "init --force"' config init --force
-expect 'status with a misspelt flag' 64 stderr 'status takes only --json, --raw, got "--jsno"' status --jsno
-expect 'position with an argument' 64 stderr 'position takes no arguments, got "now"' position now
-expect 'transport with an argument' 64 stderr 'pause takes no arguments, got "10"' pause 10
-expect 'doctor with an argument' 64 stderr 'doctor takes no arguments, got "--verbose"' doctor --verbose
+expect 'status with a misspelt flag' 64 stderr 'status takes only --json, --raw, --minify, got "--jsno"' status --jsno
+expect 'position with an argument' 64 stderr 'position takes only --json, --raw, --minify, got "now"' position now
+expect 'transport with an argument' 64 stderr 'pause takes only --json, --raw, --minify, got "10"' pause 10
+expect 'doctor with an argument' 64 stderr 'doctor takes only --json, --raw, --minify, got "--verbose"' doctor --verbose
 
 expect 'seek without a time' 64 stderr 'seek needs seconds or mm:ss, got ""' seek
 expect 'seek with two times' 64 stderr 'seek takes one time, got "20" on top' seek 10 20
@@ -89,7 +89,7 @@ expect 'forward with garbage' 64 stderr 'forward needs seconds or mm:ss, got "ab
 expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or mm:ss, got "abc"' backward abc --progressive
 
 expect 'a knob does not grow either' 64 stderr 'forward: --knob is one click of a knob' forward --knob --progressive
-expect 'every unknown argument is named' 64 stderr 'status takes only --json, --raw, got "--jsno --rwa"' status --jsno --rwa
+expect 'every unknown argument is named' 64 stderr 'status takes only --json, --raw, --minify, got "--jsno --rwa"' status --jsno --rwa
 expect 'an error carries the name of the tool' 64 stderr 'nowplayingseek: unknown command' frobnicate
 expect 'help: the exit codes' 0 stdout 'exit codes: 0 done · 1 nothing is playing · 2 the player did not listen · 64 usage · 78 config' --help
 expect 'help: seek' 0 stdout '  seek <time>  ' --help

@@ -190,6 +190,7 @@
                 "src/dialects/mpc.js",
                 "src/dialects/shpotify.js",
                 "src/dialects/index.js",
+                "src/output.js",
                 "src/cli.js",
                 "src/usage.js"
             ],
@@ -275,6 +276,10 @@
                     "asMpc",
                     "asShpotify",
                     "dialectFor",
+                    "takeOutput",
+                    "showJson",
+                    "show",
+                    "showSeconds",
                     "VERSION",
                     "print",
                     "run",
@@ -288,7 +293,20 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "function": ["locked", "refuse", "unknown", "move", "setOrToggle", "dialectFor", "print", "run"],
+                                    "function": [
+                                        "locked",
+                                        "refuse",
+                                        "unknown",
+                                        "move",
+                                        "setOrToggle",
+                                        "dialectFor",
+                                        "takeOutput",
+                                        "showJson",
+                                        "show",
+                                        "showSeconds",
+                                        "print",
+                                        "run"
+                                    ],
                                     "variable": [
                                         "KEY_PREFIX",
                                         "MR_COMMAND",

@@ -35,6 +35,7 @@ src/watch.js    the loop of `watch` and of `stream` in a terminal: one line redr
 src/dialects/   one file a tool; they call player and system, never each other's insides
     nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
     shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)
+src/output.js   how a command answers: a line, `--json`, `--minify`, `--raw` — one contract for all of them
 src/cli.js      our own commands, `run(argv)` — the entry point `osascript` calls
 src/usage.js    the help page; after cli.js, because it names the version
 ```

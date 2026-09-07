@@ -20,7 +20,7 @@ finish() {
 trap finish EXIT
 trap 'exit 130' INT TERM
 
-field() { "$bin" status --json 2>/dev/null | sed -n "s/,\"human\":.*//;s/.*\"$1\":\([^,}]*\).*/\1/p" | tr -d '"'; }
+field() { "$bin" status --minify 2>/dev/null | sed -n "s/,\"human\":.*//;s/.*\"$1\":\([^,}]*\).*/\1/p" | tr -d '"'; }
 raw() { "$bin" status --raw 2>/dev/null | sed -n "s/^ *\"$1\": *\([^,]*\),*$/\1/p" | tr -d '"'; }
 
 holds() {

@@ -145,6 +145,52 @@ left() {
 left 1 watch
 left 2 stream --no-artwork
 
+# says <name> <python expression over `out` (stdout) and `value` (it parsed as JSON, or None)> <arguments...>
+says() {
+	name=$1 check=$2
+	shift 2
+	cases=$((cases + 1))
+	NPS_FAKE=$work/fake XDG_CONFIG_HOME=$work/fake/xdg "$bin" "$@" >"$work/stdout" 2>"$work/stderr" || fail "$name: exit $? — $(cat "$work/stderr")"
+	python3 - "$work/stdout" "$check" <<'PY' || fail "$name: \"$check\" does not hold for: $(head -c 300 "$work/stdout")"
+import json, sys
+out = open(sys.argv[1], encoding="utf-8").read()
+try:
+    value = json.loads(out)
+except ValueError:
+    value = None
+lines = out.rstrip("\n").count("\n") + 1
+sys.exit(not eval(sys.argv[2]))
+PY
+}
+
+# One contract for every command that reads or moves the player: a line for people, --json indented,
+# --minify on one line, --raw the keys macOS holds. In a pipe nothing is painted.
+for words in status 'forward 5' 'backward 5' 'seek 3:00' pause next; do
+	# shellcheck disable=SC2086
+	{
+		player true true && says "$words: a line for people" 'value is None and lines == 1 and "T — A" in out' $words
+		player true true && says "$words --json: indented, with the human block" 'value["human"]["app"] and lines > 5' $words --json
+		player true true && says "$words --minify: one line" 'value["title"] == "T" and lines == 1' $words --minify
+		player true true && says "$words --json --minify, in either order" 'value["title"] == "T" and lines == 1' $words --minify --json
+		player true true && says "$words --compact is --minify" 'value["title"] == "T" and lines == 1' $words --compact
+		player true true && says "$words --raw: the keys of macOS" '"ElapsedTime" in value and lines > 5' $words --raw
+		player true true && says "$words --raw --json is --raw, whatever the order" '"ElapsedTime" in value' $words --json --raw
+		player true true && says "$words --raw --minify: one line" '"ElapsedTime" in value and lines == 1' $words --raw --minify
+	}
+done
+player true true && says 'pause --json shows it paused' 'value["playing"] is False' pause --json
+player true && says 'play --json shows it playing' 'value["playing"] is True' play --json
+player true && says 'seek --json shows where it landed' 'value["position"] == 180 and value["human"]["position"] == "03:00"' seek 3:00 --json
+player true && says 'position --json' 'value == {"position": 120, "human": {"position": "02:00"}}' position --json
+player true && says 'duration --minify' 'value["duration"] == 600 and lines == 1' duration --minify
+player true && says 'position, no flag, is the number scripts read' 'out == "120.000\n"' position
+player true && says 'doctor --json' 'value["ok"] is True and value["app"] == "fake.player"' doctor --json
+player true && says 'config --json: the settings in force' 'value["settings"]["hold"]["max_time"] == 60 and value["found"] is True' config --json
+player true && told 'watch takes no --json' 64 '' watch --json
+player true && told 'release takes no --json' 64 '' release --json
+cases=$((cases + 1))
+grep -qF 'status takes only --json, --raw, --minify' "$work/stderr" && fail 'the wrong command was named'
+
 # The picture in the README is drawn outside this repo; it has shown yesterday's output twice.
 player true && told 'status --json for the picture' 0 '' status --json
 cases=$((cases + 1))

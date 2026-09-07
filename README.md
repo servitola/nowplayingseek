@@ -11,7 +11,7 @@ From a key, with any app in front: a browser tab, IINA, VLC, Music, Spotify.
 
 macOS has no such key. This is the command behind it.
 
-<p align="center"><img src="docs/images/demo.svg" alt="In a terminal: nps status prints the position in bold, the length, a bar, the title, the chapter and the app; nps backward moves ten seconds; nps seek 1:02:03 jumps; nps status --json prints the same as coloured JSON" width="620"></p>
+<p align="center"><img src="docs/images/demo.svg" alt="In a terminal: nps status prints the position in bold, the length, a bar, the title, the chapter and the app; nps backward moves ten seconds; nps seek 1:02:03 jumps; nps pause turns the sign and the bar from green to yellow; nps status --json prints the same as coloured JSON" width="620"></p>
 
 ## Why
 

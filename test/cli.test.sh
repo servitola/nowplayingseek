@@ -59,12 +59,12 @@ cases=$((cases + 1))
 
 fresh_home
 expect 'version' 0 stdout "$version" --version
-expect 'help' 0 stdout 'exit codes:' --help
-expect 'help, short flag' 0 stdout 'exit codes:' -h
-expect 'no arguments prints help' 0 stdout 'exit codes:'
+expect 'help' 0 stdout 'Exit codes' --help
+expect 'help, short flag' 0 stdout 'Exit codes' -h
+expect 'no arguments prints help' 0 stdout 'Exit codes'
 
 expect 'unknown command' 64 stderr 'unknown command "frobnicate"' frobnicate
-expect 'unknown command shows usage' 64 stderr 'exit codes:' frobnicate
+expect 'unknown command shows usage' 64 stderr 'Exit codes' frobnicate
 expect 'unknown flag after a time' 64 stderr 'forward takes one time, --progressive, --hold and --knob, got "--progresive" on top' forward 10 --progresive
 expect 'hold with garbage' 64 stderr 'forward needs seconds or mm:ss, got "abc"' forward abc --hold --progressive
 expect 'a knob cannot be held' 64 stderr 'forward: --knob is one click of a knob, it goes without --hold and --progressive' forward --knob --hold
@@ -91,7 +91,9 @@ expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or
 expect 'a knob does not grow either' 64 stderr 'forward: --knob is one click of a knob' forward --knob --progressive
 expect 'every unknown argument is named' 64 stderr 'status takes only --json, --raw, --minify, got "--jsno --rwa"' status --jsno --rwa
 expect 'an error carries the name of the tool' 64 stderr 'nowplayingseek: unknown command' frobnicate
-expect 'help: the exit codes' 0 stdout 'exit codes: 0 done · 1 nothing is playing · 2 the player did not listen · 64 usage · 78 config' --help
+cases=$((cases + 1))
+"$bin" --help | awk 'length($0) > 80 { wide = 1 } END { exit wide }' || fail 'a line of the help is wider than 80 columns and will wrap'
+expect 'help: the exit codes' 0 stdout '  2                              the player did not listen' --help
 expect 'help: seek' 0 stdout '  seek <time>  ' --help
 expect 'help: release' 0 stdout '  release forward  ' --help
 cases=$((cases + 1))
@@ -222,7 +224,7 @@ expect 'garbage number' 78 stderr '[progressive] max_multiplier = "fast" — exp
 write_config 'step = 5'
 expect 'key outside a section' 78 stderr 'line 1: expected "[section]" or "key = value" under one, got "step = 5"' config
 expect 'a broken config stops other commands too' 78 stderr 'line 1:' forward abc
-expect 'a broken config does not stop help' 0 stdout 'exit codes:' --help
+expect 'a broken config does not stop help' 0 stdout 'Exit codes' --help
 
 write_config '# mine' '[seek]' 'step = 1:30' '' '[progressive]' 'ramp = 2.5' 'max_multiplier = 4.5'
 expect 'override: step' 0 stdout 'step = 1:30' config

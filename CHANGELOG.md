@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.09.09 — 2026-09-09
+
 ### Changed
 - One way to answer, for every command. No flag: a line for people. `--json`: the same as JSON,
   indented — **in a pipe as well, where it used to be one line**. `--minify` (or `--compact`): JSON

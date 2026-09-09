@@ -104,7 +104,7 @@ Neither is limited to its old player any more.
 ## From one line of AppleScript
 
 ```diff
-- osascript -e 'tell application "Spotify" to set player position to (player position + 10)'
+- osascript -e 'tell app "Spotify" to set player position to (player position + 10)'
 + nowplayingseek forward
 ```
 

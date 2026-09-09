@@ -36,29 +36,21 @@ Homebrew 7 wants third-party taps trusted: the full name above trusts this one f
 
 ## A key
 
-Give `forward` and `backward` a key each. A press is ten seconds.
+Give `forward` and `backward` a key each. The key goes through an app that binds it; the film winds. Two such apps:
 
-Hold the key and it moves off in small steps, gathers pace, then settles. Release, and it stops.
-A short hold stays short. A long one crosses the film.
+| <img src="docs/images/with-shortcuts.webp" alt="The panda presses a key; a thread of light runs from it through the icon of the Shortcuts app into a player, where the film winds forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The same scene with the icon of Karabiner-Elements, and the panda in a cap worn backwards" width="100%"> |
+| --- | --- |
+| **Shortcuts** — the app every Mac already has, nothing else to install. A press moves by the step you wrote. | **Karabiner-Elements** — free, for those who remap keys. Hold the key: it moves off in small steps, gathers pace, settles. Release, and it stops. |
+| [Step by step →](docs/hotkeys.md#a-key-in-shortcuts) | [The rule to import →](docs/hotkeys.md#a-key-in-karabiner-elements) |
 
-With nothing but what the Mac came with — the Shortcuts app:
-
-1. Shortcuts → **+** → find the action **Run Shell Script**.
-2. In its box: `/opt/homebrew/bin/nowplayingseek forward 30` (on an Intel Mac, `/usr/local/bin/…`).
-3. The first run asks for Shortcuts → Settings → Advanced → **Allow Running Scripts**.
-4. **ⓘ** → **Add Keyboard Shortcut**, press the keys you want. Make a second one with `backward 30`.
-
-A key from Shortcuts is a press, never a hold. For the hold, and for a knob:
-[Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd — [docs/hotkeys.md](docs/hotkeys.md).
+Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](docs/hotkeys.md#other-tools).
 
 ## A knob
 
-<p align="center"><img src="docs/images/banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along" width="100%"></p>
-
-If you have a mechanical keyboard with a knob, it is a jog wheel.
-Turned slowly, it moves by seconds. Flicked, by minutes.
-
-See [the Karabiner-Elements rule](docs/hotkeys.md#a-knob-in-karabiner-elements).
+<table><tr>
+<td width="50%"><img src="docs/images/banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along"></td>
+<td><b>A keyboard with a knob has a jog wheel.</b><br><br>Turned slowly, it moves by seconds. Flicked, by minutes.<br><br><a href="docs/hotkeys.md#a-knob-in-karabiner-elements">The Karabiner-Elements rule →</a></td>
+</tr></table>
 
 ## Commands
 
@@ -85,14 +77,16 @@ Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
 
 ## More
 
-- [Hotkeys, knobs and pedals](docs/hotkeys.md)
-- [The curve of a held key, the knob, the config file](docs/advanced.md)
-- [For scripts and AI agents](docs/scripting.md)
-- [Moving over](docs/migrating.md) from nowplaying-cli, media-control, playerctl, mpc, shpotify
-- [Compared with](docs/compared.md) nowplaying-cli, media-control, a player's own keys
-- [How it works](docs/how-it-works.md): why a script and not a binary
-- [Questions](docs/questions.md)
-- [Development](docs/development.md)
+<table>
+<tr><td width="180"><a href="docs/hotkeys.md"><img src="docs/images/banner-hotkeys.webp" alt=""></a></td><td><b><a href="docs/hotkeys.md">Hotkeys, knobs and pedals</a></b><br>Shortcuts, Karabiner-Elements, Hammerspoon, skhd: a key, a hold, a knob.</td></tr>
+<tr><td width="180"><a href="docs/advanced.md"><img src="docs/images/banner-advanced.webp" alt=""></a></td><td><b><a href="docs/advanced.md">The curve, the knob, the config file</a></b><br>How a held key gathers pace, and every number that can be changed.</td></tr>
+<tr><td width="180"><a href="docs/scripting.md"><img src="docs/images/banner-scripting.webp" alt=""></a></td><td><b><a href="docs/scripting.md">For scripts and AI agents</a></b><br>One line in, JSON out, and an exit code that is the truth.</td></tr>
+<tr><td width="180"><a href="docs/migrating.md"><img src="docs/images/banner-migrating.webp" alt=""></a></td><td><b><a href="docs/migrating.md">Moving over</a></b><br>From nowplaying-cli, media-control, playerctl, mpc, shpotify: the same words work.</td></tr>
+<tr><td width="180"><a href="docs/compared.md"><img src="docs/images/banner-compared.webp" alt=""></a></td><td><b><a href="docs/compared.md">Compared with</a></b><br>nowplaying-cli, media-control, a player's own keys.</td></tr>
+<tr><td width="180"><a href="docs/how-it-works.md"><img src="docs/images/banner-how-it-works.webp" alt=""></a></td><td><b><a href="docs/how-it-works.md">How it works</a></b><br>Why it is a script and not a binary, and why it exists.</td></tr>
+<tr><td width="180"><a href="docs/questions.md"><img src="docs/images/banner-questions.webp" alt=""></a></td><td><b><a href="docs/questions.md">Questions</a></b><br>The ones people type into a search box.</td></tr>
+<tr><td width="180"><a href="docs/development.md"><img src="docs/images/banner-development.webp" alt=""></a></td><td><b><a href="docs/development.md">Development</a></b><br>Build, test, lint; what is left.</td></tr>
+</table>
 
 ## Licence
 

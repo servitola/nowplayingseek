@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.09.11 — 2026-09-11
+
 ### Added
 - `config set <setting> <value>` changes one setting without opening the file:
   `config set knob.fast 24`. A bad name or value is refused before anything is written, a

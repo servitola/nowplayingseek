@@ -45,6 +45,12 @@ told() {
 player true && told 'backward goes back' 0 'setElapsedTime 115;' backward 5
 player true && told 'forward by the default step' 0 'setElapsedTime 130;' forward
 player true && told 'a knob click is the knob step' 0 'setElapsedTime 122;' forward --knob
+player true && printf '[knob]\nstep = 5\n' >>"$work/fake/xdg/nowplayingseek/config.ini" && told 'a knob click is [knob] step from the config' 0 'setElapsedTime 125;' forward --knob
+# fast so low that any spin is flat out: the second click is max_multiplier times the step
+knob_config() { printf '[knob]\nfast = 0.001\n%s\n' "$1" >>"$work/fake/xdg/nowplayingseek/config.ini"; }
+second_click() { NPS_FAKE=$work/fake XDG_CONFIG_HOME=$work/fake/xdg "$bin" forward --knob >/dev/null 2>&1 && told "$@" forward --knob; }
+player true && knob_config '' && second_click 'a quick second click follows [knob] fast' 0 'setElapsedTime 122;setElapsedTime 130;'
+player true && knob_config 'max_multiplier = 1' && second_click 'and [knob] max_multiplier' 0 'setElapsedTime 122;setElapsedTime 124;'
 player true && told 'seek past the end is the end' 0 'setElapsedTime 600;' seek 20:00
 player true && told 'seek to where it stands sends nothing' 0 '' seek 2:00
 player true && told 'position' 0 '' position

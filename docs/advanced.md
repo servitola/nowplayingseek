@@ -83,6 +83,11 @@ that is set). The file is optional and so is every key in it. `nowplayingseek co
 one with every key commented out: remove the `; ` in front of a line to put it in force, and what
 stays commented keeps following the defaults. `nowplayingseek config` prints what is in effect.
 
+`nowplayingseek config set knob.fast 24` changes one setting without opening the file: the value
+is checked first, the line is put in force where it stands, and a file that does not exist yet is
+written as `config init` would, with this one line live. A config symlinked from dotfiles stays a
+symlink.
+
 Comments are whole lines starting with `;` or `#`. An unknown section or key, or a value
 that does not parse, stops every command with exit 78 and the line number — a typo never
 silently falls back to a default.

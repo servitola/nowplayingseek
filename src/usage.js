@@ -32,6 +32,7 @@ For a hotkey
 Settings
   config                         what is in effect, and where the file is
   config init                    write ~/.config/nowplayingseek/config.ini
+  config set <setting> <value>   change one: config set knob.fast 24
   doctor                         exit 0 when Now Playing can be read
 
 Exit codes

@@ -117,6 +117,26 @@ slow click is 2 s, fine enough to find a word; a flick makes every click up to f
 longer. The step, the limit and what counts as fast are `[knob]` in the
 [config file](advanced.md#config-file).
 
+If the firmware cannot be changed, take the volume keys themselves, but only from that
+keyboard, so the laptop's own volume keys stay volume. Karabiner-EventViewer, the Devices tab,
+shows each keyboard's `vendor_id` and `product_id`; put them in a `device_if` condition on both
+manipulators:
+
+```json
+{
+  "type": "basic",
+  "from": { "consumer_key_code": "volume_increment" },
+  "to": [{ "shell_command": "/opt/homebrew/bin/nps forward --knob" }],
+  "conditions": [{
+    "type": "device_if",
+    "identifiers": [{ "vendor_id": 1234, "product_id": 5678 }]
+  }]
+}
+```
+
+The second one is the same with `volume_decrement` and `backward`. If the knob still changes the
+volume, check that Karabiner-Elements modifies that keyboard, under Settings → Devices.
+
 ## Other tools
 
 Hammerspoon, in `~/.hammerspoon/init.lua`:

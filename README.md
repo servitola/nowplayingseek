@@ -1,6 +1,6 @@
-<p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="100%"></p>
-
 # nowplayingseek
+
+<p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="70%"></p>
 
 [![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![tested on macOS 26](https://img.shields.io/badge/tested%20on-macOS%2026-black)](docs/how-it-works.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
 
@@ -56,17 +56,20 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 
 | Command | |
 | --- | --- |
+| `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
 | `status` | title, app, position / duration |
 | `watch` | stays: where it is, second by second, and what happens to it |
+| `stream` | stays: every change as it happens; JSON lines in a pipe, [for scripts](docs/scripting.md#following-changes) |
 | `position`, `duration` | seconds |
 | `seek <time>` | to `754`, `12:34` or `1:02:03` |
-| `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
 | `toggle`, `play`, `pause`, `next`, `previous` | transport |
 | `doctor` | exit 0 when Now Playing is readable |
+| `config`, `config set <setting> <value>` | the settings in effect; [change one](docs/advanced.md#config-file) |
 | `--json`, `--minify`, `--raw` | on any of the above: the answer as JSON, as JSON on one line, as the keys macOS itself holds |
 
 Every command answers with where things stand. A seek returns when the player has moved, not before.
 Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
+Every command and flag, the ones for hotkeys included: `nps --help`.
 
 ## Limits
 

@@ -126,7 +126,7 @@ paw on the knob, the finger on the key.
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows
 what it would do. Nothing is pushed, tagged or published without the owner's word.
 
-## Dead ends — measured 2026-09-11 on macOS 26.6, do not retry
+## Dead ends — measured 2026-09-17 on macOS 26.6, do not retry
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
   `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
   `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper

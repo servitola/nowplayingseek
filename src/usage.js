@@ -6,6 +6,7 @@ Look
   stream                         stay: a log of what happens; JSON in a pipe
   position                       seconds from the start
   duration                       seconds in all
+  artwork [path]                 the cover art, to path or a temp file
 
 Move
   seek <time>                    to an exact place: seek 754, seek 12:34

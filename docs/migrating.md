@@ -114,9 +114,6 @@ That line was the ancestor of most of the above. It named its player. This one d
 
 Honesty, in one place.
 
-- **Artwork bytes.** `artworkData` is `null` or absent. macOS hands the picture over only through
-  an asynchronous call that a script inside `osascript` cannot make. Its type, size and identifier
-  are there.
 - **Choosing a player.** `playerctl -p spotify`, and anything else that names an app. macOS elects
   one Now Playing app and redirects everything to it; five private calls were measured, none gets
   past that. Such a request is refused by name, exit 1.

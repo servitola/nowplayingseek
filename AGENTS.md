@@ -10,7 +10,9 @@ a link. What is unfinished or undecided is in `BACKLOG.md`; this file holds only
 ## Stack and layout
 
 JavaScript for Automation under `/usr/bin/osascript`: no dependencies, no `package.json`, no
-modules. `make` concatenates the sources into one executable script, so a symbol declared in one
+modules — except artwork, one compiled helper loaded into `/usr/bin/perl`, never `osascript`; see
+`docs/how-it-works.md#artwork` before touching `native/artwork.m` or `src/system/artwork.js`.
+`make` concatenates the JS sources into one executable script, so a symbol declared in one
 file is a plain global in the files after it. The order in the `Makefile` is the order of the
 layers, and a layer uses only the layers above it in this list:
 
@@ -27,6 +29,7 @@ src/logic/      knows nothing of macOS — every function here has a unit test
     config.js       the SETTINGS table; ini
 src/system/     the only place with $ and ObjC
     mediaremote.js  read Now Playing, send commands — the private framework lives here alone
+    artwork.js      shells out to /usr/bin/perl for the one thing osascript cannot read
     files.js        the temp files processes talk through, and the lock
     terminal.js     is stdout a terminal; an app's name from its bundle id
     configfile.js   find, load and write config.ini
@@ -36,22 +39,30 @@ src/dialects/   one file a tool; they call player and system, never each other's
     nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
     shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)
 src/output.js   how a command answers: a line, `--json`, `--minify`, `--raw` — one contract for all of them
+src/args.js     what a command may take: SPEAKING, FLAGS, seekCommand — cli.js is dispatch alone
 src/cli.js      our own commands, `run(argv)` — the entry point `osascript` calls
 src/usage.js    the help page; after cli.js, because it names the version
 ```
 
+`native/artwork.m` sits outside that list: clang builds it into `build/nowplayingseek-artwork.bundle`,
+which `src/system/artwork.js` loads into `/usr/bin/perl` at run time — it is never concatenated and
+never runs under `osascript`.
+
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js` and run
 over `src/logic/`; `test/cli.test.sh` drives the built tool without a player; `test/live.test.sh`
-drives VLC. The lists are spelled out in the `Makefile`: a new file is not built or run until it is
-added there; `make globals` then writes its names into `biome.json`.
+drives VLC. `test/fake-mediaremote.js` and `test/fake-artwork.js` stand in for their `src/system/`
+counterparts the same way, so `make test` never touches perl either. The lists are spelled out in
+the `Makefile`: a new file is not built or run until it is added there; `make globals` then writes
+its names into `biome.json`.
 
 ## Commands and gates
 
 `make build`, `make test` (prints `N passed` and `N cli cases passed`), `make lint` (every hook on
-every tracked file; needs `pre-commit`), `make install PREFIX=~/.local`. `pre-commit install` once
-after cloning; commits go through the hook, `--no-verify` and `SKIP=` are not used here. Run one
-`pre-commit` at a time: it stashes unstaged changes while it works, and a second run in the same
-tree fails with "files were modified by this hook".
+every tracked file; needs `pre-commit`), `make install PREFIX=~/.local`. `build` and `test` also
+compile `native/artwork.m`, so they need `clang` (Xcode Command Line Tools; every Homebrew machine
+already has it). `pre-commit install` once after cloning; commits go through the hook, `--no-verify`
+and `SKIP=` are not used here. Run one `pre-commit` at a time: it stashes unstaged changes while it
+works, and a second run in the same tree fails with "files were modified by this hook".
 
 - Biome with every stable rule as an error, plus its formatter; actionlint; shellcheck and shfmt.
   Versions are pinned in `.pre-commit-config.yaml`.

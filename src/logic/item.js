@@ -66,3 +66,18 @@ function humanNotes(values, { appName, localTime }) {
 function withHuman(values, notes) {
     return Object.keys(notes).length > 0 ? { ...values, human: notes } : values;
 }
+
+const BASE64_CHARS_PER_GROUP = 4;
+const BASE64_BYTES_PER_GROUP = 3;
+
+function base64Padding(base64) {
+    if (base64.endsWith('==')) {
+        return 2;
+    }
+    return base64.endsWith('=') ? 1 : 0;
+}
+
+// The size of the bytes behind a base64 string; --human-readable shows this instead of the cover.
+function base64ByteLength(base64) {
+    return (base64.length / BASE64_CHARS_PER_GROUP) * BASE64_BYTES_PER_GROUP - base64Padding(base64);
+}

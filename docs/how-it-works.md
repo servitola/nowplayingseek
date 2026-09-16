@@ -37,7 +37,8 @@ binary gets an empty dictionary and no error. `/usr/bin/osascript` qualifies, so
 for Automation that loads the private `MediaRemote.framework` inside it. That is the same
 loophole [ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter)
 uses through `/usr/bin/perl`, minus the helper framework and at about half the latency
-(about 50 ms for a whole run). A compiled binary can read too — but only if it is signed with an
+(about 50 ms for a whole run) — except for artwork, which needs perl too; see
+[Artwork](#artwork). A compiled binary can read too — but only if it is signed with an
 identifier that begins `com.apple.`, which is posing as Apple: nothing one can ship, and the first
 thing a stricter check would stop. The interpreters Apple ships would survive that check.
 
@@ -59,6 +60,25 @@ overwritten and lost. A newer `--hold` takes over from an older one through a fi
 On a quick tap the `release` can get there first; the `--hold` sees a release newer than itself
 and makes its one step.
 
+## Artwork
+
+The one call that carries `ArtworkData`, `MRMediaRemoteGetNowPlayingInfo(queue, block)`, wants a
+real Objective-C block — compiled code, not a script; what was tried from inside `osascript`
+instead, and measured to fail, is in [Limits](#limits) below. `native/artwork.m` is that compiled
+code: built by clang at `make build` time, never shipped built, and loaded — not run — by
+`/usr/bin/perl` through `DynaLoader::dl_load_file`, the way
+[ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) (BSD-3-Clause) loads
+its own framework the same way. `src/system/artwork.js` is the rest: one function, artwork only,
+no argv parsing or XS boilerplate — `nps_get_artwork` is a plain zero-argument C function, which
+works as a Perl XSUB because `dl_install_xsub` calls it with arguments it simply never reads.
+
+This is not the dylib `osascript` refused (`AGENTS.md`, dead ends): that binary was mapped into
+`osascript` itself, which is arm64e and only maps arm64e code back. Perl is plain arm64 and maps a
+plain arm64 bundle same as it always could, and perl — like osascript — is signed `com.apple.perl`,
+which is what macOS 15.4's Now Playing gate actually checks: the signature of the process asking,
+not of every image mapped into it. The bundle itself ships signed to no one: `codesign` shows
+`adhoc,linker-signed`, and it is built locally at install time, never distributed built.
+
 ## Limits
 
 - It drives the app macOS elected as Now Playing — the one in the Control Center widget —
@@ -74,3 +94,16 @@ and makes its one step.
   web page without a MediaSession `seekto` handler swallows the call; you get exit 2.
 - Private API. Tested on macOS 26.6 only. Apple can close this door in any update — run
   `nowplayingseek doctor` while something is playing to find out.
+- No artwork bytes from `osascript` alone. `MRNowPlayingRequest.localNowPlayingItem.nowPlayingInfo`
+  — the dictionary `--raw` prints — carries `ArtworkDataHeight`, `ArtworkDataWidth`,
+  `ArtworkIdentifier` and `ArtworkMIMEType`, never `ArtworkData`; the item's own `artwork` accessor
+  reads nil and its `metadata` object has no `artwork` selector to fall back to (checked on a
+  browser tab's Now Playing item, macOS 26.6.2). `ObjC.bindFunction` takes `id` for the block
+  argument of `MRMediaRemoteGetNowPlayingInfo(queue, block)` but builds no block from a plain JS
+  function — passing one behaved exactly like passing an explicit `$()` (nil): the call returns at
+  once, no exception, and the handler never runs even after two seconds spun on
+  `NSRunLoop.currentRunLoop`. Reading a class's full method table to look for another synchronous
+  accessor hits the same wall as the dylib dead end in `AGENTS.md`: `class_copyMethodList` returns
+  an opaque array JXA cannot index without pointer arithmetic. [Artwork](#artwork) above is how the
+  bytes are gotten instead: not from `osascript`, but from a real block in compiled code loaded
+  into `/usr/bin/perl`.

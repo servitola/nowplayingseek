@@ -1,10 +1,12 @@
 PREFIX ?= /usr/local
 PURE := src/logic/time.js src/logic/seek.js src/logic/hold.js src/logic/stream.js src/logic/item.js src/logic/watch.js src/logic/paint.js src/logic/words.js src/logic/config.js
-SOURCES := $(PURE) src/system/mediaremote.js src/system/files.js src/system/terminal.js src/player.js src/system/configfile.js src/watch.js src/dialects/nowplaying-cli.js src/dialects/media-control-help.js src/dialects/media-control-read.js src/dialects/media-control.js src/dialects/shared.js src/dialects/playerctl.js src/dialects/mpc.js src/dialects/shpotify.js src/dialects/index.js src/output.js src/cli.js src/usage.js
+SOURCES := $(PURE) src/system/mediaremote.js src/system/artwork.js src/system/files.js src/system/terminal.js src/player.js src/system/configfile.js src/watch.js src/dialects/nowplaying-cli.js src/dialects/media-control-help.js src/dialects/media-control-read.js src/dialects/media-control.js src/dialects/shared.js src/dialects/playerctl.js src/dialects/mpc.js src/dialects/shpotify.js src/dialects/index.js src/output.js src/args.js src/cli.js src/usage.js
 TESTS := test/harness.js test/core.test.js test/hold.test.js test/item.test.js test/dialects.test.js test/paint.test.js test/watch.test.js test/edges.test.js test/edges-text.test.js test/config.test.js
 TARGET := build/nowplayingseek
 FAKE_TARGET := build/nowplayingseek-fake
 TEST_TARGET := build/test.js
+ARTWORK_SRC := native/artwork.m
+ARTWORK_BUNDLE := build/nowplayingseek-artwork.bundle
 
 # JXA has no module system, so the sources are concatenated into the one file
 # osascript runs. The order is the dependency order.
@@ -15,19 +17,28 @@ $(TARGET): $(SOURCES)
 
 .PHONY: build test test-live test-world coverage typecheck globals lint install uninstall clean
 
-build: $(TARGET)
+build: $(TARGET) $(ARTWORK_BUNDLE)
 
-# The same tool with a player that is a file, so that no test of arguments can reach a real one.
-$(FAKE_TARGET): $(SOURCES) test/fake-mediaremote.js
+# The same tool with a player that is a file, so that no test of arguments — nor artwork —
+# can reach anything real.
+FAKE_SOURCES := $(subst src/system/artwork.js,test/fake-artwork.js,$(subst src/system/mediaremote.js,test/fake-mediaremote.js,$(SOURCES)))
+$(FAKE_TARGET): $(SOURCES) test/fake-mediaremote.js test/fake-artwork.js
 	@mkdir -p build
-	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(subst src/system/mediaremote.js,test/fake-mediaremote.js,$(SOURCES)); } > $@
+	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(FAKE_SOURCES); } > $@
 	chmod +x $@
 
 $(TEST_TARGET): $(TESTS)
 	@mkdir -p build
 	cat $(TESTS) > $@
 
-test: $(TARGET) $(FAKE_TARGET) $(TEST_TARGET)
+# A real Objective-C block, which nothing inside osascript can build (docs/how-it-works.md);
+# loaded into /usr/bin/perl at run time by artwork.fetch() in src/system/artwork.js.
+# Unsigned is fine: mediaremoted checks perl's own code signature, never this file's.
+$(ARTWORK_BUNDLE): $(ARTWORK_SRC)
+	@mkdir -p build
+	clang -fobjc-arc -Wall -Wextra -bundle -framework Foundation -o $@ $<
+
+test: $(TARGET) $(FAKE_TARGET) $(TEST_TARGET) $(ARTWORK_BUNDLE)
 	osascript -l JavaScript $(TEST_TARGET) $(PURE)
 	sh test/cli.test.sh $(FAKE_TARGET)
 	sh test/fake.test.sh
@@ -58,13 +69,14 @@ lint:
 	node scripts/globals.js --check
 	pre-commit run --all-files
 
-install: $(TARGET)
+install: $(TARGET) $(ARTWORK_BUNDLE)
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m 755 $(TARGET) $(DESTDIR)$(PREFIX)/bin/nowplayingseek
+	install -m 755 $(ARTWORK_BUNDLE) $(DESTDIR)$(PREFIX)/bin/nowplayingseek-artwork.bundle
 	ln -sf nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps
+	rm -f $(DESTDIR)$(PREFIX)/bin/nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps $(DESTDIR)$(PREFIX)/bin/nowplayingseek-artwork.bundle
 
 clean:
 	rm -rf build

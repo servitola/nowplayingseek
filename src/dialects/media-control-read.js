@@ -67,6 +67,17 @@ function mcTimes(payload, state, raw, options) {
     }
 }
 
+function mcArtwork(payload, raw, options) {
+    if (!(raw.ArtworkMIMEType && !options['no-artwork'])) {
+        return;
+    }
+    payload.artworkMimeType = raw.ArtworkMIMEType;
+    const data = artwork.base64(raw.ArtworkIdentifier, raw.ArtworkMIMEType);
+    if (data) {
+        payload.artworkData = options['human-readable'] ? `<${raw.ArtworkMIMEType} ${base64ByteLength(data)} bytes...>` : data;
+    }
+}
+
 const mediaControlReads = {
     payload(options) {
         const state = mediaRemote.read();
@@ -87,9 +98,7 @@ const mediaControlReads = {
         }
         mcTimes(payload, state, raw, options);
         payload.playbackRate = state.rate;
-        if (raw.ArtworkMIMEType && !options['no-artwork']) {
-            payload.artworkMimeType = raw.ArtworkMIMEType;
-        }
+        mcArtwork(payload, raw, options);
         for (const key of MC_PASSED_ON) {
             const value = raw[key[0].toUpperCase() + key.slice(1)];
             if (!isMissing(value)) {

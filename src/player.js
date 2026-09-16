@@ -14,6 +14,10 @@ function waitUntil(condition, timing) {
     return false;
 }
 
+function artworkKeys(raw) {
+    return raw ? [raw.ArtworkIdentifier, raw.ArtworkMIMEType] : [undefined, undefined];
+}
+
 const player = {
     settings: null,
 
@@ -160,5 +164,15 @@ const player = {
         if (!reacted) {
             throw new Failure(EXIT.ignored, `player did not react to "${command}"`);
         }
+    },
+
+    artwork(wantedPath) {
+        const state = this.requireState();
+        const [identifier, mimeType] = artworkKeys(mediaRemote.raw(state));
+        const fetched = artwork.fetch(identifier, mimeType, wantedPath);
+        if (!fetched) {
+            throw new Failure(EXIT.ignored, `${state.app || 'this app'} has no artwork for the item playing now`);
+        }
+        return fetched;
     },
 };

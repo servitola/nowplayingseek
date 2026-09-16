@@ -8,7 +8,7 @@ cases=0
 failures=0
 
 # shellcheck disable=SC2016
-sources=$(sed -n 's/^SOURCES := \$(PURE) //p' Makefile | sed 's|src/system/mediaremote.js|test/fake-mediaremote.js|')
+sources=$(sed -n 's/^SOURCES := \$(PURE) //p' Makefile | sed 's|src/system/mediaremote.js|test/fake-mediaremote.js|; s|src/system/artwork.js|test/fake-artwork.js|')
 pure=$(sed -n 's/^PURE := //p' Makefile)
 # shellcheck disable=SC2086
 {
@@ -28,6 +28,14 @@ player() {
 	rm -rf "$work/fake" && mkdir -p "$work/fake/xdg/nowplayingseek"
 	printf '[timing]\nverify_timeout = 0.3\ncommand_delivery = 0.01\n' >"$work/fake/xdg/nowplayingseek/config.ini"
 	printf '{"obeys":%s,"now":{"title":"T","artist":"A","album":null,"app":"fake.player","duration":600,"position":120,"playing":%s,"rate":1,"timestamp":1}}' "$1" "${2:-false}" >"$work/fake/state.json"
+}
+
+# the same, with artwork metadata set and bytes for test/fake-artwork.js to hand back
+player_with_artwork() {
+	rm -rf "$work/fake" && mkdir -p "$work/fake/xdg/nowplayingseek"
+	printf '[timing]\nverify_timeout = 0.3\ncommand_delivery = 0.01\n' >"$work/fake/xdg/nowplayingseek/config.ini"
+	printf '{"obeys":true,"now":{"title":"T","artist":"A","album":null,"app":"fake.player","duration":600,"position":120,"playing":true,"rate":1,"timestamp":1,"artworkIdentifier":"abc123","artworkMimeType":"image/jpeg"}}' >"$work/fake/state.json"
+	printf 'fake-cover-bytes' >"$work/fake/artwork-source"
 }
 
 # told <name> <exit code> <what the player was told, lines joined by ;> <arguments...>
@@ -192,6 +200,28 @@ player true && says 'duration --minify' 'value["duration"] == 600 and lines == 1
 player true && says 'position, no flag, is the number scripts read' 'out == "120.000\n"' position
 player true && says 'doctor --json' 'value["ok"] is True and value["app"] == "fake.player"' doctor --json
 player true && says 'config --json: the settings in force' 'value["settings"]["hold"]["max_time"] == 60 and value["found"] is True' config --json
+player true && told 'artwork: no artwork for this item' 2 '' artwork
+player_with_artwork && told 'artwork writes the fake bytes and names the path' 0 'artwork abc123;' artwork "$work/cover.jpg"
+cases=$((cases + 1))
+[ "$(cat "$work/stdout")" = "$work/cover.jpg" ] || fail "artwork prints $(cat "$work/stdout")"
+cases=$((cases + 1))
+[ "$(cat "$work/cover.jpg" 2>/dev/null)" = fake-cover-bytes ] || fail 'artwork did not write the fake bytes to the path it was given'
+player_with_artwork && says 'artwork --json names the path and the mime type' 'value["path"] and value["mimeType"] == "image/jpeg"' artwork --json
+player_with_artwork && says 'media-control get carries the cover as base64' 'value["artworkMimeType"] == "image/jpeg" and value["artworkData"] == "ZmFrZS1jb3Zlci1ieXRlcw=="' media-control get
+player_with_artwork && says 'media-control get --no-artwork drops it' '"artworkData" not in value and "artworkMimeType" not in value' media-control get --no-artwork
+player_with_artwork && says '-h truncates artworkData, as its own help promises' 'value["artworkData"] == "<image/jpeg 16 bytes...>"' media-control get -h
+
+# `stream` polls every 0.2 s; the cover must be fetched once per item, not once per poll.
+player_with_artwork
+printf '[watch]\ninterval = 0.1\n' >>"$work/fake/xdg/nowplayingseek/config.ini"
+NPS_FAKE=$work/fake XDG_CONFIG_HOME=$work/fake/xdg "$bin" stream --no-diff >"$work/said" 2>&1 &
+listener=$!
+sleep 1.2
+kill "$listener" 2>/dev/null
+wait "$listener" 2>/dev/null
+cases=$((cases + 1))
+[ "$(grep -c '^artwork abc123$' "$work/fake/calls.log" 2>/dev/null)" -eq 1 ] || fail "stream fetched artwork $(grep -c '^artwork abc123$' "$work/fake/calls.log" 2>/dev/null) times over ~5 polls of the same item, expected 1"
+
 player true && told 'watch takes no --json' 64 '' watch --json
 player true && told 'release takes no --json' 64 '' release --json
 cases=$((cases + 1))
@@ -212,6 +242,7 @@ player true && rm "$work/fake/state.json"
 told 'nothing is playing' 1 '' status
 told 'nothing is playing: transport' 1 '' pause
 told 'nothing is playing: doctor' 1 '' doctor
+told 'nothing is playing: artwork' 1 '' artwork
 told 'as nowplaying-cli: nothing is playing is exit 0' 0 '' nowplaying-cli pause
 told 'as media-control: nothing is playing is exit 0' 0 '' media-control pause
 told 'as mpc: nothing is playing is exit 1' 1 '' mpc next

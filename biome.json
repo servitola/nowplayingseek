@@ -94,6 +94,7 @@
                     "fitToWidth",
                     "visibleLength",
                     "clock",
+                    "artwork",
                     "now",
                     "terminal",
                     "player",
@@ -128,6 +129,7 @@
                                         "formatChapter",
                                         "humanNotes",
                                         "withHuman",
+                                        "base64ByteLength",
                                         "describeChange",
                                         "logOf",
                                         "fitToWidth",
@@ -178,6 +180,7 @@
         {
             "includes": [
                 "src/system/mediaremote.js",
+                "src/system/artwork.js",
                 "src/system/files.js",
                 "src/system/terminal.js",
                 "src/player.js",
@@ -193,6 +196,7 @@
                 "src/dialects/shpotify.js",
                 "src/dialects/index.js",
                 "src/output.js",
+                "src/args.js",
                 "src/cli.js",
                 "src/usage.js"
             ],
@@ -230,6 +234,7 @@
                     "formatChapter",
                     "humanNotes",
                     "withHuman",
+                    "base64ByteLength",
                     "named",
                     "describeChange",
                     "logOf",
@@ -256,6 +261,7 @@
                     "withSetting",
                     "KEY_PREFIX",
                     "mediaRemote",
+                    "artwork",
                     "now",
                     "lastSeekFile",
                     "holdFile",
@@ -285,6 +291,12 @@
                     "showJson",
                     "show",
                     "showSeconds",
+                    "timeArgument",
+                    "SPEAKING",
+                    "OFFLINE",
+                    "DIRECTIONS",
+                    "rejectUnknownArguments",
+                    "seekCommand",
                     "VERSION",
                     "print",
                     "run",
@@ -309,6 +321,8 @@
                                         "showJson",
                                         "show",
                                         "showSeconds",
+                                        "timeArgument",
+                                        "rejectUnknownArguments",
                                         "print",
                                         "run"
                                     ],
@@ -316,6 +330,7 @@
                                         "KEY_PREFIX",
                                         "MR_COMMAND",
                                         "mediaRemote",
+                                        "artwork",
                                         "TEMPORARY",
                                         "now",
                                         "lastSeekFile",
@@ -336,6 +351,10 @@
                                         "asPlayerctl",
                                         "asMpc",
                                         "asShpotify",
+                                        "SPEAKING",
+                                        "OFFLINE",
+                                        "DIRECTIONS",
+                                        "seekCommand",
                                         "VERSION",
                                         "USAGE"
                                     ]
@@ -405,9 +424,9 @@
             }
         },
         {
-            "includes": ["test/fake-mediaremote.js"],
+            "includes": ["test/fake-mediaremote.js", "test/fake-artwork.js"],
             "javascript": {
-                "globals": ["$", "ObjC", "effectiveRate", "MILLISECONDS_PER_SECOND"]
+                "globals": ["$", "ObjC", "effectiveRate", "MILLISECONDS_PER_SECOND", "FAKE", "fakeLog"]
             },
             "linter": {
                 "rules": {

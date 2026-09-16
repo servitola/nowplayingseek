@@ -20,17 +20,23 @@ const mediaRemote = {
     info: () => null,
     raw(known) {
         const state = known || this.read();
-        return (
-            state && {
-                app: state.app,
-                playing: state.playing,
-                Title: state.title,
-                Duration: state.duration,
-                ElapsedTime: state.position,
-                PlaybackRate: state.rate,
-                Timestamp: state.timestamp,
-            }
-        );
+        if (!state) {
+            return null;
+        }
+        const base = {
+            app: state.app,
+            playing: state.playing,
+            Title: state.title,
+            Duration: state.duration,
+            ElapsedTime: state.position,
+            PlaybackRate: state.rate,
+            Timestamp: state.timestamp,
+        };
+        if (state.artworkIdentifier) {
+            base.ArtworkIdentifier = state.artworkIdentifier;
+            base.ArtworkMIMEType = state.artworkMimeType;
+        }
+        return base;
     },
     setElapsedTime(seconds) {
         fakeLog(`setElapsedTime ${seconds}`);

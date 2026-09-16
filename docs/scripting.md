@@ -18,6 +18,7 @@ nowplaying-cli and media-control it is 0, as theirs is): `0` it happened,
 | jump to 12:30 | `nowplayingseek seek 12:30` |
 | pause, resume, next | `nowplayingseek pause`, `play`, `next` |
 | can this Mac be driven at all | `nowplayingseek doctor` |
+| the cover art, as a file | `nowplayingseek artwork` — prints where it wrote it |
 | follow every change, for a status bar | `nowplayingseek stream --no-artwork` — [below](#following-changes) |
 
 Every command that reads or moves the player answers with where things stand, and the three flags

@@ -5,6 +5,12 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Added
+- `artwork [path]` writes the cover art to a file (a temp one by default) and prints where;
+  `media-control get` and `stream` carry it too, as base64 `artworkData`, unless `--no-artwork`.
+  Needs a small compiled helper loaded into `/usr/bin/perl` — `make build`/`install` build it,
+  see `docs/how-it-works.md#artwork`.
+
 ## 2026.09.11 — 2026-09-11
 
 ### Added

@@ -64,6 +64,7 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 | `seek <time>` | to `754`, `12:34` or `1:02:03` |
 | `toggle`, `play`, `pause`, `next`, `previous` | transport |
 | `doctor` | exit 0 when Now Playing is readable |
+| `artwork [path]` | the cover art, to a file |
 | `config`, `config set <setting> <value>` | the settings in effect; [change one](docs/advanced.md#config-file) |
 | `--json`, `--minify`, `--raw` | on any of the above: the answer as JSON, as JSON on one line, as the keys macOS itself holds |
 

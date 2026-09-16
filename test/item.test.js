@@ -66,4 +66,10 @@ function testValidJson(core) {
     );
     same(Object.hasOwn(core.withHuman({ rate: 1 }, {}), 'human'), false, 'human: nothing to say, no empty object');
 }
-GROUPS.push(testChapters, testRaw, testNotes, testValidJson);
+function testBase64ByteLength(core) {
+    same(core.base64ByteLength(''), 0, 'base64ByteLength: nothing');
+    same(core.base64ByteLength('YWJj'), 3, 'base64ByteLength: no padding');
+    same(core.base64ByteLength('YWI='), 2, 'base64ByteLength: one pad');
+    same(core.base64ByteLength('ZmFrZS1jb3Zlci1ieXRlcw=='), 16, 'base64ByteLength: two pads');
+}
+GROUPS.push(testChapters, testRaw, testNotes, testValidJson, testBase64ByteLength);

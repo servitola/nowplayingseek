@@ -72,6 +72,7 @@ expect 'release with a wrong argument' 64 stderr 'release takes only forward, ba
 expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm:ss, got "--fast"' backward --fast
 expect 'a step of zero' 64 stderr 'forward needs a step above zero' forward 0 --hold
 expect 'watch with an argument' 64 stderr 'watch takes no arguments, got "closely"' watch closely
+expect 'artwork with two paths' 64 stderr 'artwork takes one optional path, got "two" on top' artwork one two
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
 expect 'config with an unknown argument' 64 stderr 'config takes "init", "set <setting> <value>" or nothing, got "--force"' config --force
 expect 'config init with an argument on top' 64 stderr 'config takes "init", "set <setting> <value>" or nothing, got "init --force"' config init --force

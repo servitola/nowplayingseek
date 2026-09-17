@@ -1,5 +1,4 @@
-// The bytes only a compiled block can carry; native/artwork.m is the compiled counterpart
-// osascript cannot build one of, loaded into /usr/bin/perl (docs/how-it-works.md).
+// docs/how-it-works.md#artwork: why this loads native/artwork.m into perl, not osascript.
 const ARTWORK_LOADER =
     'use DynaLoader; my $h = DynaLoader::dl_load_file($ARGV[0], 0) or exit 2; '
     + 'my $s = DynaLoader::dl_find_symbol($h, "nps_get_artwork") or exit 3; '
@@ -42,8 +41,8 @@ function runPerl(bundle, outPath) {
 }
 
 const artwork = {
-    // A file the caller can send anywhere; `artwork` on the command line asks for this directly.
-    // One item, one fetch: `stream` polls every 0.2 s and must not relaunch perl for the same cover.
+    // `stream` polls every 0.2 s and must not relaunch perl for the same cover — cached only when
+    // no path was requested, since `artwork <path>` always needs a fresh write.
     fetch(identifier, mimeType, wantedPath) {
         if (!identifier) {
             return null;

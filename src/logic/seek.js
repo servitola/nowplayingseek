@@ -20,8 +20,8 @@ function clampTarget(target, duration) {
     return Math.max(0, Math.min(upper, target));
 }
 
-// A refresh can belong to an older seek: at key-repeat pace its timestamp is later than the newest
-// seek's, while the position is still the older target. Only a position near the last target counts.
+// A refresh can belong to an older seek: at key-repeat pace its timestamp outruns the latest
+// seek's while position still sits at the old target.
 function seekBase(state, lastSeek, now, pendingSeekMax) {
     const recent = lastSeek && lastSeek.app === state.app && now - lastSeek.at < pendingSeekMax;
     if (!recent) {
@@ -48,8 +48,8 @@ function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
     return drift > -1 && drift < 1 + verifyTimeout * (after.rate || 1);
 }
 
-// Seeks sent 30 ms apart by separate processes reach the player in any order. The newest process
-// sees a refresh that is not its own target and sends it again.
+// Seeks 30 ms apart from separate processes can arrive out of order; the newest process sees a
+// refresh that isn't its target and resends.
 function seekOvertaken(after, target, { sentAt, superseded, verifyTimeout, resent = 0, app }) {
     if (resent >= MOST_RESENDS || (after && after.app !== app)) {
         return false;

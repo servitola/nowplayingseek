@@ -2,9 +2,7 @@ const OUTPUT_FLAGS = ['--json', '--raw', '--minify', '--compact'];
 const PRETTY_INDENT = 2;
 const PRINTED_DECIMALS = 3;
 
-// How a command answers. No flag: a line for people. --json: the same as JSON, indented, in a pipe
-// as well. --raw: the keys macOS itself holds, as JSON. --minify puts either on one line, and
-// alone it means --json. The order of the flags never matters.
+// docs/scripting.md documents the output contract this implements.
 function takeOutput(args) {
     const asked = flag => args.includes(flag);
     const minify = asked('--minify') || asked('--compact');
@@ -33,7 +31,7 @@ function showStatus(state, multiplier) {
     print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
 }
 
-// Where things stand, in the shape that was asked for. Every command that reads or moves the player ends here.
+// Every command that reads or moves the player ends here.
 function show(state, output, multiplier = 1) {
     if (output.shape === 'line') {
         return showStatus(state, multiplier);

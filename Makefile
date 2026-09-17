@@ -1,6 +1,14 @@
 PREFIX ?= /usr/local
-PURE := src/logic/time.js src/logic/seek.js src/logic/hold.js src/logic/stream.js src/logic/item.js src/logic/watch.js src/logic/paint.js src/logic/words.js src/logic/config.js
-SOURCES := $(PURE) src/system/mediaremote.js src/system/paths.js src/system/artwork.js src/system/files.js src/system/terminal.js src/player.js src/system/configfile.js src/watch.js src/dialects/nowplaying-cli.js src/dialects/media-control-help.js src/dialects/media-control-read.js src/dialects/media-control.js src/dialects/shared.js src/dialects/playerctl.js src/dialects/mpc.js src/dialects/shpotify.js src/dialects/index.js src/output.js src/args.js src/cli.js src/usage.js
+
+# core: what a hotkey reaches on every command — logic, system, player, status, cli. A feature is
+# everything core never calls (AGENTS.md); the boundary is checked, not kept by discipline, in
+# scripts/globals.js's --check, which reads CORE and FEATURES back with `make print-<VAR>`.
+CORE_PURE := src/logic/time.js src/logic/seek.js src/logic/hold.js src/logic/stream.js src/logic/item.js src/logic/text.js src/logic/paint.js src/logic/config.js
+FEATURE_PURE := src/features/config/settings-authoring.js src/features/dialects/words.js src/features/watch/change.js
+PURE := $(CORE_PURE) $(FEATURE_PURE)
+CORE := $(CORE_PURE) src/system/mediaremote.js src/system/paths.js src/system/artwork.js src/system/files.js src/system/terminal.js src/player.js src/player-commands.js src/player-artwork.js src/status.js src/native-get.js src/system/configfile.js src/output.js src/args.js src/cli.js src/usage.js
+FEATURES := $(FEATURE_PURE) src/features/config/configfile.js src/features/config/command.js src/features/dialects/nowplaying-cli.js src/features/dialects/media-control-help.js src/features/dialects/media-control.js src/features/dialects/shared.js src/features/dialects/playerctl.js src/features/dialects/mpc.js src/features/dialects/shpotify.js src/features/dialects/index.js src/features/watch/loop.js
+SOURCES := $(CORE) $(FEATURES)
 TESTS := test/harness.js test/core.test.js test/hold.test.js test/item.test.js test/dialects.test.js test/paint.test.js test/watch.test.js test/edges.test.js test/edges-text.test.js test/config.test.js
 TARGET := build/nowplayingseek
 FAKE_TARGET := build/nowplayingseek-fake
@@ -18,6 +26,11 @@ $(TARGET): $(SOURCES)
 .PHONY: build test test-speed test-live test-world coverage typecheck globals lint install uninstall clean
 
 build: $(TARGET) $(ARTWORK_BUNDLE)
+
+# scripts/globals.js reads CORE/FEATURES/PURE/SOURCES this way, not by re-parsing the Makefile
+# text, so a variable built from other variables (as SOURCES now is) still resolves correctly.
+print-%:
+	@echo $($*)
 
 # The same tool with a player that is a file, so that no test of arguments — nor artwork —
 # can reach anything real.

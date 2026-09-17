@@ -2,7 +2,29 @@ const MICROS = 1e6;
 const MC_DASHES = /^-+/;
 const MC_LONG = /^--/;
 const MC_FRACTION = /\.\d+Z$/;
+const MC_NUMBER = /^-?\d+(\.\d+)?$/;
+const MC_LEADING_ZEROS = /^0+(?!$)/;
 const STREAM_POLL = 0.2;
+
+const mcStripZeros = text => (text === undefined || text === '0' ? text : text.replace(MC_LEADING_ZEROS, ''));
+
+// media-control's own seek, reached both as its dialect's own command and as nowplayingseek's own
+// `seek <time> --micros` flag — a native flag, so it stays core rather than naming the dialect.
+function mediaControlSeek(args) {
+    const micros = args.includes('--micros');
+    const position = mcStripZeros(args.find(arg => arg !== '--micros'));
+    if (position === undefined) {
+        mcFail("Missing position for command 'seek'");
+    }
+    if (!MC_NUMBER.test(position)) {
+        mcFail(`'${position}' is not a valid number`);
+    }
+    const wanted = Math.trunc(Number(position) * (micros ? 1 : MICROS));
+    if (wanted < 0) {
+        mcFail(`Negative values are not allowed: ${wanted}`);
+    }
+    player.seekTo(wanted / MICROS);
+}
 const MC_SHARED_OPTIONS = ['micros', 'no-artwork', 'allow-missing-title', 'human-readable'];
 const MC_OPTIONS = { get: [...MC_SHARED_OPTIONS, 'now'], stream: [...MC_SHARED_OPTIONS, 'no-diff', 'debounce'] };
 const MC_PASSED_ON = [
@@ -78,7 +100,7 @@ function mcArtwork(payload, raw, options) {
     }
 }
 
-const mediaControlReads = {
+const status = {
     payload(options) {
         const state = mediaRemote.read();
         const raw = mediaRemote.raw(state);
@@ -115,8 +137,8 @@ const mediaControlReads = {
 
     stream(args) {
         const options = mcOptions('stream', args);
-        if (terminal.colours() && !options['human-readable']) {
-            return watching.run({ live: false });
+        if (terminal.colours() && !options['human-readable'] && RENDERERS.watch) {
+            return RENDERERS.watch({ live: false });
         }
         const emit = (diff, payload) => print(JSON.stringify({ type: 'data', diff, payload }, null, options['human-readable'] ? 2 : 0));
         let previous = null;

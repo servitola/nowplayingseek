@@ -18,10 +18,6 @@ const MC_COMMANDS = [
 const MC_VERIFIED = { 0: 'play', 1: 'pause', 2: 'toggle' };
 const MC_MODES = { shuffle: { off: 1, albums: 2, tracks: 3 }, repeat: { off: 1, track: 2, playlist: 3 } };
 const MC_INTEGER = /^-?\d+$/;
-const MC_NUMBER = /^-?\d+(\.\d+)?$/;
-const MC_LEADING_ZEROS = /^0+(?!$)/;
-
-const mcStripZeros = text => (text === undefined || text === '0' ? text : text.replace(MC_LEADING_ZEROS, ''));
 
 const asMediaControl = {
     knows(word) {
@@ -49,22 +45,6 @@ const asMediaControl = {
             mcFail(`Unknown command ID: ${id}`);
         }
         this.send(Number(id));
-    },
-
-    seek(args) {
-        const micros = args.includes('--micros');
-        const position = mcStripZeros(args.find(arg => arg !== '--micros'));
-        if (position === undefined) {
-            mcFail("Missing position for command 'seek'");
-        }
-        if (!MC_NUMBER.test(position)) {
-            mcFail(`'${position}' is not a valid number`);
-        }
-        const wanted = Math.trunc(Number(position) * (micros ? 1 : MICROS));
-        if (wanted < 0) {
-            mcFail(`Negative values are not allowed: ${wanted}`);
-        }
-        player.seekTo(wanted / MICROS);
     },
 
     mode(command, text) {
@@ -107,10 +87,10 @@ const asMediaControl = {
             return this.send(simple);
         }
         const commands = {
-            get: () => mediaControlReads.get(args),
-            stream: () => mediaControlReads.stream(args),
+            get: () => status.get(args),
+            stream: () => status.stream(args),
             send: () => this.sendById(args[0]),
-            seek: () => this.seek(args),
+            seek: () => mediaControlSeek(args),
             shuffle: () => this.mode('shuffle', args[0]),
             repeat: () => this.mode('repeat', args[0]),
             speed: () => this.speed(args[0]),

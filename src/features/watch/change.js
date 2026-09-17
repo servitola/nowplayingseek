@@ -1,14 +1,8 @@
 const IDENTITY = ['title', 'artist', 'album', 'app'];
 const LEAP = 2;
-const DEFAULT_COLUMNS = 80;
-const ELLIPSIS = '…';
-const STTY_SIZE = /^\d+ (\d+)\s*$/;
-const ESCAPE_CHARACTER = 27;
-const PAINT = new RegExp(`${String.fromCharCode(ESCAPE_CHARACTER)}\\[[0-9;]*m`, 'g');
 
 const named = state => [state.title, state.artist].filter(Boolean).join(' — ');
 
-// What happened between two reads, in a word — or nothing, when the item merely played on.
 function describeChange(previous, current, started = false) {
     if (!current) {
         return previous ? { icon: '×', words: 'nothing is playing' } : null;
@@ -30,22 +24,7 @@ function describeChange(previous, current, started = false) {
 
 const describeState = state => (state.playing ? { icon: '▶', label: 'playing' } : { icon: '⏸', label: 'paused' });
 
-// A new item is two lines of the log: what it is, then what it is doing.
+// A new item logs two lines: what it is, then what it is doing.
 function logOf(change, current) {
     return change.label || !current ? [change] : [change, describeState(current)];
 }
-
-function fitToWidth(text, columns) {
-    const characters = Array.from(text);
-    if (characters.length <= columns) {
-        return text;
-    }
-    return columns > 0 ? characters.slice(0, columns - 1).join('') + ELLIPSIS : '';
-}
-
-function parseColumns(sttySize) {
-    const match = STTY_SIZE.exec(sttySize);
-    return match ? Number.parseInt(match[1], 10) : DEFAULT_COLUMNS;
-}
-
-const visibleLength = text => Array.from(text.replace(PAINT, '')).length;

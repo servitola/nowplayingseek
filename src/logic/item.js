@@ -14,7 +14,7 @@ const FIRST = [
 ];
 const ARTWORK = 'Artwork';
 
-// What one looks for first comes first; the four artwork keys fold into one object at the end.
+// What one looks for first comes first; artwork keys fold into one object at the end.
 function orderRaw(raw) {
     const ordered = {};
     const artwork = {};

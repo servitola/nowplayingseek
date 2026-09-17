@@ -2,8 +2,7 @@ const BAR_CELLS = 16;
 const ESCAPE_CODE = 27;
 const ESCAPE = String.fromCharCode(ESCAPE_CODE);
 // The sixteen colours of the terminal, never an RGB of our own: the reader's theme decides what
-// green is. Playing is green and paused is yellow everywhere; a string, a number and a flag in
-// JSON differ the way they do in an editor.
+// green is. Playing is green, paused is yellow, everywhere.
 const INK = {
     bold: 1,
     dim: 2,
@@ -45,7 +44,7 @@ function paintStatusParts(state, { app, multiplier, chapter }) {
     return parts.filter(Boolean).join('  ');
 }
 
-// A title too long for the terminal is cut, so that a line redrawn in place never wraps.
+// A too-long title is cut so the redrawn line never wraps.
 function paintStatus(state, options) {
     const line = paintStatusParts(state, options);
     const over = options.columns ? visibleLength(line) - options.columns : 0;
@@ -58,7 +57,7 @@ function paintStatus(state, options) {
 
 const LABEL_WIDTH = 7;
 
-// One line of the log. A play, a pause or a seek says where it happened, so the line stands alone.
+// A play, pause or seek line stands alone: it also says where it happened.
 function paintChange(change, clock, state, app) {
     const when = ink('dim', clock);
     if (!(change.label && state)) {

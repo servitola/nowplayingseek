@@ -12,36 +12,69 @@ a link. What is unfinished or undecided is in `BACKLOG.md`; this file holds only
 JavaScript for Automation under `/usr/bin/osascript`: no dependencies, no `package.json`, no
 modules — except artwork, one compiled helper loaded into `/usr/bin/perl`, never `osascript`; see
 `docs/how-it-works.md#artwork` before touching `native/artwork.m` or `src/system/artwork.js`.
-`make` concatenates the JS sources into one executable script, so a symbol declared in one
-file is a plain global in the files after it. The order in the `Makefile` is the order of the
-layers, and a layer uses only the layers above it in this list:
+`make` concatenates the JS sources into one executable script, so a symbol declared in one file is
+a plain global in the files after it.
+
+Opening `src/` should show, at once, that this is a command-line tool for seeking through what is
+playing and reading its state — a small flat core — with everything else a reader can decide not
+to look at under `src/features/`. **The rule that decides core vs. feature, always: a feature is
+something core never calls.** If core calls it, it is core, whatever a file's folder or name
+suggests — a folder is where a file happens to live, not what makes it a feature. Core declares an
+extension point (`COMMANDS`, `dialectRouter`, `RENDERERS`) and a feature registers into it at its
+own file's bottom; core never names a feature file. `scripts/globals.js --check` enforces this
+mechanically: it fails `make lint` if a `CORE`-listed file mentions a symbol declared only under a
+`FEATURES`-listed one — a build check, not a promise kept by discipline. Violate it and `make
+lint` names the file and the symbol; the fix is almost always the one this migration made three
+times over — pull the piece core actually needs out into a core file, and leave the rest optional:
 
 ```
 src/logic/      knows nothing of macOS — every function here has a unit test
     time.js         parse and print a time; exit codes; Failure
     seek.js         where a step starts, whether it landed, whether an older seek overtook it
     hold.js         a held key and its release; the --progressive curve; the pace of a knob
-    stream.js       what changed between two reads
+    stream.js       what changed between two reads — status.js's own stream diffs with this too
     item.js         the order of --raw; the chapter as 6/13; the `human` block
-    watch.js        what happened between two reads, in a word; fitting a line to the terminal
+    text.js         fitting a line to the terminal width; stripping paint to measure it
     paint.js        what a terminal gets: the status line, the help page, JSON, ini — bold, dim and the sixteen colours, each with a meaning
-    words.js        the seek words of playerctl and mpc; playerctl's format strings
-    config.js       the SETTINGS table; ini
+    config.js       the SETTINGS table; reading and resolving an ini — read on every command;
+                    authoring one (config init, config set) is a feature, see src/features/config/
 src/system/     the only place with $ and ObjC
     mediaremote.js  read Now Playing, send commands — the private framework lives here alone
     artwork.js      shells out to /usr/bin/perl for the one thing osascript cannot read
     files.js        the temp files processes talk through, and the lock
     terminal.js     is stdout a terminal; an app's name from its bundle id
-    configfile.js   find, load and write config.ini
+    configfile.js   find, load config.ini — read only; writing one is a feature
 src/player.js   a step, a hold, waiting for the player — ties logic to system
-src/watch.js    the loop of `watch` and of `stream` in a terminal: one line redrawn, events above it
-src/dialects/   one file a tool; they call player and system, never each other's insides
-    nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
-    shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)
+src/player-commands.js   requireState, requirePosition, send — simple dispatch to mediaRemote
+src/player-artwork.js    the artwork() primitive, fetched through system/artwork.js
+src/status.js   status.get()/status.stream(): the JSON payload of media-control's own `get` and
+                `stream`, and mediaControlSeek(), its own seek — the native `status --json`,
+                `stream`, `seek --micros` and the hidden `get` all reach these, so this dialect's
+                own vocabulary stays core even though speaking it as a dialect is a feature.
+                `stream` paints in a terminal only if RENDERERS.watch is set, else the plain JSON
+                it always emits for a pipe
+src/native-get.js   nowplaying-cli's own shape for `get`/`get-raw` — the same story as status.js,
+                for the other dialect two native commands are secretly implemented by
 src/output.js   how a command answers: a line, `--json`, `--minify`, `--raw` — one contract for all of them
 src/args.js     what a command may take: SPEAKING, FLAGS, seekCommand — cli.js is dispatch alone
-src/cli.js      our own commands, `run(argv)` — the entry point `osascript` calls
+src/cli.js      our own commands, `run(argv)` — the entry point `osascript` calls; declares
+                COMMANDS, dialectRouter and RENDERERS, the extension points features register into
 src/usage.js    the help page; after cli.js, because it names the version
+src/features/config/   authoring config.ini — init, set, the template
+    settings-authoring.js   formatSettings, the template, config-set parsing, rewriting a line of ini
+    configfile.js           Object.assign(configFile, {init, set, write})
+    command.js               COMMANDS.config = (...), self-registered
+src/features/dialects/   one file a tool; they call player, system, status and native-get, never
+                each other's insides, and never the reverse
+    words.js                 the seek words of playerctl and mpc; playerctl's format strings
+    nowplaying-cli.js   media-control.js (+ -help.js)   playerctl.js   mpc.js
+    shpotify.js   shared.js (refuse, unknown, move, stop)
+    index.js                 DIALECTS (which first word is which tool); dialectRouter.current =
+                              dialectFor, the one line that hands core its hook into this folder
+src/features/watch/   the live, painted terminal rendering of `watch` and of `stream`
+    change.js                 what happened between two reads, in a word — describeChange, logOf
+    loop.js                   the `watching` object (was src/watch.js); sets RENDERERS.watch and,
+                              through it, COMMANDS.watch — core never names `watching` itself
 ```
 
 `native/artwork.m` sits outside that list: clang builds it into `build/nowplayingseek-artwork.bundle`,
@@ -49,11 +82,17 @@ which `src/system/artwork.js` loads into `/usr/bin/perl` at run time — it is n
 never runs under `osascript`.
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js` and run
-over `src/logic/`; `test/cli.test.sh` drives the built tool without a player; `test/live.test.sh`
-drives VLC. `test/fake-mediaremote.js` and `test/fake-artwork.js` stand in for their `src/system/`
-counterparts the same way, so `make test` never touches perl either. The lists are spelled out in
-the `Makefile`: a new file is not built or run until it is added there; `make globals` then writes
-its names into `biome.json`.
+over the pure logic of both core and features (`PURE`, the union of `CORE_PURE` and
+`FEATURE_PURE` — a feature's pure logic is unit-tested and coverage-measured exactly like core's,
+only its reachability from core that differs); `test/cli.test.sh` drives the built tool without a
+player; `test/live.test.sh` drives VLC. `test/fake-mediaremote.js` and `test/fake-artwork.js` stand
+in for their `src/system/` counterparts the same way, so `make test` never touches perl either. The
+lists are spelled out in the `Makefile`, as `CORE`/`FEATURES` (and `CORE_PURE`/`FEATURE_PURE`, the
+pure subsets of each) with `PURE := $(CORE_PURE) $(FEATURE_PURE)` and `SOURCES := $(CORE)
+$(FEATURES)`: a new file is not built or run until it is added to the right one. `scripts/globals.js`
+reads them back with `make print-<VAR>` rather than re-parsing the Makefile text, since `SOURCES`
+is itself built from other variables now; `make globals` then writes what it computes into
+`biome.json`.
 
 ## Commands and gates
 

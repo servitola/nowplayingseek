@@ -10,6 +10,21 @@ At the end: press a key combination of your choice, anywhere on your Mac, and
 whatever is playing — a browser tab, IINA, VLC, Music, Spotify — jumps forward
 or back ten seconds.
 
+## The short way: install both, ready-made
+
+These two open in Shortcuts and install with one click:
+
+| | |
+| --- | --- |
+| [Seek forward 10 s](https://www.icloud.com/shortcuts/9dffdfbe348a4eb88d19f50011ffec7c) | jumps ten seconds ahead |
+| [Seek backward 10 s](https://www.icloud.com/shortcuts/49f7273113be46f7a5ec3f1d28dc20e8) | jumps ten seconds back |
+
+They still need the tool itself (step 1) and scripting turned on (step 3),
+and they carry the Apple silicon path — on an Intel Mac, open each one and
+change `/opt/homebrew/` to `/usr/local/`. Assigning the keys is step 4.
+Building them by hand instead takes five minutes and is the rest of this
+page.
+
 ## 1. Install the tool
 
 Open **Terminal** (press `⌘ Space`, type `Terminal`, press `Return`) and paste
@@ -64,34 +79,22 @@ step 4 below, in front of `forward 10` or `backward 10`.
 
 ## 2. Make the "forward" shortcut
 
-<!-- Screenshot must show: the Shortcuts app main window with the sidebar
-     visible (All Shortcuts selected) and the "+" / New Shortcut button in
-     the top-right of the toolbar circled in red, with an arrow pointing to
-     it. -->
 ![The Shortcuts app window with the New Shortcut button circled in the
-toolbar](images/shortcuts-01-new-shortcut.png)
+toolbar](images/shortcuts-01-new-shortcut.webp)
 
 1. Open **Shortcuts** (press `⌘ Space`, type `Shortcuts`, press `Return`).
 2. Click the **+** button in the toolbar. A new, empty shortcut opens.
-3. Click where it says **Shortcut Name** at the top and type `Forward 10s`.
+3. Click where it says **Shortcut Name** at the top and type `Seek forward 10 s`.
 
-<!-- Screenshot must show: the right-hand action-picker pane of the shortcut
-     editor, with "shell" typed into its search field at the top and the
-     "Run Shell Script" action highlighted in the results list below it.
-     Arrow pointing from the search field down to the highlighted action. -->
 ![Searching for the Run Shell Script action in the Shortcuts action
-picker](images/shortcuts-02-search-run-shell-script.png)
+picker](images/shortcuts-02-search-run-shell-script.webp)
 
 4. On the right, click the search field and type `shell`. Double-click
    **Run Shell Script** in the list that appears — it drops into your
    shortcut.
 
-<!-- Screenshot must show: the Run Shell Script action block inside the
-     shortcut editor, with its script text box containing the full command
-     (the /opt/homebrew/bin path variant). Arrow pointing at the text box
-     itself, annotated "paste the command here". -->
 ![The Run Shell Script action with the nowplayingseek command pasted into
-its text box](images/shortcuts-03-run-shell-script-filled.png)
+its text box](images/shortcuts-03-run-shell-script-filled.webp)
 
 5. Click inside the **Run Shell Script** box and delete anything already
    there. Paste the line you built in step 1 — the full path, a space, then
@@ -105,42 +108,41 @@ its text box](images/shortcuts-03-run-shell-script-filled.png)
    /usr/local/bin/nowplayingseek forward 10
    ```
 
-6. Close the shortcut editor window. `Forward 10s` now appears in your list
+6. Close the shortcut editor window. `Seek forward 10 s` now appears in your list
    of shortcuts.
 
 ## 3. Try it once
 
-<!-- Screenshot must show: the shortcut row for "Forward 10s" in the main
-     Shortcuts window list, with the Run button (play-triangle icon) that
-     appears on hover circled and an arrow pointing to it. -->
-![Running the Forward 10s shortcut once from the main list](images/shortcuts-04-run-once.png)
+![The Run Shell Script action refusing to run until scripting is allowed](images/shortcuts-04-scripting-disabled.webp)
 
-Play something — a YouTube video, a song, anything — then hover over the
-`Forward 10s` shortcut in the list and click its **Run** button (a small
-triangle). The first time, Shortcuts stops and asks permission; see
-"Allow Running Scripts" below if that happens. Once allowed, run it again:
-the video or song should jump ten seconds ahead.
+Play something — a YouTube video, a song, anything — then click the **▶**
+button at the top of the editor window.
+
+The first time, nothing runs: the action itself says *"This action cannot
+be run because scripting actions are disabled"* and offers **Open
+Preferences**. Click it, tick **Allow Running Scripts** (the next
+screenshot), close that window, and press **▶** again. The video or song
+jumps ten seconds ahead.
 
 If it does not, do not keep clicking — read "What can go wrong" further
 down first.
 
 ## 4. Give it a keyboard shortcut
 
-<!-- Screenshot must show: the shortcut editor for "Forward 10s" opened via
-     double-click, with the details icon (an "i" in a circle, top-right of
-     the editor toolbar) circled, and a second callout showing the panel it
-     opens with the "Add Keyboard Shortcut" button visible and circled. -->
 ![The details pane of a shortcut with Add Keyboard Shortcut
-highlighted](images/shortcuts-05-add-keyboard-shortcut.png)
+highlighted](images/shortcuts-06-add-keyboard-shortcut.webp)
 
-1. Double-click `Forward 10s` in the list to open it again.
+1. Double-click `Seek forward 10 s` in the list to open it again.
 2. Click the details icon — a small circled **i** — near the top of the
    editor window.
 3. Click **Add Keyboard Shortcut**.
-4. Press the key combination you want to use, for example `⌃⌥→` (Control +
-   Option + Right Arrow). Shortcuts records it right away — there is no
-   separate save button.
-5. Close the editor window.
+4. The panel grows a **Run with:** box, waiting. Press the combination you
+   want. `⌃⌥⇧K` (Control + Option + Shift + K) is a safe one — it was used
+   to test this page. Avoid `⌃⌥←` and `⌃⌥→`: window managers like
+   Rectangle and Magnet take those by default.
+5. macOS ticks **Use as Quick Action** and **Services Menu** by itself at
+   this point. That is how a key reaches a shortcut; leave them on.
+6. Close the editor window. There is no save button — it is already saved.
 
 Apple's own instructions for this step are at [Run a shortcut from a
 keyboard shortcut](https://support.apple.com/guide/shortcuts-mac/run-a-shortcut-from-another-app-apd163eb9f95/mac)
@@ -153,8 +155,8 @@ something is playing, it should jump forward ten seconds.
 
 The fastest way is to copy what you already built:
 
-1. In the Shortcuts list, right-click `Forward 10s` and choose **Duplicate**.
-2. Rename the copy `Backward 10s`.
+1. In the Shortcuts list, right-click `Seek forward 10 s` and choose **Duplicate**.
+2. Rename the copy `Seek backward 10 s`.
 3. Open it, click into the **Run Shell Script** box, and change `forward` to
    `backward` — the path stays the same:
 
@@ -162,24 +164,23 @@ The fastest way is to copy what you already built:
    /opt/homebrew/bin/nowplayingseek backward 10
    ```
 
-4. Give it its own keyboard shortcut the same way as step 4, for example
-   `⌃⌥←` (Control + Option + Left Arrow) — pick a combination you have not
-   used for anything else.
+4. Give it its own keyboard shortcut the same way as step 4 — `⌃⌥⇧J` sits
+   next to `⌃⌥⇧K` on the keyboard and was tested with it.
+
+![Both shortcuts in the Shortcuts library](images/shortcuts-07-both-shortcuts.webp)
 
 You now have two keys: one moves forward, one moves back.
 
 ## What can go wrong
 
-**"This shortcut requires your permission to run scripts" / a similar
-prompt on the first run.**
-Shortcuts blocks scripts until you allow them once. Go to the Shortcuts
-menu bar item → **Settings…** → **Advanced** tab → turn on **Allow Running
-Scripts**. Run the shortcut again.
+**"This action cannot be run because scripting actions are disabled."**
+Shortcuts blocks every script action until you allow them once. Click
+**Open Preferences** in the action itself, or go to the Shortcuts menu →
+**Settings…** → **Advanced**, and turn on **Allow Running Scripts**. Run
+the shortcut again.
 
-<!-- Screenshot must show: Shortcuts > Settings > Advanced tab, with the
-     "Allow Running Scripts" toggle switched on and circled. -->
 ![The Allow Running Scripts toggle turned on in Shortcuts
-Settings](images/shortcuts-06-allow-running-scripts.png)
+Settings](images/shortcuts-05-allow-running-scripts.webp)
 
 **Nothing happens, and the shortcut finishes instantly with no error.**
 Most likely the path is wrong. Open Terminal, run `which nowplayingseek`
@@ -244,12 +245,12 @@ explain and verify every step before moving to the next one.
    silicon, or /usr/local/bin/nowplayingseek on an Intel Mac).
 
 5. Open the Shortcuts app for me and guide me, step by step, to:
-   - create a shortcut named "Forward 10s" with one action,
+   - create a shortcut named "Seek forward 10 s" with one action,
      "Run Shell Script", whose script box contains exactly
      "<full path from step 4> forward 10"
    - assign it a keyboard shortcut via its details pane
      ("Add Keyboard Shortcut")
-   - duplicate it as "Backward 10s", change "forward 10" to
+   - duplicate it as "Seek backward 10 s", change "forward 10" to
      "backward 10" in the script box, and give it its own
      keyboard shortcut
 

@@ -73,3 +73,8 @@ const watching = {
         return terminal.colours() ? this.painted(view) : this.plain();
     },
 };
+
+// core's status.js checks RENDERERS.watch, never this file by name, and falls back to the plain
+// JSON stream when nothing has registered — AGENTS.md's core/feature rule.
+RENDERERS.watch = view => watching.run(view);
+COMMANDS.watch = () => RENDERERS.watch({ live: true });

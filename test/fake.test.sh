@@ -7,13 +7,13 @@ bin=$work/nowplayingseek
 cases=0
 failures=0
 
-# shellcheck disable=SC2016
-sources=$(sed -n 's/^SOURCES := \$(PURE) //p' Makefile | sed 's|src/system/mediaremote.js|test/fake-mediaremote.js|; s|src/system/artwork.js|test/fake-artwork.js|')
-pure=$(sed -n 's/^PURE := //p' Makefile)
+# SOURCES is built from CORE and FEATURES now, so its expansion comes from make itself (a
+# print-% target), not from re-parsing the Makefile text.
+sources=$(make print-SOURCES | sed 's|src/system/mediaremote.js|test/fake-mediaremote.js|; s|src/system/artwork.js|test/fake-artwork.js|')
 # shellcheck disable=SC2086
 {
 	echo '#!/usr/bin/osascript -l JavaScript'
-	cat $pure $sources
+	cat $sources
 } |
 	sed "s|^const TEMPORARY = .*|const TEMPORARY = \`\${\$.NSProcessInfo.processInfo.environment.objectForKey('NPS_FAKE').js}/\`;|" >"$bin"
 chmod +x "$bin"

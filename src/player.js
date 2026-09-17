@@ -14,28 +14,8 @@ function waitUntil(condition, timing) {
     return false;
 }
 
-function artworkKeys(raw) {
-    return raw ? [raw.ArtworkIdentifier, raw.ArtworkMIMEType] : [undefined, undefined];
-}
-
 const player = {
     settings: null,
-
-    requireState() {
-        const state = mediaRemote.read();
-        if (!state) {
-            throw new Failure(EXIT.nothingPlaying, 'nothing is playing');
-        }
-        return state;
-    },
-
-    requirePosition() {
-        const state = this.requireState();
-        if (isMissing(state.position)) {
-            throw new Failure(EXIT.ignored, `${state.app || 'player'} does not report a position`);
-        }
-        return state;
-    },
 
     seekTo(wanted) {
         const before = this.requirePosition();
@@ -149,30 +129,5 @@ const player = {
             throw new Failure(EXIT.ignored, `${before.app || 'player'} ignored the seek (this player or page has no seek support)`);
         }
         return after;
-    },
-
-    send(command) {
-        const before = this.requireState();
-        const delivered = mediaRemote.send(command);
-        const wantPlaying = expectedPlaying(command, before.playing);
-
-        if (delivered && isMissing(wantPlaying)) {
-            delay(this.settings.timing.command_delivery);
-            return;
-        }
-        const reacted = delivered && waitUntil(() => mediaRemote.read()?.playing === wantPlaying, this.settings.timing);
-        if (!reacted) {
-            throw new Failure(EXIT.ignored, `player did not react to "${command}"`);
-        }
-    },
-
-    artwork(wantedPath) {
-        const state = this.requireState();
-        const [identifier, mimeType] = artworkKeys(mediaRemote.raw(state));
-        const fetched = artwork.fetch(identifier, mimeType, wantedPath);
-        if (!fetched) {
-            throw new Failure(EXIT.ignored, `${state.app || 'this app'} has no artwork for the item playing now`);
-        }
-        return fetched;
     },
 };

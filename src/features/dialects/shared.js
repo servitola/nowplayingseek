@@ -10,6 +10,8 @@ function unknown(tool, words) {
     $.exit(EXIT.usage);
 }
 
+const stop = () => asMediaControl.send(MC_COMMANDS.indexOf('stop'));
+
 function move(place) {
     if (Object.hasOwn(place, 'to')) {
         return player.seekTo(place.to);

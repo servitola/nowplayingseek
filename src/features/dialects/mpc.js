@@ -22,7 +22,7 @@ const asMpc = {
             undefined: state => this.status(state),
             status: state => this.status(state),
             current: state => print(this.current(state)),
-            stop: () => asMediaControl.send(MC_COMMANDS.indexOf('stop')),
+            stop,
             repeat: () => setOrToggle('mpc', 'repeat', args[0], { on: 3, off: 1 }),
             random: () => setOrToggle('mpc', 'shuffle', args[0], { on: 3, off: 1 }),
             seek: state => {

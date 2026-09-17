@@ -21,6 +21,14 @@ function sendCommand(_args, name, output) {
     show(player.requireState(), output);
 }
 
+// The dialects feature sets .current once it has loaded, to the same signature dialectFor() used
+// to have — core never names a dialect file, only checks whether anything registered here.
+const dialectRouter = { current: null };
+
+// The watch feature registers RENDERERS.watch with its live terminal renderer; status.js's own
+// stream falls back to the plain JSON it already emits for a pipe when nothing has registered.
+const RENDERERS = {};
+
 const COMMANDS = {
     status(_args, _name, output) {
         show(player.requireState(), output);
@@ -43,7 +51,7 @@ const COMMANDS = {
     backward: seekCommand(-1),
     seek(args, _name, output) {
         if (args.includes('--micros')) {
-            return asMediaControl.seek(args);
+            return mediaControlSeek(args);
         }
         if (args.length > 1) {
             throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
@@ -63,32 +71,13 @@ const COMMANDS = {
         }
         print('ok: Now Playing is readable');
     },
-    config(args, _name, output) {
-        const [action, name, value, ...extra] = args;
-        const setting = action === 'set' && extra.length === 0 ? `${name} = ${value} to ${configFile.set(name, value)}` : null;
-        if (output.shape !== 'line') {
-            return showJson({ path: configFile.path(), found: configFile.exists(), settings: configFile.load().values }, output, null);
-        }
-        if (setting || (args.length === 1 && args[0] === 'init')) {
-            return print(`wrote ${setting || configFile.init()}`);
-        }
-        if (args.length > 0) {
-            throw new Failure(EXIT.usage, `config takes "init", "set <setting> <value>" or nothing, got "${args.join(' ')}"`);
-        }
-        const found = configFile.exists() ? '' : ' — not found, these are the defaults';
-        const listing = `; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`;
-        print(terminal.colours() ? paintIni(listing) : listing);
-    },
-    watch() {
-        watching.run({ live: true });
-    },
     release(args) {
         const asked = args.map(arg => DIRECTIONS[arg]);
         player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));
     },
-    get: args => (args.some(arg => !arg.startsWith('-') || arg === '--json') ? asNowplayingCli.get(args) : mediaControlReads.get(args)),
-    stream: args => mediaControlReads.stream(args),
-    'get-raw': () => asNowplayingCli.run(['get-raw']),
+    get: args => (args.some(arg => !arg.startsWith('-') || arg === '--json') ? nativeGet.get(args) : status.get(args)),
+    stream: args => status.stream(args),
+    'get-raw': () => print(nativeGet.json(nativeGet.info())),
     togglePlayPause: () => player.send('toggle'),
     toggle: sendCommand,
     play: sendCommand,
@@ -107,7 +96,7 @@ function run(argv) {
     }
 
     try {
-        const dialect = dialectFor(argv, Object.keys(COMMANDS));
+        const dialect = dialectRouter.current?.(argv, Object.keys(COMMANDS));
         if (dialect) {
             player.settings = configFile.load().values;
             mediaRemote.load();

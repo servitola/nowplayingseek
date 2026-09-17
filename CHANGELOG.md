@@ -10,6 +10,9 @@ version, so keep that heading as it is.
   `media-control get` and `stream` carry it too, as base64 `artworkData`, unless `--no-artwork`.
   Needs a small compiled helper loaded into `/usr/bin/perl` — `make build`/`install` build it,
   see `docs/how-it-works.md#artwork`.
+- For development: `make test-speed` runs `--help`, `status`, `get` and `forward` 21 times each
+  against the fake player and fails when the median goes past a budget, so a slower `cli.js` or a
+  cache that stopped caching is caught before it doubles the time a hotkey takes to answer.
 
 ## 2026.09.11 — 2026-09-11
 

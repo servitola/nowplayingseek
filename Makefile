@@ -15,7 +15,7 @@ $(TARGET): $(SOURCES)
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(SOURCES); } > $@
 	chmod +x $@
 
-.PHONY: build test test-live test-world coverage typecheck globals lint install uninstall clean
+.PHONY: build test test-speed test-live test-world coverage typecheck globals lint install uninstall clean
 
 build: $(TARGET) $(ARTWORK_BUNDLE)
 
@@ -42,6 +42,10 @@ test: $(TARGET) $(FAKE_TARGET) $(TEST_TARGET) $(ARTWORK_BUNDLE)
 	osascript -l JavaScript $(TEST_TARGET) $(PURE)
 	sh test/cli.test.sh $(FAKE_TARGET)
 	sh test/fake.test.sh
+
+# Not part of `test`: wall-clock budgets are noise on a shared, loaded CI runner.
+test-speed: $(FAKE_TARGET)
+	sh test/speed.test.sh $(FAKE_TARGET)
 
 # Opens VLC on generated silence and drives it; refuses while something is playing.
 test-live: $(TARGET)

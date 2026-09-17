@@ -77,6 +77,11 @@ works, and a second run in the same tree fails with "files were modified by this
   in the same code. A reached line is not a protected one. `make typecheck`: TypeScript's checker
   over the built file, not strict — a wrong name, a wrong count of arguments, a property nothing
   has. Both are for development; CI runs neither.
+- `make test-speed`: the tool is bound to a hotkey, so its own startup time is the product —
+  `test/speed.test.sh` runs each of `--help`, `status`, `get` and `forward` 21 times against
+  `build/nowplayingseek-fake` and fails when the median goes past a budget (~3x a baseline measured
+  on the owner's M1 Max, `docs/development.md#response-time`). Not part of `make test`: timing is
+  noise on a shared, loaded CI runner, signal only on a quiet machine.
 - No `*.js` in `src/` or `test/` over 200 physical lines (Biome's own rule skips the lines of a
   template literal, the hook does not). Functions: 50 lines, 4 parameters, complexity 15.
 
@@ -137,7 +142,7 @@ paw on the knob, the finger on the key.
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows
 what it would do. Nothing is pushed, tagged or published without the owner's word.
 
-## Dead ends — measured 2026-09-17 on macOS 26.6, do not retry
+## Dead ends — measured 2026-09-18 on macOS 26.6, do not retry
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
   `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
   `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper

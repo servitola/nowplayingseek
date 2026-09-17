@@ -41,7 +41,7 @@ Give `forward` and `backward` a key each. The key goes through an app that binds
 | <img src="docs/images/with-shortcuts.webp" alt="The panda presses a key; a thread of light runs from it through the icon of the Shortcuts app into a player, where the film winds forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The same scene with the icon of Karabiner-Elements, and the panda in a cap worn backwards" width="100%"> |
 | --- | --- |
 | **Shortcuts** — the app every Mac already has, nothing else to install. A press moves by the step you wrote. | **Karabiner-Elements** — free, for those who remap keys. Hold the key: it moves off in small steps, gathers pace, settles. Release, and it stops. |
-| [Step by step →](docs/hotkeys.md#a-key-in-shortcuts) | [The rule to import →](docs/hotkeys.md#a-key-in-karabiner-elements) |
+| [Step by step →](docs/shortcuts.md) | [The rule to import →](docs/hotkeys.md#a-key-in-karabiner-elements) |
 
 Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](docs/hotkeys.md#other-tools).
 

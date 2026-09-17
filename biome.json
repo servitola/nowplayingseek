@@ -180,6 +180,7 @@
         {
             "includes": [
                 "src/system/mediaremote.js",
+                "src/system/paths.js",
                 "src/system/artwork.js",
                 "src/system/files.js",
                 "src/system/terminal.js",
@@ -261,6 +262,7 @@
                     "withSetting",
                     "KEY_PREFIX",
                     "mediaRemote",
+                    "scriptDirectory",
                     "artwork",
                     "now",
                     "lastSeekFile",
@@ -311,6 +313,7 @@
                             "options": {
                                 "ignore": {
                                     "function": [
+                                        "scriptDirectory",
                                         "locked",
                                         "refuse",
                                         "unknown",

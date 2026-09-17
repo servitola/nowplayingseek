@@ -10,30 +10,15 @@ its short name; the recipes use it to keep their lines short.
 
 <p align="center"><img src="images/with-shortcuts.webp" alt="The panda presses a key; a thread of light runs from it through the icon of the Shortcuts app into a player, where the film winds forward" width="70%"></p>
 
-Shortcuts is on every Mac; nothing else to install. One shortcut is one key, so make two.
-
-1. Install the tool: `brew install servitola/tap/nowplayingseek` ([Homebrew](https://brew.sh) first,
-   if `brew` is not there).
-2. Open **Shortcuts**, press **+**. Name the shortcut `Forward 30 s`.
-3. In the search box on the right, type `shell` and double-click **Run Shell Script**.
-4. Replace what is in its box with `/opt/homebrew/bin/nowplayingseek forward 30`. On an Intel Mac
-   the path is `/usr/local/bin/nowplayingseek`. The full path matters: Shortcuts runs a script
-   with a bare `PATH`.
-5. Press ▶ at the top to try it while something plays. The first run stops and asks: Shortcuts →
-   Settings → Advanced → **Allow Running Scripts**. Tick it and press ▶ again; the film moves.
-6. Press **ⓘ** (Shortcut Details) → **Add Keyboard Shortcut**, and press the keys you want —
-   `⌃⌥→` is free in most apps.
-7. Duplicate the shortcut (right-click → Duplicate), name it `Back 30 s`, change `forward` to
-   `backward`, give it `⌃⌥←`.
+Shortcuts is on every Mac; nothing else to install. The full, beginner-proof walkthrough —
+built for someone who has never opened Terminal — is its own page:
+[A keyboard shortcut, with the Shortcuts app](shortcuts.md).
 
 Any step works: `forward 10`, `backward 5`, `seek 0`. **ⓘ** → **Pin in Menu Bar** puts the same
 shortcut under the Shortcuts icon in the menu bar, and Siri runs it by its name.
 
 Shortcuts tells a press, not a release, so a held key does nothing more than a press. For a hold
 that gathers pace, and for a knob, the next section.
-
-If nothing happens, put `/opt/homebrew/bin/nowplayingseek doctor` in the box and press ▶: it says
-whether this Mac lets Now Playing be read. Exit code 1 from a shortcut means nothing is playing.
 
 ## A key, in Karabiner-Elements
 

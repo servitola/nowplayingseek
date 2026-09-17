@@ -7,15 +7,11 @@ const ARTWORK_LOADER =
 let artworkCache = null;
 
 function artworkBundlePath() {
-    const argument = ObjC.deepUnwrap($.NSProcessInfo.processInfo.arguments)?.[3];
-    if (!argument) {
-        return null;
-    }
-    // dl_load_file refuses a relative path even with a matching cwd (measured); osascript gets a
-    // relative one of its own when this script is run as `./nowplayingseek`, not installed.
-    const script = $.NSURL.fileURLWithPath(argument).path.js;
-    const candidate = `${$(script).stringByDeletingLastPathComponent.js}/nowplayingseek-artwork.bundle`;
-    return $.NSFileManager.defaultManager.fileExistsAtPath(candidate) ? candidate : null;
+    // dl_load_file refuses a relative path even with a matching cwd (measured); scriptDirectory
+    // resolves the relative path osascript gets when run as `./nowplayingseek`, not installed.
+    const directory = scriptDirectory();
+    const candidate = directory && `${directory}/nowplayingseek-artwork.bundle`;
+    return candidate && $.NSFileManager.defaultManager.fileExistsAtPath(candidate) ? candidate : null;
 }
 
 // Reads stdout then stderr, in that order: safe only because native/artwork.m never writes more

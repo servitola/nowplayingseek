@@ -107,3 +107,15 @@ not of every image mapped into it. The bundle itself ships signed to no one: `co
   an opaque array JXA cannot index without pointer arithmetic. [Artwork](#artwork) above is how the
   bytes are gotten instead: not from `osascript`, but from a real block in compiled code loaded
   into `/usr/bin/perl`.
+- No hotkeys of our own. A `setup` command that bound a key itself, through a small Swift helper
+  using Carbon's `RegisterEventHotKey` (the one hotkey API that needs no Accessibility or Input
+  Monitoring permission), was built and then dropped: on macOS 26.6 the helper never received a
+  single press. Registration returns `noErr` for every keycode — including combinations other apps
+  already hold, so `eventHotKeyExistsErr` cannot be used to detect a clash either — and the
+  handler installed on `GetEventDispatcherTarget()` is simply never called from a `CFRunLoopRun()`
+  process, whether it is a bare binary, a `TransformProcessType` UIElement, or a signed `.app`
+  bundle launched with `open`. Hammerspoon, bound to the same combination on the same machine at
+  the same moment, fired every time. The likely difference is the event loop — Carbon events reach
+  a process through `NSApplication`, not a plain run loop — but the fix was not worth a helper
+  binary in a tool that has none: people already bind keys with Karabiner-Elements, Raycast,
+  Hammerspoon or Shortcuts, and [docs/hotkeys.md](hotkeys.md) covers those.

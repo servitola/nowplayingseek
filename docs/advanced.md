@@ -8,10 +8,10 @@ Nothing here is needed for everyday use.
 
 ## Progressive seek
 
-With `--progressive` the step grows the longer the key is held, a little with every step. A press
-is always one whole step. Keep the key down and it glides off in small steps, so a short hold
-stays short; then it gathers pace and settles at two and a half times the step: ten seconds of
-holding are about twelve minutes of film, twenty are half an hour.
+With `--progressive` the step grows the longer the key is held, a little at a time. A press is
+always one whole step. Keep the key down and it glides off in small steps, so a short hold stays
+short, then gathers pace and settles at two and a half times the step — twenty seconds of holding
+move about half an hour of film.
 
 | held | each step | in total |
 | --- | --- | --- |

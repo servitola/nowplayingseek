@@ -3,8 +3,8 @@
 [← README](../README.md)
 
 The tool does not grab keys itself; bind it with whatever you already use. Give the
-full path — hotkey daemons run commands with a bare environment. `nps` is the same tool under
-its short name; the recipes use it to keep their lines short.
+full path — hotkey daemons run commands with a bare environment. `nps` is the same tool,
+short name, used below to keep the recipes' lines short.
 
 ## A key, in Shortcuts
 
@@ -17,8 +17,7 @@ built for someone who has never opened Terminal — is its own page:
 Any step works: `forward 10`, `backward 5`, `seek 0`. **ⓘ** → **Pin in Menu Bar** puts the same
 shortcut under the Shortcuts icon in the menu bar, and Siri runs it by its name.
 
-Shortcuts tells a press, not a release, so a held key does nothing more than a press. For a hold
-that gathers pace, and for a knob, the next section.
+Shortcuts tells a press, not a release, so a held key does nothing more than a press.
 
 ## A key, in Karabiner-Elements
 
@@ -71,9 +70,9 @@ how it grows are in the [config file](advanced.md#config-file).
 
 <p align="center"><img src="images/banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along" width="100%"></p>
 
-If you have a mechanical keyboard with a knob, it is a jog wheel. A knob is two keys to the system, one per direction — volume up and down out of the
-box. Reassign them in the keyboard's firmware (VIA, QMK, the vendor's app) to keys you do not
-use, such as F13 and F14, and give those to `--knob`:
+A mechanical keyboard's knob is a jog wheel: two keys to the system, one per direction — volume
+up and down out of the box. Reassign them in the keyboard's firmware (VIA, QMK, the vendor's app)
+to keys you do not use, such as F13 and F14, and give those to `--knob`:
 
 ```json
 {

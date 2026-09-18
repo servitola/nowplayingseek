@@ -3,7 +3,7 @@
 [← README](../README.md)
 
 [Homebrew](../README.md#install) stays the easier path when it is on the machine — it also
-upgrades the tool for you. Without it: download the release tarball, check it, unpack it.
+upgrades the tool. Without it: download the release tarball, check it, unpack it.
 
 ```sh
 version=2026.09.20
@@ -14,9 +14,9 @@ shasum -a 256 -c "nowplayingseek-$version-macos.tar.gz.sha256"
 tar -xzf "nowplayingseek-$version-macos.tar.gz"
 ```
 
-That unpacks one folder: `nowplayingseek`, its short name `nps` beside it, the compiled
-artwork helper `nowplayingseek-artwork.bundle` beside both of those — the tool finds it next
-to itself, wherever that is — plus `LICENSE` and `README.md`. Move the first three onto `PATH`:
+That unpacks one folder: `nowplayingseek`, its short name `nps`, the compiled artwork helper
+`nowplayingseek-artwork.bundle`, `LICENSE`, `README.md`. The tool finds the helper next to
+itself, wherever that is. Move the first three onto `PATH`:
 
 ```sh
 install -d ~/.local/bin

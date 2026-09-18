@@ -22,8 +22,7 @@ These two open in Shortcuts and install with one click:
 They still need the tool itself (step 1) and scripting turned on (step 3),
 and they carry the Apple silicon path — on an Intel Mac, open each one and
 change `/opt/homebrew/` to `/usr/local/`. Assigning the keys is step 4.
-Building them by hand instead takes five minutes and is the rest of this
-page.
+Building them by hand instead takes about five minutes.
 
 ## 1. Install the tool
 
@@ -49,22 +48,20 @@ nowplayingseek status
   is — for example `▶ 30:57 / 3:15:50  Some Title  (com.some.app)`. The tool
   is installed.
 - If nothing is playing right now, you instead see `nowplayingseek: nothing
-  is playing` — that is also a pass. The tool ran and answered; it is
-  installed. Play something anywhere and run the command again to see the
-  first kind of answer.
+  is playing` — that is also a pass: the tool ran and answered. Play
+  something anywhere and run the command again to see the first kind of
+  answer.
 - If you see `zsh: command not found: nowplayingseek`, the install did not
   finish, or finished with a warning. Scroll up in Terminal and read what
   `brew install` printed; re-run it if a step failed partway.
 
-Keep Terminal open one more moment: you need one more thing from it before
-step 2.
+Keep Terminal open — the next step needs it too.
 
 ### The one detail Shortcuts needs spelled out
 
-Shortcuts does not run commands the way Terminal does — it does not know
-where `nowplayingseek` lives, so typing `nowplayingseek forward 10` into
-Shortcuts will not work. You must give it the full path. Find yours by
-running, in Terminal:
+Shortcuts does not know where `nowplayingseek` lives, so typing
+`nowplayingseek forward 10` into Shortcuts will not work — you must give it
+the full path. Find yours by running, in Terminal:
 
 ```sh
 which nowplayingseek
@@ -75,7 +72,7 @@ which nowplayingseek
 - On an older, Intel Mac, it prints `/usr/local/bin/nowplayingseek`.
 
 Whichever line it prints — that is the exact text you paste into Shortcuts in
-step 4 below, in front of `forward 10` or `backward 10`.
+step 2 below, in front of `forward 10` or `backward 10`.
 
 ## 2. Make the "forward" shortcut
 
@@ -190,11 +187,10 @@ does not match what `which` printed.
 
 **The shortcut runs but nothing on screen moves, and Terminal-style text
 like "nothing is playing" would explain it.**
-This is exit code 1 from the tool: nothing is currently playing anywhere on
-the Mac. Start playing something first, then run the shortcut or press the
+This is exit code 1 from the tool: nothing is playing anywhere on the Mac. Start playing something first, then run the shortcut or press the
 key again.
 
-**The video or song does not move, but something clearly is playing.**
+**The video or song does not move, but something is playing.**
 This is exit code 2: the app that is playing does not support seeking by
 command — most commonly a web page that does not implement it. Try it on a
 YouTube tab, which does support it, to confirm the shortcut itself is

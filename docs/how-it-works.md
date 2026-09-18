@@ -72,7 +72,7 @@ its own framework the same way. `src/system/artwork.js` is the rest: one functio
 no argv parsing or XS boilerplate — `nps_get_artwork` is a plain zero-argument C function, which
 works as a Perl XSUB because `dl_install_xsub` calls it with arguments it simply never reads.
 
-This is not the dylib `osascript` refused (`AGENTS.md`, dead ends): that binary was mapped into
+This is not the dylib `osascript` refused ([Dead ends](#dead-ends) below): that binary was mapped into
 `osascript` itself, which is arm64e and only maps arm64e code back. Perl is plain arm64 and maps a
 plain arm64 bundle same as it always could, and perl — like osascript — is signed `com.apple.perl`,
 which is what macOS 15.4's Now Playing gate actually checks: the signature of the process asking,
@@ -103,7 +103,7 @@ not of every image mapped into it. The bundle itself ships signed to no one: `co
   function — passing one behaved exactly like passing an explicit `$()` (nil): the call returns at
   once, no exception, and the handler never runs even after two seconds spun on
   `NSRunLoop.currentRunLoop`. Reading a class's full method table to look for another synchronous
-  accessor hits the same wall as the dylib dead end in `AGENTS.md`: `class_copyMethodList` returns
+  accessor hits the same wall as the dylib dead end [below](#dead-ends): `class_copyMethodList` returns
   an opaque array JXA cannot index without pointer arithmetic. [Artwork](#artwork) above is how the
   bytes are gotten instead: not from `osascript`, but from a real block in compiled code loaded
   into `/usr/bin/perl`.
@@ -119,3 +119,32 @@ not of every image mapped into it. The bundle itself ships signed to no one: `co
   a process through `NSApplication`, not a plain run loop — but the fix was not worth a helper
   binary in a tool that has none: people already bind keys with Karabiner-Elements, Raycast,
   Hammerspoon or Shortcuts, and [docs/hotkeys.md](hotkeys.md) covers those.
+- No Mac App Store. The tool works by loading the private, undocumented `MediaRemote.framework`
+  inside `/usr/bin/osascript`, with no entitlement of any kind — see [Why it is a
+  script](#why-it-is-a-script). App Store review is public-API only; this would not pass it, and
+  even if it somehow did, Apple could still close the read gate in an update and take the listing
+  down with it. Homebrew and the release tarball (`docs/install.md`) don't have that review to
+  pass, so that is where it ships.
+
+## Dead ends
+
+Measured 2026-09-18 on macOS 26.6; do not retry.
+
+- **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
+  `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
+  `…SendCommandToApp`, `…SendCommandToClient`), all through perl + a compiled arm64e helper
+  because JXA cannot pass blocks. A seek addressed to Vivaldi or IINA landed on the elected
+  Music every time; only Music itself is addressed as asked. vorssaint-utils documents the same:
+  "The service may redirect unprivileged requests to the global player."
+- **`MRMediaRemoteSetOverriddenNowPlayingApplication` / `…SetNowPlayingApplicationOverrideEnabled`.**
+  Never call them. They elect nobody and leave `mediaremoted` with no elected app at all —
+  playback starting in other apps no longer elects them, and turning the override off does
+  not help. The only fix was `sudo killall mediaremoted`.
+- **Chapters.** `MRMediaRemoteCommandNextChapter` / `PreviousChapter` (100, 101) are delivered and IINA
+  ignores them: it registers no chapter handler with the system. `ChapterNumber` and
+  `TotalChapterCount` can be read; chapter times cannot. Moving by chapter needs a driver for the
+  player, which the owner has ruled out.
+- **A helper dylib inside `osascript`.** Refused: "mapping process is a platform binary, but
+  mapped file is not". perl, ruby and python load a plain arm64 one; it is `osascript` that wants arm64e.
+
+The tool therefore drives the elected app and only that. This is a decision, not a gap.

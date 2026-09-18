@@ -17,8 +17,7 @@ macOS has no such key. This is the command behind it.
 
 I tune my computer with hotkeys — [my dotfiles](https://github.com/servitola/dotfiles) are mostly that.
 I gave the rewind and fast-forward signals a key each. They were no pleasure: no step of my choosing,
-and every player took them in its own way. I looked for a tool that would let me do the seeking myself. I tried what
-there was; none did.
+and every player took them in its own way. I tried what there was, to do the seeking myself; none did.
 
 Then a friend bought a keyboard with a knob and wanted it to wind whatever he was watching.
 So I made this. [The longer story](docs/how-it-works.md#why-it-exists).
@@ -37,7 +36,7 @@ No Homebrew? [Download the release tarball instead](docs/install.md).
 
 ## A key
 
-Give `forward` and `backward` a key each. The key goes through an app that binds it; the film winds. Two such apps:
+Give `forward` and `backward` a key each, through an app that catches it. Two such apps:
 
 | <img src="docs/images/with-shortcuts.webp" alt="The panda presses a key; a thread of light runs from it through the icon of the Shortcuts app into a player, where the film winds forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The same scene with the icon of Karabiner-Elements, and the panda in a cap worn backwards" width="100%"> |
 | --- | --- |

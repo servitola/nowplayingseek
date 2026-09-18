@@ -38,8 +38,8 @@ carries thirteen.
 ## From media-control
 
 [media-control](https://github.com/ungive/media-control) and its
-[mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) found the way back in after
-macOS 15.4, and this project stands on that finding. Migration: the same one word.
+[mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) found the loophole this
+project also uses — [how](how-it-works.md#why-it-is-a-script). Migration: the same one word.
 
 ```diff
 - media-control get --now | jq -r .title
@@ -118,8 +118,8 @@ Honesty, in one place.
   one Now Playing app and redirects everything to it; five private calls were measured, none gets
   past that. Such a request is refused by name, exit 1.
 - **Volume, playlists, search, play by name.** Now Playing has no such thing.
-- **Push.** `stream` here looks every 0.2 s; the original is told. A change arrives a fraction of a
-  second later, in the same words.
+- **Push.** media-control is told; `stream` here [polls](scripting.md#following-changes) instead —
+  same words, a fraction of a second later.
 - **`media-control test`.** It can prove itself with a player of its own. Here it is `doctor`: it
   needs something to have played since login.
 - **Key order in JSON.** The keys are the same; their order is the system's business.

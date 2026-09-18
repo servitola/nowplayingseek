@@ -66,8 +66,7 @@ first (`nowplayingseek position`) and put it back when you are done.
    macOS, runs `make lint test`, then `make dist` (the script plus a universal artwork bundle,
    LICENSE, README, a `.sha256`), attests build provenance for the tarball, and creates (or, if
    the release already exists, updates) the GitHub release for this tag with those two files
-   attached and the notes taken from `scripts/release.sh notes <version>` — the same notes this
-   phase used to type by hand.
+   attached and the notes taken from `scripts/release.sh notes <version>`.
 3. `gh run list --repo servitola/nowplayingseek --workflow release.yml --branch v<version> --limit 1`
    until it shows a conclusion, then `gh run view <id> --log-failed` if it is not `success`. Red
    here means the tag is burned (tags are not re-pushed, see `references/rollback.md`) — fix and
@@ -113,9 +112,9 @@ Homebrew's own clone of the GitHub side: read-only, commits go to the checkout b
 
 ## Phase 6: Install and verify here
 
-1. `brew update && brew upgrade servitola/tap/nowplayingseek`. After Phase 5 step 3 the upgrade has
-   nothing left to do; what this proves is that the published tap and the installed keg agree —
-   `brew outdated` stays empty and `brew info` names `<version>`.
+1. `brew update && brew upgrade servitola/tap/nowplayingseek`. Phase 5 step 3 already installed
+   it, so this is a no-op that proves the published tap and the installed keg agree: `brew
+   outdated` stays empty and `brew info` names `<version>`.
 2. `/opt/homebrew/bin/nowplayingseek --version` prints `<version>`; `nowplayingseek doctor` is ok.
 3. With something playing: `status --json`, `forward 10`, `backward 10`, `forward 10 --progressive`,
    then `seek` back to where it was.

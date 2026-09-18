@@ -43,11 +43,9 @@ current_version() {
 apply() {
 	target=$1 edited=$2
 	diff -u "$target" "$edited" | sed "1s|.*|--- $target|; 2s|.*|+++ $target (after)|" || true
-	if $dry_run; then
-		rm -f "$edited"
-	else
-		mv "$edited" "$target"
-	fi
+	# Not mv: mktemp makes the copy 0600, and brew style rejects a formula nobody else can read.
+	$dry_run || cat "$edited" >"$target"
+	rm -f "$edited"
 }
 
 check() {

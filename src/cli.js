@@ -1,6 +1,6 @@
 ObjC.import('stdlib');
 
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 const PROGRESSIVE_FLAG = '--progressive';
 const PRINTED_DECIMALS = 3;
 

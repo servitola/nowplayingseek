@@ -140,37 +140,15 @@ that is set). The file is optional and so is every key in it; `nowplayingseek co
 writes one with the defaults and a comment per key, `nowplayingseek config` prints what
 is in effect.
 
-```ini
-[seek]
-step = 10
-
-[progressive]
-pattern = 5s:x2, 10s:x3, ...
-max_multiplier = 10
-streak_gap = 1
-
-[timing]
-verify_timeout = 2.5
-pending_seek_max = 3
-command_delivery = 0.3
-poll_interval = 0.03
-```
-
 Comments are whole lines starting with `;` or `#`. An unknown section or key, or a value
 that does not parse, stops every command with exit 78 and the line number — a typo never
 silently falls back to a default.
 
 ## Development
 
-```sh
-make test     # pure-function tests, no playback needed
-make lint     # Biome, actionlint and whitespace hooks; needs pre-commit
-make build    # build/nowplayingseek
-```
-
-`src/` is concatenated in dependency order because JXA has no modules: `core.js` and `config.js` (pure,
-tested), `mediaremote.js` (the only file that touches the private framework),
-`player.js` (seek and command verification), `cli.js`.
+`make build`, `make test` (needs nothing playing), `make lint` (needs `pre-commit`). The layout,
+the rules and the dead ends are in [AGENTS.md](AGENTS.md); what is left to do is in
+[BACKLOG.md](BACKLOG.md).
 
 Copyright © 2026 Vladislav Konovalov. Free software under the [GNU AGPL 3.0](LICENSE): use it,
 change it, pass it on under the same terms. To ship it inside a product that is not under a

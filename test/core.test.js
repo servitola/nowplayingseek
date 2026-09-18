@@ -17,6 +17,7 @@ function testRate(core) {
     same(core.effectiveRate(true, 1.5), 1.5, 'playing faster');
     same(core.effectiveRate(false, 1), 0, 'VLC keeps PlaybackRate 1 while paused: the play state wins');
     same(core.effectiveRate(false, 0), 0, 'paused and says so');
+    same(core.effectiveRate(true, 0), 1, 'playing without a rate: assume normal speed, or the position stands still');
 }
 
 function testSeekBase(core) {
@@ -119,8 +120,11 @@ function testHold(core) {
     same(core.releasedSince(null, 50), false, 'no record, no release');
 
     same(core.nextHoldTarget(100, 10, 2, 600), 120, 'hold: a step times the multiplier');
-    same(core.nextHoldTarget(595, 10, 1, 600), 600, 'hold: the last step is clamped to the end');
-    same(core.nextHoldTarget(600, 10, 1, 600), null, 'hold: nothing further at the end');
+    same(core.nextHoldTarget(590, 10, 1, 600), 595, 'a step forward stops 5 s short of the end, so the item does not end');
+    same(core.nextHoldTarget(595, 10, 1, 600), null, 'nothing further there');
+    same(core.nextHoldTarget(598, 10, 1, 600), null, 'and a step forward never moves back');
+    same(core.nextHoldTarget(598, -10, 1, 600), 588, 'backward from the very end is a plain step');
+    same(core.nextHoldTarget(1, 10, 1, 3), null, 'an item shorter than the margin is left alone');
     same(core.nextHoldTarget(0, -10, 3, 600), null, 'hold: nothing further at the start');
     same(core.nextHoldTarget(100, 10, 1, 0), 110, 'hold: a live stream has no end');
 }

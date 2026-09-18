@@ -1,6 +1,8 @@
 const PROCESS_STARTED = Date.now() / MILLISECONDS_PER_SECOND;
 const HOLD_TOKEN = `${$.NSProcessInfo.processInfo.processIdentifier}-${PROCESS_STARTED}`;
 
+const SHORTEST_INTERVAL = 0.05;
+
 const now = () => Date.now() / MILLISECONDS_PER_SECOND;
 
 function jsonFile(name) {
@@ -92,7 +94,7 @@ const player = {
             last = { at, multiplier };
             mediaRemote.setElapsedTime(target);
             lastSeekFile.write({ target, at, app: before.app, ...streak });
-        } while (!once && this.stillHeld(direction));
+        } while (!once && this.stillHeld(direction, before.app, last.at));
 
         return last ? { state: this.awaitLanding(target, last.at, before), multiplier: last.multiplier } : { state: before, multiplier: 1 };
     },
@@ -107,9 +109,12 @@ const player = {
         return () => 1;
     },
 
-    stillHeld(direction) {
+    stillHeld(direction, app, steppedAt) {
         const { interval, max_time } = this.settings.hold;
-        delay(interval);
+        if (mediaRemote.read()?.app !== app) {
+            return false;
+        }
+        delay(Math.max(SHORTEST_INTERVAL, interval - (now() - steppedAt)));
         const held = holdContinues(holdFile.read(), HOLD_TOKEN, releaseFiles[direction].read(), PROCESS_STARTED);
         return held && now() - PROCESS_STARTED < max_time;
     },
@@ -135,9 +140,9 @@ const player = {
     },
 
     send(command) {
-        const before = mediaRemote.read();
+        const before = this.requireState();
         const delivered = mediaRemote.send(command);
-        const wantPlaying = before ? expectedPlaying(command, before.playing) : null;
+        const wantPlaying = expectedPlaying(command, before.playing);
 
         if (delivered && isMissing(wantPlaying)) {
             delay(this.settings.timing.command_delivery);

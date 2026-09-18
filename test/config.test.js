@@ -37,7 +37,7 @@ function testSettings(core) {
     same(defaults.values.seek.step, 10, 'settings: default step');
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
     same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
-    same(defaults.values.hold.max_time, 30, 'settings: default hold fuse');
+    same(defaults.values.hold.max_time, 10, 'settings: default hold fuse');
     same(defaults.values.knob.step, 3, 'settings: default knob step');
     same(defaults.values.knob.fast, 12, 'settings: default knob pace');
     same(defaults.values.progressive.max_multiplier, 2.5, 'settings: default max multiplier');

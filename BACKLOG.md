@@ -10,7 +10,13 @@ What is left, most pressing first. State as of 2026-09-18; delete a line when it
   a MediaSession handler that tests `seekTime` for truthiness.
 - `seek` to the position the player is already at exits 2 ("ignored the seek"): seen on a paused page in
   Vivaldi, `seek 4145.003` at 4145.003. Probably the poll waits for a change that cannot come.
-- `config` loads `MediaRemote.framework` although it never reads Now Playing (~10 ms, harmless).
+- At knob or key-repeat pace a Now Playing refresh caused by an older seek carries a timestamp later
+  than the newest `lastSeek.at`, so `seekBase` trusts a stale position and a click is lost. From the
+  review of 2026-09-19, plausible, not measured; a fix would also require the position to be near the
+  last target for the first 0.3 s.
+- `seekLanded` allows 1 s of drift: a player that snaps to a keyframe further back exits 2 although
+  it sought. Not seen in practice.
+- `[hold] interval`, `max_multiplier` and the rest accept any number above zero, `1:30` included.
 
 ## Code
 - Biome is pinned to 2.5.13 because npm on the owner's machine refuses releases younger than

@@ -18,3 +18,21 @@ repos:
     rev: v1.7.12
     hooks:
       - id: actionlint
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.14.1-1
+    hooks:
+      - id: shfmt
+
+  - repo: local
+    hooks:
+      - id: file-length
+        name: no js file over 200 lines
+        language: script
+        entry: scripts/check-file-length.sh
+        files: ^(src|test)/.*\.js$

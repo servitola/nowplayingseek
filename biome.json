@@ -66,6 +66,12 @@
                                     }
                                 ]
                             }
+                        },
+                        "noExcessiveLinesPerFile": {
+                            "level": "error",
+                            "options": {
+                                "maxLines": 200
+                            }
                         }
                     }
                 }

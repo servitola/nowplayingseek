@@ -8,20 +8,20 @@ const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "n
   status [--json]                   title, app, position / duration
   position                          current position, seconds
   duration                          total length, seconds
-  forward [time] [--progressive]    seek forward; without <time>, by the configured step (10)
-  backward [time] [--progressive]   seek backward
+  forward [time=10]                 seek forward
+  backward [time=10]                seek backward
   seek <time>                       jump to an exact position (seek 754, seek 12:34)
   toggle | play | pause | next | previous
   doctor                            exit 0 when Now Playing is readable, 1 when it is not
-  config                            print the settings in effect and where they come from
-  config init                       write a config file with the defaults
 
 <time> is seconds (90, 12.5) or mm:ss / h:mm:ss (1:30, 1:02:03).
---progressive multiplies the step the longer the key is held — see "pattern" in the config.
 
-config: $XDG_CONFIG_HOME/nowplayingseek/config.ini, ~/.config/nowplayingseek/config.ini by default
+exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command, 64 usage, 78 bad config
 
-exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command, 64 usage, 78 bad config`;
+advanced (README "Advanced"):
+  forward | backward --progressive  the step grows the longer the key is held
+  config                            print the settings in effect and the config file path
+  config init                       write ~/.config/nowplayingseek/config.ini with the defaults`;
 
 function print(text, toStderr) {
     const handle = toStderr ? $.NSFileHandle.fileHandleWithStandardError : $.NSFileHandle.fileHandleWithStandardOutput;

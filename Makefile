@@ -1,6 +1,9 @@
 PREFIX ?= /usr/local
-SOURCES := src/core.js src/mediaremote.js src/player.js src/cli.js
+PURE := src/core.js src/config.js
+SOURCES := $(PURE) src/mediaremote.js src/player.js src/cli.js
+TESTS := test/harness.js test/core.test.js test/config.test.js
 TARGET := build/nowplayingseek
+TEST_TARGET := build/test.js
 
 # JXA has no module system, so the sources are concatenated into the one file
 # osascript runs. The order is the dependency order.
@@ -13,8 +16,12 @@ $(TARGET): $(SOURCES)
 
 build: $(TARGET)
 
-test: $(TARGET)
-	osascript -l JavaScript test/core.test.js src/core.js
+$(TEST_TARGET): $(TESTS)
+	@mkdir -p build
+	cat $(TESTS) > $@
+
+test: $(TARGET) $(TEST_TARGET)
+	osascript -l JavaScript $(TEST_TARGET) $(PURE)
 	$(TARGET) --version
 	$(TARGET) --help > /dev/null
 

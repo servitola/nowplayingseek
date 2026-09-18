@@ -4,10 +4,11 @@ README.md explains what the tool is and why it has to run under `osascript`. Rea
 "How it works" section before changing anything in `src/mediaremote.js` or `src/player.js`
 — each of the three bullets there was a bug first.
 
-- `src/core.js` stays free of `$` and `ObjC`: the test evaluates it on its own.
-- A new decision goes into `core.js` as a pure function with a test; `player.js` only
+- `src/core.js` (time, position and seek arithmetic) and `src/config.js` (settings table, ini and
+  pattern parsing) stay free of `$` and `ObjC`: the tests evaluate the two on their own.
+- A new decision goes into one of those two as a pure function with a test; `player.js` only
   wires reads, calls and polling around those.
-- A new tunable is one entry in `SETTINGS` in `core.js` — default, parser, `about` line. The
+- A new tunable is one entry in `SETTINGS` in `config.js` — default, parser, `about` line. The
   config reader, `config`, `config init` and the unknown-key check all derive from that table;
   add the key to the sample in README "Config".
 - `make test` needs no playback. Anything touching playback is checked by hand with a

@@ -7,6 +7,8 @@ long videos. `README.md` is the user manual; its "How it works" and "Limits" exp
 tool is a script for `osascript` and cannot be anything else. Read them before touching
 `src/mediaremote.js` or `src/player.js` — each bullet there was a bug first.
 
+What is unfinished or undecided is in `BACKLOG.md`; this file holds only what stays true.
+
 ## Stack and layout
 
 JavaScript for Automation, run by `/usr/bin/osascript`. No dependencies, no `package.json`, no

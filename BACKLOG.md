@@ -13,8 +13,6 @@ What is left, most pressing first. State as of 2026-09-18; delete a line when it
 ## Code
 - `src/cli.js` is 192 lines of the 200 allowed. The next feature needs `configFile` moved out
   into its own file first.
-- CI warns that `actions/checkout@v4` targets the deprecated Node 20, and that `ubuntu-latest`
-  moves to Ubuntu 26 on 2026-10-19.
 - Biome is pinned to 2.5.13 because npm on the owner's machine refuses releases younger than
   7 days; 2.5.14 was 2 days old. Bump `rev`, `additional_dependencies` and `$schema` together.
 

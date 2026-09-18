@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/banner.webp" alt="A panda in headphones drags the scrubber of a glass Now Playing widget, a waveform glowing behind it" width="100%"></p>
+<p align="center"><img src="docs/banner.webp" alt="Logotip" width="100%"></p>
 
 # nowplayingseek
 
@@ -49,7 +49,7 @@ Every command waits until the player has done what was asked: exit `0` means it 
 ## Good to know
 
 - It drives the app macOS elected as Now Playing, the one in the Control Center widget. If
-  that is not the one you mean, press play there.
+that is not the one you mean, press play there.
 - A web page has to support seeking: YouTube does, a page without a MediaSession handler
   gives exit 2.
 - It rests on a private API that Apple can close in any update. Tested on macOS 26.6.

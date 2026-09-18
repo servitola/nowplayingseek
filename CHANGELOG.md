@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 0.3.0 — 2026-09-18
+
 ### Added
 - `forward` / `backward --progressive`: the step grows the longer the key is held, by a
   user-written ladder such as `5s:x2, 10s:x3, ...`.

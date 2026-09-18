@@ -1,9 +1,9 @@
 const lastSeekStore = {
-    path: $.NSTemporaryDirectory().js + 'nowplayingseek.last-seek.json',
+    path: `${$.NSTemporaryDirectory().js}nowplayingseek.last-seek.json`,
 
     read() {
         const text = $.NSString.stringWithContentsOfFileEncodingError(this.path, $.NSUTF8StringEncoding, null);
-        try { return text.js ? JSON.parse(text.js) : null; } catch (e) { return null; }
+        try { return text.js ? JSON.parse(text.js) : null; } catch { return null; }
     },
 
     write(lastSeek) {
@@ -12,10 +12,10 @@ const lastSeekStore = {
 };
 
 function waitUntil(condition, timing) {
-    const deadline = Date.now() + timing.verify_timeout * 1000;
+    const deadline = Date.now() + timing.verify_timeout * MILLISECONDS_PER_SECOND;
     while (Date.now() < deadline) {
         delay(timing.poll_interval);
-        if (condition()) return true;
+        if (condition()) { return true; }
     }
     return false;
 }
@@ -25,32 +25,32 @@ const player = {
 
     requireState() {
         const state = mediaRemote.read();
-        if (!state) throw new Failure(EXIT.nothingPlaying, 'nothing is playing');
+        if (!state) { throw new Failure(EXIT.nothingPlaying, 'nothing is playing'); }
         return state;
     },
 
     seekTo(wanted, before, streak) {
-        if (before.position == null) throw new Failure(EXIT.ignored, `${before.app || 'player'} does not report a position`);
+        if (isMissing(before.position)) { throw new Failure(EXIT.ignored, `${before.app || 'player'} does not report a position`); }
 
         const target = clampTarget(wanted, before.duration);
-        const calledAt = Date.now() / 1000;
+        const calledAt = Date.now() / MILLISECONDS_PER_SECOND;
         mediaRemote.setElapsedTime(target);
         lastSeekStore.write({ target, at: calledAt, ...streak });
 
         let after = null;
         const landed = waitUntil(() => {
             after = mediaRemote.read();
-            const superseded = (lastSeekStore.read() || {}).target !== target;
-            return seekLanded(after, target, calledAt, superseded, this.settings.timing.verify_timeout);
+            const superseded = lastSeekStore.read()?.target !== target;
+            return seekLanded(after, target, { calledAt, superseded, verifyTimeout: this.settings.timing.verify_timeout });
         }, this.settings.timing);
-        if (!landed) throw new Failure(EXIT.ignored, `${before.app || 'player'} ignored the seek (this player or page has no seek support)`);
+        if (!landed) { throw new Failure(EXIT.ignored, `${before.app || 'player'} ignored the seek (this player or page has no seek support)`); }
         return after;
     },
 
     seekBy(delta, progressive) {
         const { timing, progressive: acceleration } = this.settings;
         const before = this.requireState();
-        const now = Date.now() / 1000;
+        const now = Date.now() / MILLISECONDS_PER_SECOND;
         const lastSeek = lastSeekStore.read();
         const streak = {
             direction: Math.sign(delta),
@@ -68,11 +68,11 @@ const player = {
         const delivered = mediaRemote.send(command);
         const wantPlaying = before ? expectedPlaying(command, before.playing) : null;
 
-        if (delivered && wantPlaying == null) {
+        if (delivered && isMissing(wantPlaying)) {
             delay(this.settings.timing.command_delivery);
             return;
         }
-        const reacted = delivered && waitUntil(() => (mediaRemote.read() || {}).playing === wantPlaying, this.settings.timing);
-        if (!reacted) throw new Failure(EXIT.ignored, `player did not react to "${command}"`);
+        const reacted = delivered && waitUntil(() => mediaRemote.read()?.playing === wantPlaying, this.settings.timing);
+        if (!reacted) { throw new Failure(EXIT.ignored, `player did not react to "${command}"`); }
     },
 };

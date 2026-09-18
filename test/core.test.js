@@ -3,7 +3,7 @@ ObjC.import('stdlib');
 
 function run(argv) {
     const source = $.NSString.stringWithContentsOfFileEncodingError(argv[0], $.NSUTF8StringEncoding, null).js;
-    const core = eval(source + `;({ livePosition, clampTarget, seekBase, seekLanded, expectedPlaying,
+    const core = eval(`${source};({ livePosition, clampTarget, seekBase, seekLanded, expectedPlaying,
         parseTime, formatTime, formatStatus, Failure, EXIT, streakStart, parsePattern, multiplierAt,
         parseIni, resolveSettings, formatSettings })`);
 
@@ -18,7 +18,7 @@ function run(argv) {
         const ok = typeof expected === 'number' && typeof actual === 'number'
             ? Math.abs(actual - expected) < 1e-9
             : actual === expected;
-        if (!ok) failures.push(`${name}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+        if (!ok) { failures.push(`${name}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`); }
     };
 
     same(core.livePosition(144.25, 1, 1000, 1245), 389.25, 'playing: snapshot advances by wall clock');
@@ -43,15 +43,15 @@ function run(argv) {
     same(core.seekBase(stale, lastSeek, 60, 20), 110, 'a longer pending_seek_max keeps trusting it');
     same(core.seekBase({ position: 100, timestamp: null }, lastSeek, 50.03, 3), 110, 'no timestamp at all counts as not refreshed');
 
-    same(core.seekLanded(null, 110, 50, false, 2.5), false, 'nothing playing any more');
-    same(core.seekLanded({ position: 100, timestamp: 40, rate: 1 }, 110, 50, false, 2.5), false, 'not refreshed since the call');
-    same(core.seekLanded({ position: 110.2, timestamp: 50.1, rate: 1 }, 110, 50, false, 2.5), true, 'refreshed and on target');
-    same(core.seekLanded({ position: 0, timestamp: 50.1, rate: 1 }, 110, 50, false, 2.5), false, 'refreshed by an earlier seek, not ours');
-    same(core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, 50, false, 2.5), true, 'kept playing while we polled');
-    same(core.seekLanded({ position: 150, timestamp: 50.1, rate: 1 }, 110, 50, true, 2.5), true, 'a later key press took over');
-    same(core.seekLanded({ position: 110, timestamp: 50.1, rate: 0 }, 110, 50, false, 2.5), true, 'paused player on target');
+    same(core.seekLanded(null, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), false, 'nothing playing any more');
+    same(core.seekLanded({ position: 100, timestamp: 40, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), false, 'not refreshed since the call');
+    same(core.seekLanded({ position: 110.2, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), true, 'refreshed and on target');
+    same(core.seekLanded({ position: 0, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), false, 'refreshed by an earlier seek, not ours');
+    same(core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), true, 'kept playing while we polled');
+    same(core.seekLanded({ position: 150, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: true, verifyTimeout: 2.5 }), true, 'a later key press took over');
+    same(core.seekLanded({ position: 110, timestamp: 50.1, rate: 0 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), true, 'paused player on target');
 
-    same(core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, 50, false, 0.5), false, 'a shorter verify_timeout tolerates less drift');
+    same(core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 0.5 }), false, 'a shorter verify_timeout tolerates less drift');
 
     const held = { target: 110, at: 50, direction: 1, streakStart: 44 };
     same(core.streakStart(null, 1, 50, 1), 50, 'first press starts a hold');
@@ -129,8 +129,8 @@ function run(argv) {
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 
-    if (failures.length) {
-        $.NSFileHandle.fileHandleWithStandardError.writeData($(failures.join('\n') + '\n').dataUsingEncoding($.NSUTF8StringEncoding));
+    if (failures.length > 0) {
+        $.NSFileHandle.fileHandleWithStandardError.writeData($(`${failures.join('\n')}\n`).dataUsingEncoding($.NSUTF8StringEncoding));
         $.exit(1);
     }
     return `${count} passed`;

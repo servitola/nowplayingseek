@@ -26,6 +26,11 @@ function testSeekBase(core) {
     same(core.seekBase(stale, lastSeek, 60, 3), 100, 'player never refreshed: stop trusting the old target');
     same(core.seekBase(stale, lastSeek, 60, 20), 110, 'a longer pending_seek_max keeps trusting it');
     same(core.seekBase({ position: 100, timestamp: null }, lastSeek, 50.03, 3), 110, 'no timestamp at all counts as not refreshed');
+    same(
+        core.seekBase({ ...stale, app: 'browser' }, { ...lastSeek, app: 'iina' }, 50.03, 3),
+        100,
+        'another app was elected meanwhile: its position, not the old target'
+    );
 }
 
 function testSeekLanded(core) {

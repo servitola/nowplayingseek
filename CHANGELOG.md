@@ -22,6 +22,8 @@ version, so keep that heading as it is.
   line number: delete the line.
 
 ### Fixed
+- A step made within 3 s of a step in another app started from that app's position: the target a
+  held key builds on is now tied to the app it was made in.
 - The Karabiner-Elements recipe never repeated while the key was held, so `--progressive` had
   nothing to grow on. The recipe now uses `--hold`.
 

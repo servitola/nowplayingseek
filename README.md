@@ -23,6 +23,13 @@ $ nowplayingseek status --json
 {"title":"Seven Samurai","artist":"","album":"","app":"org.videolan.vlc","duration":12420,"position":3723.041,"playing":true,"rate":1,"timestamp":1789768358.106}
 ```
 
+## Why
+
+I wanted two keys: ten seconds back, ten seconds forward, in anything that plays.
+I searched. There was no such thing. So I made it.
+
+[The longer story](docs/how-it-works.md#why-it-exists).
+
 ## Install
 
 ```sh

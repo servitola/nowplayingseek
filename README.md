@@ -94,7 +94,15 @@ Three things the API does not tell you:
 
 ## Limits
 
-- It drives the app macOS elected as Now Playing. You cannot pick another one.
+- It drives the app macOS elected as Now Playing — the one in the Control Center widget —
+  and nothing else. macOS elects the app that *started playback most recently* and keeps it
+  elected for minutes after it pauses, even while another app is audibly playing. So after
+  a voice message in a messenger, the hotkeys drive the paused messenger, not the video you
+  are watching. Press play in the app you mean and it is elected again.
+- There is no way around that from outside. `MRMediaRemoteSendCommandToPlayer`,
+  `…ToApp`, `…ToClient` and `MRNowPlayingRequest` all accept a target, and for an
+  unentitled caller `mediaremoted` silently redirects every one of them to the elected
+  app; only Apple's own Music is addressed as asked (measured on macOS 26.6).
 - Seeking needs the player's cooperation. YouTube in Chromium browsers and IINA work. A
   web page without a MediaSession `seekto` handler swallows the call; you get exit 2.
 - Private API. Tested on macOS 26.6 only. Apple can close this door in any update — run

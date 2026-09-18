@@ -14,7 +14,7 @@
         "lineWidth": 140
     },
     "javascript": {
-        "globals": ["$", "ObjC", "Application", "Path", "delay"],
+        "globals": [],
         "formatter": {
             "quoteStyle": "single",
             "semicolons": "always",
@@ -42,15 +42,7 @@
             "linter": {
                 "rules": {
                     "correctness": {
-                        "useQwikValidLexicalScope": "off",
-                        "noUnusedVariables": {
-                            "level": "error",
-                            "options": {
-                                "ignore": {
-                                    "function": ["run"]
-                                }
-                            }
-                        }
+                        "useQwikValidLexicalScope": "off"
                     },
                     "style": {
                         "noTernary": "off",
@@ -78,7 +70,10 @@
             }
         },
         {
-            "includes": ["src/core.js"],
+            "includes": ["src/core.js", "src/config.js"],
+            "javascript": {
+                "globals": ["EXIT", "Failure", "isMissing", "parseTime"]
+            },
             "linter": {
                 "rules": {
                     "correctness": {
@@ -87,6 +82,7 @@
                             "options": {
                                 "ignore": {
                                     "function": [
+                                        "Failure",
                                         "livePosition",
                                         "clampTarget",
                                         "seekBase",
@@ -94,11 +90,13 @@
                                         "streakStart",
                                         "multiplierAt",
                                         "expectedPlaying",
+                                        "parseTime",
                                         "formatStatus",
-                                        "Failure",
-                                        "parseTime"
+                                        "parseIni",
+                                        "resolveSettings",
+                                        "formatSettings"
                                     ],
-                                    "variable": ["MILLISECONDS_PER_SECOND", "EXIT"]
+                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND"]
                                 }
                             }
                         }
@@ -107,50 +105,7 @@
             }
         },
         {
-            "includes": ["src/config.js"],
-            "javascript": {
-                "globals": ["$", "ObjC", "Application", "Path", "delay", "EXIT", "Failure", "isMissing", "parseTime"]
-            },
-            "linter": {
-                "rules": {
-                    "correctness": {
-                        "noUnusedVariables": {
-                            "level": "error",
-                            "options": {
-                                "ignore": {
-                                    "function": ["parseIni", "resolveSettings", "formatSettings"]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "includes": ["src/mediaremote.js"],
-            "javascript": {
-                "globals": ["$", "ObjC", "Application", "Path", "delay", "MILLISECONDS_PER_SECOND", "livePosition"]
-            },
-            "linter": {
-                "rules": {
-                    "correctness": {
-                        "noUnusedVariables": {
-                            "level": "error",
-                            "options": {
-                                "ignore": {
-                                    "variable": ["mediaRemote"]
-                                }
-                            }
-                        }
-                    },
-                    "security": {
-                        "noSecrets": "off"
-                    }
-                }
-            }
-        },
-        {
-            "includes": ["src/player.js"],
+            "includes": ["src/mediaremote.js", "src/player.js", "src/cli.js"],
             "javascript": {
                 "globals": [
                     "$",
@@ -162,13 +117,20 @@
                     "EXIT",
                     "Failure",
                     "isMissing",
+                    "livePosition",
                     "clampTarget",
                     "seekBase",
                     "seekLanded",
                     "streakStart",
                     "multiplierAt",
                     "expectedPlaying",
-                    "mediaRemote"
+                    "parseTime",
+                    "formatStatus",
+                    "parseIni",
+                    "resolveSettings",
+                    "formatSettings",
+                    "mediaRemote",
+                    "player"
                 ]
             },
             "linter": {
@@ -178,7 +140,8 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "variable": ["player"]
+                                    "function": ["run"],
+                                    "variable": ["mediaRemote", "player"]
                                 }
                             }
                         }
@@ -187,42 +150,20 @@
             }
         },
         {
-            "includes": ["src/cli.js"],
-            "javascript": {
-                "globals": [
-                    "$",
-                    "ObjC",
-                    "Application",
-                    "Path",
-                    "delay",
-                    "EXIT",
-                    "Failure",
-                    "isMissing",
-                    "parseTime",
-                    "formatStatus",
-                    "parseIni",
-                    "resolveSettings",
-                    "formatSettings",
-                    "mediaRemote",
-                    "player"
-                ]
-            }
-        },
-        {
-            "includes": ["test/**"],
+            "includes": ["src/mediaremote.js"],
             "linter": {
                 "rules": {
                     "security": {
-                        "noGlobalEval": "off"
-                    },
-                    "style": {
-                        "noMagicNumbers": "off"
+                        "noSecrets": "off"
                     }
                 }
             }
         },
         {
-            "includes": ["test/harness.js"],
+            "includes": ["test/**"],
+            "javascript": {
+                "globals": ["$", "ObjC", "Application", "Path", "delay", "GROUPS", "same", "failureOf"]
+            },
             "linter": {
                 "rules": {
                     "correctness": {
@@ -234,14 +175,14 @@
                                 }
                             }
                         }
+                    },
+                    "security": {
+                        "noGlobalEval": "off"
+                    },
+                    "style": {
+                        "noMagicNumbers": "off"
                     }
                 }
-            }
-        },
-        {
-            "includes": ["test/*.test.js"],
-            "javascript": {
-                "globals": ["$", "ObjC", "Application", "Path", "delay", "GROUPS", "same", "failureOf"]
             }
         }
     ]

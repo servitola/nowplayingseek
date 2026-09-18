@@ -107,6 +107,15 @@ expect 'override: max_multiplier' 0 stdout 'max_multiplier = 4.5' config
 expect 'override: untouched keys keep defaults' 0 stdout 'streak_gap = 1' config
 expect 'a valid config lets argument errors through' 64 stderr 'got "abc"' seek abc
 
+cases=$((cases + 1))
+notes=$(scripts/release.sh notes 0.2.0) || fail 'release.sh notes 0.2.0 failed'
+case $notes in
+'### Changed'*'Commands have full names only'*) ;;
+*) fail "release.sh notes 0.2.0 printed: $notes" ;;
+esac
+case $notes in *'## 0.'* | *'First release'*) fail 'release.sh notes 0.2.0 leaked a heading or the next section' ;; esac
+scripts/release.sh notes 9.9.9 >/dev/null 2>&1 && fail 'release.sh notes accepted a version the changelog does not have'
+
 if [ "$failures" -gt 0 ]; then
 	echo "$failures of $cases cli cases failed" >&2
 	exit 1

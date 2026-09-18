@@ -13,8 +13,6 @@ What is left, most pressing first. State as of 2026-09-18; delete a line when it
 - `config` loads `MediaRemote.framework` although it never reads Now Playing (~10 ms, harmless).
 
 ## Code
-- `src/cli.js` is 192 lines of the 200 allowed. The next feature needs `configFile` moved out
-  into its own file first.
 - Biome is pinned to 2.5.13 because npm on the owner's machine refuses releases younger than
   7 days; 2.5.14 was 2 days old. Bump `rev`, `additional_dependencies` and `$schema` together.
 

@@ -19,7 +19,8 @@ is a plain global in the files after it. The order is the dependency order:
 | `src/config.js` | pure: the `SETTINGS` table, ini and pattern parsing |
 | `src/mediaremote.js` | the only file that touches the private `MediaRemote.framework` |
 | `src/player.js` | seek and transport with polling for the effect; the last-seek store |
-| `src/cli.js` | commands, usage, the config file, `run(argv)` — the entry point `osascript` calls |
+| `src/configfile.js` | finds, loads and writes `config.ini` |
+| `src/cli.js` | commands, usage, `run(argv)` — the entry point `osascript` calls |
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js`;
 `test/cli.test.sh` drives the built tool. Both lists are spelled out in the `Makefile`: a new file

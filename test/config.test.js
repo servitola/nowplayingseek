@@ -1,11 +1,12 @@
 function testMultiplier(core) {
-    const curve = { max_multiplier: 3, ramp: 5 };
-    same(core.multiplierAt(0, curve), 1, 'a tap is exactly one step');
-    same(core.multiplierAt(1, curve) < 1.1, true, 'the first second stays precise');
-    same(core.multiplierAt(5, curve), 1 + 2 * (1 - Math.exp(-1)), 'at ramp it is 63 % of the way');
-    same(core.multiplierAt(60, curve), 3, 'it settles at max_multiplier');
-    same(core.multiplierAt(2.2, curve) > core.multiplierAt(2, curve), true, 'every step is longer than the last');
-    same(core.multiplierAt(60, { max_multiplier: 1, ramp: 5 }), 1, 'max_multiplier 1 switches it off');
+    const curve = { start: 0.4, max_multiplier: 3, ramp: 5 };
+    same(core.multiplierAt(0, curve, false), 1, 'a tap is exactly one step');
+    same(core.multiplierAt(1, curve, false), 1, 'separate presses never shrink below one step');
+    same(core.multiplierAt(0.2, curve, true) < 0.5, true, 'a held key glides off in small steps');
+    same(core.multiplierAt(5, curve, true), 0.4 + 2.6 * (1 - Math.exp(-1)), 'at ramp it is 63 % of the way');
+    same(core.multiplierAt(60, curve, true), 3, 'it settles at max_multiplier');
+    same(core.multiplierAt(2.2, curve, true) > core.multiplierAt(2, curve, true), true, 'every step is longer than the last');
+    same(core.multiplierAt(60, { start: 1, max_multiplier: 1, ramp: 5 }, true), 1, 'start 1 and max 1 switch it off');
 }
 
 function testIni(core) {
@@ -37,8 +38,11 @@ function testSettings(core) {
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
     same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
     same(defaults.values.hold.max_time, 30, 'settings: default hold fuse');
+    same(defaults.values.knob.step, 3, 'settings: default knob step');
+    same(defaults.values.knob.fast, 12, 'settings: default knob pace');
     same(defaults.values.progressive.max_multiplier, 2.5, 'settings: default max multiplier');
     same(defaults.values.progressive.ramp, 6, 'settings: default ramp');
+    same(defaults.values.progressive.start, 0.4, 'settings: default start');
     const custom = core.resolveSettings(core.parseIni(ini));
     same(custom.values.seek.step, 90, 'settings: step accepts mm:ss');
     same(custom.values.progressive.ramp, 3, 'settings: ramp from the file');

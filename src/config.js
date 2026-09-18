@@ -15,8 +15,18 @@ const SETTINGS = {
                 + 'held, and settles at this many times its size',
             'a number above zero'
         ),
-        ramp: setting('6', 'held this long, the step is two thirds of the way to max_multiplier'),
+        start: setting(
+            '0.4',
+            'a held key glides off in steps this many times the step, so a short hold stays short; a press is always a whole step',
+            'a number above zero'
+        ),
+        ramp: setting('6', 'held this long, the step is two thirds of the way from start to max_multiplier'),
         streak_gap: setting('1', 'presses in one direction no further apart than this count as one hold'),
+    },
+    knob: {
+        step: setting('3', 'forward / backward --knob: one click of a keyboard knob', 'seconds or mm:ss above zero'),
+        max_multiplier: setting('5', 'the faster the knob spins, the longer the step — up to this many times', 'a number above zero'),
+        fast: setting('12', 'spun at this pace, the step is two thirds of the way to max_multiplier', 'clicks a second above zero'),
     },
     hold: {
         interval: setting('0.2', 'forward / backward --hold: pause between steps while the key is down'),

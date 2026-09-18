@@ -5,7 +5,10 @@
 The tool does not grab keys itself; bind it with whatever you already use. Give the
 full path — hotkey daemons run commands with a bare environment.
 
-Karabiner-Elements, ⌃⌥→ and ⌃⌥←. Karabiner runs a `shell_command` once per press and does not
+## A key, in Karabiner-Elements
+
+[Karabiner-Elements](https://karabiner-elements.pqrs.org/) is a free keyboard customiser for
+macOS. ⌃⌥→ and ⌃⌥←: Karabiner runs a `shell_command` once per press and does not
 repeat it while the key is held, so the key down starts a [`--hold`](advanced.md#hold) and the
 key up ends it:
 
@@ -25,13 +28,35 @@ key up ends it:
 }
 ```
 
-A tap is one step; held, the key makes five steps a second, and with `--progressive` they grow.
-The pace, the step and how it grows are in the [config file](advanced.md#config-file).
+A tap is one step. Held, the key glides off in small steps, five a second, and with
+`--progressive` they grow — see [the curve](advanced.md#progressive-seek). The pace, the step and
+how it grows are in the [config file](advanced.md#config-file).
 
-A rotary knob is two keys to the system, one per direction — volume up and down out of
-the box. Reassign them in the keyboard's firmware (VIA, QMK) to keys you do not use, such
-as F13 and F14, and bind those the same way. Every click of the knob is one press, so with
-[`--progressive`](advanced.md#progressive-seek) a fast spin covers more ground than a slow one.
+## A knob, in Karabiner-Elements
+
+If you have a mechanical keyboard with a knob, it can be a jog wheel for every video and podcast
+on the Mac. A knob is two keys to the system, one per direction — volume up and down out of the
+box. Reassign them in the keyboard's firmware (VIA, QMK, the vendor's app) to keys you do not
+use, such as F13 and F14, and give those to `--knob`:
+
+```json
+{
+  "description": "nowplayingseek: the keyboard knob is a jog wheel",
+  "manipulators": [
+    { "type": "basic", "from": { "key_code": "f14" },
+      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward --knob" }] },
+    { "type": "basic", "from": { "key_code": "f13" },
+      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward --knob" }] }
+  ]
+}
+```
+
+Every click of the knob is one run of the command, and the tool reads the pace of the clicks: a
+slow click is 3 s, fine enough to find a word; a flick makes every click up to five times
+longer. The step, the limit and what counts as fast are `[knob]` in the
+[config file](advanced.md#config-file).
+
+## Other tools
 
 Without third-party software: Shortcuts.app → new shortcut → "Run Shell Script" →
 `/opt/homebrew/bin/nowplayingseek forward 10` → ⓘ → "Add Keyboard Shortcut".

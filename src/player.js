@@ -62,12 +62,17 @@ const player = {
         return this.awaitLanding(target, at, before);
     },
 
-    seekBy(delta, { progressive, hold }) {
+    seekBy(delta, { progressive, hold, knob }) {
         const { timing, progressive: curve } = this.settings;
         const before = this.requirePosition();
         const lastSeek = lastSeekFile.read();
         const direction = Math.sign(delta);
-        const streak = { direction, streakStart: streakStart(lastSeek, direction, now(), curve.streak_gap) };
+        const streak = {
+            direction,
+            streakStart: streakStart(lastSeek, direction, now(), curve.streak_gap),
+            rate: knob ? knobRate(lastSeek, direction, now(), curve.streak_gap) : undefined,
+        };
+        const growth = this.growth({ progressive, knob }, streak);
         const once = !hold || releasedSince(holdFile.read(), PROCESS_STARTED);
         if (!once) {
             holdFile.write({ holder: HOLD_TOKEN });
@@ -77,7 +82,7 @@ const player = {
         let last = null;
         do {
             const at = now();
-            const multiplier = progressive ? multiplierAt(at - streak.streakStart, curve) : 1;
+            const multiplier = growth(at, last !== null);
             const next = nextHoldTarget(target, delta, multiplier, before.duration);
             if (isMissing(next)) {
                 break;
@@ -89,6 +94,16 @@ const player = {
         } while (!once && this.stillHeld());
 
         return last ? { state: this.awaitLanding(target, last.at, before), multiplier: last.multiplier } : { state: before, multiplier: 1 };
+    },
+
+    growth({ progressive, knob }, streak) {
+        if (knob) {
+            return () => knobMultiplier(streak.rate, this.settings.knob);
+        }
+        if (progressive) {
+            return (at, gliding) => multiplierAt(at - streak.streakStart, this.settings.progressive, gliding);
+        }
+        return () => 1;
     },
 
     stillHeld() {

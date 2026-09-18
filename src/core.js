@@ -14,6 +14,8 @@ function Failure(code, message) {
 
 const isMissing = value => value === null || value === undefined;
 
+const effectiveRate = (isPlaying, rate) => (isPlaying ? rate : 0);
+
 // ElapsedTime is a snapshot taken at Timestamp, not the current position.
 function livePosition(elapsed, rate, timestamp, now) {
     if (isMissing(elapsed)) {

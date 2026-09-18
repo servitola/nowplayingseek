@@ -5,24 +5,28 @@
 The tool does not grab keys itself; bind it with whatever you already use. Give the
 full path — hotkey daemons run commands with a bare environment.
 
-Karabiner-Elements, ⌃⌥→ and ⌃⌥←:
+Karabiner-Elements, ⌃⌥→ and ⌃⌥←. Karabiner runs a `shell_command` once per press and does not
+repeat it while the key is held, so the press starts a loop and the release stops it:
 
 ```json
 {
-  "description": "nowplayingseek ±10 s",
+  "description": "nowplayingseek ±10 s, hold to keep going",
   "manipulators": [
     { "type": "basic",
       "from": { "key_code": "right_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward 10" }] },
+      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo forward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = forward ] && [ $n -lt 150 ]; do /opt/homebrew/bin/nowplayingseek forward 10 --progressive; n=$((n+1)); done" }],
+      "to_after_key_up": [{ "shell_command": "rm -f \"${TMPDIR:-/tmp/}nowplayingseek.hold\"" }] },
     { "type": "basic",
       "from": { "key_code": "left_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward 10" }] }
+      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo backward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = backward ] && [ $n -lt 150 ]; do /opt/homebrew/bin/nowplayingseek backward 10 --progressive; n=$((n+1)); done" }],
+      "to_after_key_up": [{ "shell_command": "rm -f \"${TMPDIR:-/tmp/}nowplayingseek.hold\"" }] }
   ]
 }
 ```
 
-Holding the key works: steps add up even though key repeat is faster than Now Playing
-refreshes.
+A tap is one step. Held, it makes about two steps a second, and with `--progressive` they grow
+after five seconds. The 150 is a fuse for a release that never arrives. For a tap-only key the
+whole command is `/opt/homebrew/bin/nowplayingseek forward 10`.
 
 A rotary knob is two keys to the system, one per direction — volume up and down out of
 the box. Reassign them in the keyboard's firmware (VIA, QMK) to keys you do not use, such

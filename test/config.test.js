@@ -48,6 +48,8 @@ function testSettings(core) {
     same(custom.values.seek.step, 90, 'settings: step accepts mm:ss');
     same(custom.values.progressive.ramp, 3, 'settings: ramp from the file');
     same(custom.values.progressive.streak_gap, 1, 'settings: untouched keys keep their defaults');
+    same(defaults.warnings.length, 0, 'settings: no warnings with nothing to read');
+    same(custom.warnings.length, 0, 'settings: no warnings over a file with nothing unknown');
     same(
         failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstep = 0'))),
         '78: line 2: [seek] step = "0" — expected seconds or mm:ss above zero',
@@ -64,20 +66,33 @@ function testSettings(core) {
         'settings: nor a pause between steps'
     );
     same(
-        failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstpe = 5'))),
-        '78: line 2: unknown setting [seek] stpe',
-        'settings: unknown key'
-    );
-    same(
-        failureOf(core, () => core.resolveSettings(core.parseIni('[toString]\nx = 5'))),
-        '78: line 2: unknown setting [toString] x',
-        'settings: unknown section'
-    );
-    same(
         JSON.stringify(core.resolveSettings(core.parseIni(core.formatSettings(custom.texts))).values),
         JSON.stringify(custom.values),
         'settings: the printed config reads back the same'
     );
+}
+
+// A config file outlives the version that wrote it: an unknown section or key is a later (or
+// reverted) release's business, so it is dropped with a warning, never a Failure.
+function testUnknownSettings(core) {
+    const unknownKey = core.resolveSettings(core.parseIni('[seek]\nstpe = 5\nstep = 20\n'));
+    same(unknownKey.warnings.length, 1, 'settings: an unknown key inside a known section warns instead of failing');
+    same(unknownKey.warnings[0], 'line 2: unknown setting [seek] stpe — ignored', 'settings: the warning names the line and the name');
+    same(unknownKey.values.seek.step, 20, 'settings: a known key on another line of the same section still applies');
+
+    const unknownSection = core.resolveSettings(core.parseIni('[toString]\nx = 5\n[seek]\nstep = 30\n'));
+    same(unknownSection.warnings.length, 1, 'settings: an unknown section warns instead of failing');
+    same(unknownSection.warnings[0], 'line 2: unknown setting [toString] x — ignored', 'settings: the warning names the section');
+    same(unknownSection.values.seek.step, 30, 'settings: the rest of the file still applies after an unknown section');
+
+    const both = core.resolveSettings(core.parseIni('[toString]\nx = 5\n[seek]\nstpe = 1\nstep = 45\n'));
+    same(both.warnings.length, 2, 'settings: an unknown section and an unknown key in the same file both warn');
+    same(
+        JSON.stringify(both.warnings),
+        JSON.stringify(['line 2: unknown setting [toString] x — ignored', 'line 4: unknown setting [seek] stpe — ignored']),
+        'settings: each warning names its own line, in order'
+    );
+    same(both.values.seek.step, 45, 'settings: a known key still applies alongside two kinds of unknown');
 }
 function testTemplate(core) {
     const template = core.settingsTemplate();
@@ -154,4 +169,4 @@ function testSetRefuses(core) {
         'set: the same parser as the file'
     );
 }
-GROUPS.push(testMultiplier, testIni, testSettings, testTemplate, testSet, testSetRefuses);
+GROUPS.push(testMultiplier, testIni, testSettings, testUnknownSettings, testTemplate, testSet, testSetRefuses);

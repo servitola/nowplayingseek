@@ -75,9 +75,12 @@ function parseIni(text) {
     return entries;
 }
 
+// A config file outlives the version that reads it: a section or key this build has never heard
+// of is a newer (or reverted) release's business, not a reason to brick every command on this one.
 function resolveSettings(entries) {
     const values = {};
     const texts = {};
+    const warnings = [];
     for (const [section, specs] of Object.entries(SETTINGS)) {
         values[section] = {};
         texts[section] = {};
@@ -88,15 +91,19 @@ function resolveSettings(entries) {
     }
     for (const { section, key, text, line } of entries) {
         const known = Object.hasOwn(SETTINGS, section) && Object.hasOwn(SETTINGS[section], key);
-        if (!known) {
-            throw new Failure(EXIT.config, `line ${line}: unknown setting [${section}] ${key}`);
+        if (known) {
+            const value = parseSetting(text, SETTINGS[section][key].expects);
+            if (isMissing(value)) {
+                throw new Failure(
+                    EXIT.config,
+                    `line ${line}: [${section}] ${key} = "${text}" — expected ${SETTINGS[section][key].expects}`
+                );
+            }
+            values[section][key] = value;
+            texts[section][key] = text;
+        } else {
+            warnings.push(`line ${line}: unknown setting [${section}] ${key} — ignored`);
         }
-        const value = parseSetting(text, SETTINGS[section][key].expects);
-        if (isMissing(value)) {
-            throw new Failure(EXIT.config, `line ${line}: [${section}] ${key} = "${text}" — expected ${SETTINGS[section][key].expects}`);
-        }
-        values[section][key] = value;
-        texts[section][key] = text;
     }
-    return { values, texts };
+    return { values, texts, warnings };
 }

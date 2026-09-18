@@ -214,9 +214,12 @@ expect 'config set --json answers with the settings' 0 stdout '"fast": 12' confi
 fresh_home
 expect 'a refused config set writes nothing' 64 stderr 'got "0"' config set knob.fast 0
 [ -e "$xdg/nowplayingseek" ] && fail 'a refused config set created something'
-write_config '[seek]' 'stpe = 5'
-expect 'config set over a broken file' 78 stderr 'line 2: unknown setting [seek] stpe' config set knob.fast 24
+write_config '[seek]' 'step = 0'
+expect 'config set over a file with a bad value' 78 stderr 'line 2: [seek] step = "0" — expected seconds or mm:ss above zero' config set knob.fast 24
 grep -q 'fast' "$xdg/nowplayingseek/config.ini" && fail 'config set wrote over a file that does not read'
+write_config '[seek]' 'stpe = 5'
+expect 'config set over a file with only an unknown key' 0 stdout "wrote knob.fast = 24 to $xdg/nowplayingseek/config.ini" config set knob.fast 24
+grep -q '^fast = 24' "$xdg/nowplayingseek/config.ini" || fail 'config set refused a file that only has an unknown key'
 fresh_home
 mkdir -p "$xdg/nowplayingseek" "$xdg/dotfiles"
 printf '[knob]\nfast = 18\n' >"$xdg/dotfiles/config.ini"
@@ -238,13 +241,36 @@ expect 'config init where it cannot write' 78 stderr "cannot write $xdg/nowplayi
 chmod 700 "$xdg"
 
 write_config '[seek]' 'stpe = 5'
-expect 'unknown key' 78 stderr "$xdg/nowplayingseek/config.ini: line 2: unknown setting [seek] stpe" config
+expect 'unknown key does not stop the command' 0 stdout 'max_multiplier = 2.5' config
+expect 'unknown key warns on stderr' 0 stderr "$xdg/nowplayingseek/config.ini: line 2: unknown setting [seek] stpe — ignored" config
 write_config '[sekk]' 'step = 5'
-expect 'unknown section' 78 stderr 'line 2: unknown setting [sekk] step' config
+expect 'unknown section does not stop the command' 0 stdout 'max_multiplier = 2.5' config
+expect 'unknown section warns on stderr' 0 stderr 'line 2: unknown setting [sekk] step — ignored' config
 write_config '; comment' '[seek]' 'step = 0'
 expect 'bad value' 78 stderr 'line 3: [seek] step = "0" — expected seconds or mm:ss above zero' config
 write_config '[progressive]' 'pattern = 5s:x2, 10s:x3, ...'
-expect 'the 2026.07.31 ladder is gone' 78 stderr 'line 2: unknown setting [progressive] pattern' config
+expect 'the 2026.07.31 ladder no longer bricks a newer build' 0 stdout 'max_multiplier = 2.5' config
+expect 'the 2026.07.31 ladder still gets named on stderr' 0 stderr 'line 2: unknown setting [progressive] pattern — ignored' config
+
+# A command loads the config once but can call configFile.load() more than once (config prints
+# settings, then texts); prove the warning reaches stderr exactly once and stdout, unaware of it,
+# comes out byte for byte the same as it would without the unknown line.
+write_config '[seek]' 'step = 9'
+clean_stdout=$(XDG_CONFIG_HOME=$xdg "$bin" config)
+printf '[seek]\nstep = 9\n[hotkeys]\nforward = x\n' >"$xdg/nowplayingseek/config.ini"
+dirty_stdout=$(XDG_CONFIG_HOME=$xdg "$bin" config 2>"$work/stderr")
+dirty_exit=$?
+cases=$((cases + 1))
+[ "$dirty_exit" -eq 0 ] || fail "an unknown section still exits 0, got $dirty_exit"
+cases=$((cases + 1))
+[ "$dirty_stdout" = "$clean_stdout" ] || fail 'an unknown section changed stdout'
+cases=$((cases + 1))
+[ "$(grep -c 'unknown setting' "$work/stderr")" -eq 1 ] || fail "the warning printed more than once: $(cat "$work/stderr")"
+cases=$((cases + 1))
+grep -qF "$xdg/nowplayingseek/config.ini: line 4: unknown setting [hotkeys] forward — ignored" "$work/stderr" ||
+	fail "stderr lacks the warning, got: $(cat "$work/stderr")"
+cases=$((cases + 1))
+grep -q "$(printf '\033')" "$work/stderr" && fail 'the warning is colour-painted'
 write_config '[progressive]' 'ramp = 0'
 expect 'ramp of zero' 78 stderr 'line 2: [progressive] ramp = "0" — expected seconds above zero' config
 write_config '[knob]' 'fast = 0'

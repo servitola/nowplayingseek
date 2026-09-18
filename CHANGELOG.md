@@ -5,6 +5,13 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Changed
+- An unknown `[section]` or key in `config.ini` is ignored, once named on stderr with its line
+  number, instead of stopping every command with exit 78 — a config file outlives the version
+  that reads it, so a setting only a newer (or older) release knows about must not brick this one.
+  A known key with a value that does not parse is still exit 78: that is a mistake this build can
+  prove, not a version gap.
+
 ### Added
 - `artwork [path]` writes the cover art to a file (a temp one by default) and prints where;
   `media-control get` and `stream` carry it too, as base64 `artworkData`, unless `--no-artwork`.

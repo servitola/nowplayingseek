@@ -88,6 +88,9 @@ is checked first, the line is put in force where it stands, and a file that does
 written as `config init` would, with this one line live. A config symlinked from dotfiles stays a
 symlink.
 
-Comments are whole lines starting with `;` or `#`. An unknown section or key, or a value
-that does not parse, stops every command with exit 78 and the line number — a typo never
-silently falls back to a default.
+Comments are whole lines starting with `;` or `#`. A config file outlives the version that reads
+it, so an unknown section or key — a newer release's setting, or an older one's — is ignored: the
+rest of the file still applies, and the command still runs. It is named once on stderr, with the
+line number, so a real typo does not pass in silence. A value that does not parse for a key this
+build *does* know stops every command with exit 78 and the line number — that is a mistake the
+tool can prove, not a version difference.

@@ -8,6 +8,7 @@ Every command is one line in, one line out, and the exit code is the truth: `0` 
 | Asked | Run |
 | --- | --- |
 | what is playing, where am I, how much is left | `nowplayingseek status --json` — `position` and `duration` in seconds, `playing`, `app` |
+| everything macOS knows about the item | `nowplayingseek status --raw` — chapters, media type, artwork size, the file's URL |
 | go back a minute | `nowplayingseek backward 60` |
 | jump to 12:30 | `nowplayingseek seek 12:30` |
 | pause, resume, next | `nowplayingseek pause`, `play`, `next` |

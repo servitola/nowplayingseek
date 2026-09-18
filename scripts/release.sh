@@ -14,6 +14,7 @@ usage: scripts/release.sh [--dry-run] <step>
   check              preflight: branch, clean tree, in sync with origin, lint, tests, CI on HEAD
   bump <version>     write <version> into $version_file and cut it out of Unreleased in $changelog
   formula <version>  download the published tarball, put its sha256 and url into the tap formula
+  notes <version>    print that version's section of $changelog, for the GitHub release
   plan <version>     all three with --dry-run
 
 Nothing here commits, tags or pushes. --dry-run changes no file either: it prints the diff.
@@ -102,6 +103,16 @@ bump() {
 	apply "$changelog" "$edited"
 }
 
+notes() {
+	section=$(awk -v start="## $1 " 'index($0, start) == 1 { inside = 1; next } /^## / { inside = 0 } inside' "$changelog")
+	[ -n "$section" ] || die "$changelog has no section for $1"
+	# GitHub renders a newline inside a release body as a line break, so wrapped lines are joined.
+	say "$section" | sed -e '/./,$!d' | awk '
+		/^(- |#|$)/ { if (line != "") print line; line = ""; if ($0 ~ /^(#|$)/) { print; next } }
+		{ sub(/^ +/, ""); line = (line == "" ? $0 : line " " $0) }
+		END { if (line != "") print line }'
+}
+
 update_formula() {
 	version=$1
 	[ -f "$tap_dir/$formula" ] || die "no $formula in $tap_dir — set TAP_DIR to the tap checkout that pushes to gitea"
@@ -134,6 +145,10 @@ cd "$(dirname "$0")/.."
 case $step in
 check)
 	check
+	;;
+notes)
+	[ $# -eq 2 ] || die "$step needs a version"
+	notes "$2"
 	;;
 bump | formula | plan)
 	[ $# -eq 2 ] || die "$step needs a version"

@@ -11,8 +11,10 @@ version, so keep that heading as it is.
   held — Karabiner-Elements is one. `[hold] interval` and `max_time` set the pace and the fuse.
 
 ### Changed
-- The default ladder of `--progressive` is `4s:x2, 8s:x3, ...` instead of `5s:x2, 10s:x3, ...`: the
-  old one felt sluggish on a held key. A `pattern` in the config file is not affected.
+- `--progressive` grows smoothly by default: every step is a little longer than the last, a tap
+  and the first second stay precise, and it settles at ×3 (`pattern = smooth`, `max_multiplier`,
+  the new `ramp`). The staircase `5s:x2, 10s:x3, ...` lurched at every jump and ran up to ×10.
+  A ladder written in the config file works as before, but `max_multiplier` now defaults to 3.
 
 ### Fixed
 - The Karabiner-Elements recipe never repeated while the key was held, so `--progressive` had

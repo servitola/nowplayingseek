@@ -1,5 +1,4 @@
 const NUMBER_PATTERN = /^\d+(\.\d+)?$/;
-const PATTERN_POINT = /^(\d+(?:\.\d+)?)s?\s*:\s*x?(\d+(?:\.\d+)?)$/i;
 const LINE_BREAK = /\r?\n/;
 const INI_SECTION = /^\[([^\]]+)\]$/;
 const INI_PAIR = /^([^=]+)=(.*)$/;
@@ -20,18 +19,31 @@ const SETTINGS = {
             about: 'forward / backward without a time',
         },
     },
-    // 4 s and 0.2 s are the owner's, tuned by feel on a film with a held Karabiner hotkey; the first
-    // guesses, 5 s and 0.25 s, felt sluggish.
+    // 0.2 s, ×3 and 5 s are the owner's, tuned by feel on a film with a held Karabiner hotkey. At
+    // 50 s of film per second of holding to begin with, ×3 is 2.5 min per second: ten minutes
+    // take a 7 s hold, and nobody seeks further than that by holding a key.
     progressive: {
         pattern: {
-            text: '4s:x2, 8s:x3, ...',
+            text: 'smooth',
             parse: parsePattern,
-            expects: '"<held seconds>:<multiplier>" points in ascending order, optionally ending with "..."',
+            expects: '"smooth", or "<held seconds>:<multiplier>" points in ascending order, optionally ending with "..."',
             about:
-                'forward / backward --progressive: once the key has been held this long, the step is multiplied.\n'
-                + 'A trailing "..." keeps going at the pace of the last two points: 12s:x4, 16s:x5 and so on.',
+                'forward / backward --progressive: how the step grows while the key is held.\n'
+                + '"smooth" grows a little with every step and settles at max_multiplier; a ladder such as\n'
+                + '"4s:x2, 8s:x3, ..." jumps at the written moments, "..." keeps its pace.',
         },
-        max_multiplier: { text: '10', parse: positive(parseNumber), expects: 'a number above zero', about: 'where "..." stops growing' },
+        max_multiplier: {
+            text: '3',
+            parse: positive(parseNumber),
+            expects: 'a number above zero',
+            about: 'the most the step is multiplied by',
+        },
+        ramp: {
+            text: '5',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'smooth: held this long, the step is two thirds of the way to max_multiplier',
+        },
         streak_gap: {
             text: '1',
             parse: positive(parseNumber),
@@ -88,39 +100,6 @@ const SETTINGS = {
         },
     },
 };
-
-function parsePattern(text) {
-    const parts = text.split(',').map(part => part.trim());
-    const continues = ['...', '…'].includes(parts.at(-1));
-    if (continues) {
-        parts.pop();
-    }
-
-    const points = [];
-    for (const part of parts) {
-        const match = PATTERN_POINT.exec(part);
-        if (!match) {
-            return null;
-        }
-        const point = { after: Number.parseFloat(match[1]), multiplier: Number.parseFloat(match[2]) };
-        const previous = points.at(-1);
-        if (point.multiplier <= 0 || (previous && point.after <= previous.after)) {
-            return null;
-        }
-        points.push(point);
-    }
-    if (points.length === 0) {
-        return null;
-    }
-    if (!continues) {
-        return { points, pace: null };
-    }
-
-    const last = points.at(-1);
-    const previous = points.at(-2) || { after: 0, multiplier: 1 };
-    const pace = { every: last.after - previous.after, adds: last.multiplier - previous.multiplier };
-    return pace.every > 0 && pace.adds >= 0 ? { points, pace } : null;
-}
 
 function parseIni(text) {
     const entries = [];

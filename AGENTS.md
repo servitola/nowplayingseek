@@ -16,7 +16,8 @@ is a plain global in the files after it. The order is the dependency order:
 | File | Holds |
 | --- | --- |
 | `src/core.js` | pure: time, position and seek arithmetic, exit codes, `Failure` |
-| `src/config.js` | pure: the `SETTINGS` table, ini and pattern parsing |
+| `src/pattern.js` | pure: parses the `pattern` setting — `smooth` or a ladder |
+| `src/config.js` | pure: the `SETTINGS` table, ini parsing |
 | `src/mediaremote.js` | the only file that touches the private `MediaRemote.framework` |
 | `src/player.js` | seek and transport with polling for the effect; the last-seek store |
 | `src/configfile.js` | finds, loads and writes `config.ini` |

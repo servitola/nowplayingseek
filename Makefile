@@ -1,5 +1,5 @@
 PREFIX ?= /usr/local
-PURE := src/core.js src/config.js
+PURE := src/core.js src/pattern.js src/config.js
 SOURCES := $(PURE) src/mediaremote.js src/player.js src/configfile.js src/cli.js
 TESTS := test/harness.js test/core.test.js test/config.test.js
 TARGET := build/nowplayingseek

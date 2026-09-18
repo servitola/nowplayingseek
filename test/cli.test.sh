@@ -74,7 +74,7 @@ expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or
 
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config
-expect 'config without a file: defaults' 0 stdout 'pattern = 4s:x2, 8s:x3, ...' config
+expect 'config without a file: defaults' 0 stdout 'pattern = smooth' config
 [ -e "$xdg/nowplayingseek" ] && fail 'config without a file created something'
 
 expect 'config init' 0 stdout "wrote $xdg/nowplayingseek/config.ini" config init
@@ -95,6 +95,8 @@ write_config '; comment' '[seek]' 'step = 0'
 expect 'bad value' 78 stderr 'line 3: [seek] step = "0" — expected seconds or mm:ss above zero' config
 write_config '[progressive]' 'pattern = 10s:x3, 5s:x2'
 expect 'descending pattern' 78 stderr 'line 2: [progressive] pattern = "10s:x3, 5s:x2" — expected' config
+write_config '[progressive]' 'ramp = 0'
+expect 'ramp of zero' 78 stderr 'line 2: [progressive] ramp = "0" — expected seconds above zero' config
 write_config '[hold]' 'interval = 0'
 expect 'hold interval of zero' 78 stderr 'line 2: [hold] interval = "0" — expected seconds above zero' config
 write_config '[progressive]' 'pattern = fast'

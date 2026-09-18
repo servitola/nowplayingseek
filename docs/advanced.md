@@ -8,7 +8,7 @@ Nothing here is needed for everyday use.
 
 With `--progressive` the step grows the longer the key is held: bind
 `nowplayingseek forward --progressive` and a tap is still 10 s, while holding the key for
-5 s makes every repeat worth 20 s, for 10 s — 30 s, and so on. Presses in one direction
+4 s makes every step worth 20 s, for 8 s — 30 s, and so on. Presses in one direction
 no further apart than `streak_gap` count as one hold, so fast tapping accelerates too;
 the other direction, a pause or a `seek` starts over. When the step was multiplied, the
 output line ends with the multiplier: `×3`.
@@ -18,7 +18,7 @@ optional:
 
 | `pattern` | |
 | --- | --- |
-| `5s:x2, 10s:x3, ...` | the default; `...` continues at the pace of the last two points — `15s:x4`, `20s:x5` — up to `max_multiplier` |
+| `4s:x2, 8s:x3, ...` | the default; `...` continues at the pace of the last two points — `12s:x4`, `16s:x5` — up to `max_multiplier` |
 | `2s:x2, ...` | one point continues from `0s:x1`: +1 every 2 s |
 | `3s:x2, 6s:x5, 10s:x20` | no `...`: stays at ×20 |
 | `1s:x1.5, 2s:x3, ...` | fractions work: +1.5 every second |
@@ -34,7 +34,7 @@ before it, so switching direction needs no release in between, and a hold ends b
 
 ```ini
 [hold]
-interval = 0.25
+interval = 0.2
 max_time = 30
 ```
 

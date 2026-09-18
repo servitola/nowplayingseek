@@ -23,6 +23,24 @@ optional:
 | `3s:x2, 6s:x5, 10s:x20` | no `...`: stays at ×20 |
 | `1s:x1.5, 2s:x3, ...` | fractions work: +1.5 every second |
 
+## Hold
+
+Most hotkey tools run a command once per press, however long the key stays down. With `--hold`
+the command itself keeps going: `nowplayingseek forward --hold` makes a step every
+`interval` seconds until `nowplayingseek release` is run — bind the first to the key down and
+the second to the key up. A tap is still one step. Another `--hold` takes over from the one
+before it, so switching direction needs no release in between, and a hold ends by itself after
+`max_time` in case the release never arrives.
+
+```ini
+[hold]
+interval = 0.25
+max_time = 30
+```
+
+It does not wait for a step to land before the next one, only for the last: the exit code tells
+whether the player ended up where the hold left it.
+
 ## Config file
 
 `~/.config/nowplayingseek/config.ini` (`$XDG_CONFIG_HOME/nowplayingseek/config.ini` when

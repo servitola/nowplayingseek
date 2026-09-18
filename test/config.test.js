@@ -48,6 +48,8 @@ function testSettings(core) {
     const defaults = core.resolveSettings([]);
     same(defaults.values.seek.step, 10, 'settings: default step');
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
+    same(defaults.values.hold.interval, 0.25, 'settings: default hold interval');
+    same(defaults.values.hold.max_time, 30, 'settings: default hold fuse');
     same(
         core.multiplierAt(defaults.values.progressive.pattern, 10, defaults.values.progressive.max_multiplier),
         3,

@@ -37,6 +37,20 @@ const SETTINGS = {
             about: 'presses in one direction no further apart than this count as one hold',
         },
     },
+    hold: {
+        interval: {
+            text: '0.25',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'forward / backward --hold: pause between steps while the key is down',
+        },
+        max_time: {
+            text: '30',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'a --hold stops by itself after this long, in case the release never arrives',
+        },
+    },
     timing: {
         verify_timeout: {
             text: '2.5',

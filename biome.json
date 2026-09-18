@@ -89,6 +89,7 @@
                                         "seekLanded",
                                         "streakStart",
                                         "multiplierAt",
+                                        "nextHoldTarget",
                                         "expectedPlaying",
                                         "parseTime",
                                         "formatStatus",
@@ -96,7 +97,7 @@
                                         "resolveSettings",
                                         "formatSettings"
                                     ],
-                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND"]
+                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND", "holdContinues", "releasedSince"]
                                 }
                             }
                         }
@@ -123,6 +124,9 @@
                     "seekLanded",
                     "streakStart",
                     "multiplierAt",
+                    "holdContinues",
+                    "releasedSince",
+                    "nextHoldTarget",
                     "expectedPlaying",
                     "parseTime",
                     "formatStatus",

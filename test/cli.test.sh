@@ -52,7 +52,9 @@ expect 'no arguments prints help' 0 stdout 'exit codes:'
 
 expect 'unknown command' 64 stderr 'unknown command "frobnicate"' frobnicate
 expect 'unknown command shows usage' 64 stderr 'exit codes:' frobnicate
-expect 'unknown flag after a time' 64 stderr 'forward takes one time and --progressive, got "--progresive" on top' forward 10 --progresive
+expect 'unknown flag after a time' 64 stderr 'forward takes one time, --progressive and --hold, got "--progresive" on top' forward 10 --progresive
+expect 'hold with garbage' 64 stderr 'forward needs seconds or mm:ss, got "abc"' forward abc --hold --progressive
+expect 'release with an argument' 64 stderr 'release takes no arguments, got "now"' release now
 expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm:ss, got "--fast"' backward --fast
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
 expect 'config with an unknown argument' 64 stderr 'config takes "init" or nothing, got "--force"' config --force
@@ -93,6 +95,8 @@ write_config '; comment' '[seek]' 'step = 0'
 expect 'bad value' 78 stderr 'line 3: [seek] step = "0" — expected seconds or mm:ss above zero' config
 write_config '[progressive]' 'pattern = 10s:x3, 5s:x2'
 expect 'descending pattern' 78 stderr 'line 2: [progressive] pattern = "10s:x3, 5s:x2" — expected' config
+write_config '[hold]' 'interval = 0'
+expect 'hold interval of zero' 78 stderr 'line 2: [hold] interval = "0" — expected seconds above zero' config
 write_config '[progressive]' 'pattern = fast'
 expect 'garbage pattern' 78 stderr '[progressive] pattern = "fast"' config
 write_config 'step = 5'

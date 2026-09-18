@@ -2,6 +2,7 @@ ObjC.import('stdlib');
 
 const VERSION = '0.3.0';
 const PROGRESSIVE_FLAG = '--progressive';
+const HOLD_FLAG = '--hold';
 const PRINTED_DECIMALS = 3;
 
 const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
@@ -21,6 +22,8 @@ exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command,
 
 advanced (README "Advanced"):
   forward | backward --progressive  the step grows the longer the key is held
+  forward | backward --hold         keep seeking until "release" — for a hotkey's key down
+  release                           stop a --hold — for the key up
   config                            print the settings in effect and the config file path
   config init                       write ~/.config/nowplayingseek/config.ini with the defaults`;
 
@@ -61,12 +64,13 @@ function rejectUnknownArguments(name, args) {
 }
 
 const seekCommand = direction => (args, name) => {
-    const [time, ...extra] = args.filter(arg => arg !== PROGRESSIVE_FLAG);
+    const [time, ...extra] = args.filter(arg => arg !== PROGRESSIVE_FLAG && arg !== HOLD_FLAG);
     if (extra.length > 0) {
-        throw new Failure(EXIT.usage, `${name} takes one time and ${PROGRESSIVE_FLAG}, got "${extra.join(' ')}" on top`);
+        throw new Failure(EXIT.usage, `${name} takes one time, ${PROGRESSIVE_FLAG} and ${HOLD_FLAG}, got "${extra.join(' ')}" on top`);
     }
     const step = timeArgument(name, time, player.settings.seek.step);
-    const { state, multiplier } = player.seekBy(direction * step, args.includes(PROGRESSIVE_FLAG));
+    const seek = args.includes(HOLD_FLAG) ? 'holdBy' : 'seekBy';
+    const { state, multiplier } = player[seek](direction * step, args.includes(PROGRESSIVE_FLAG));
     print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
 };
 
@@ -107,6 +111,9 @@ const COMMANDS = {
         }
         const found = configFile.exists() ? '' : ' — not found, these are the defaults';
         print(`; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`);
+    },
+    release() {
+        player.release();
     },
     toggle: sendCommand,
     play: sendCommand,

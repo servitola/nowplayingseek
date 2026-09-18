@@ -5,17 +5,22 @@
 A command-line tool for macOS. It seeks whatever is playing.
 
 Ten seconds back. Ten seconds forward.
-From a key, with any app in front: a browser tab, IINA, Music, Spotify.
+From a key, with any app in front: a browser tab, IINA, VLC, Music, Spotify.
 
 macOS has no such key. This is the command behind it.
 
 ```console
 $ nowplayingseek status
-▶ 30:57 / 3:15:50  UFC Fight Night 287  (com.colliderli.iina)
+▶ 30:57 / 3:27:00  Seven Samurai  (org.videolan.vlc)
+
 $ nowplayingseek backward
-▶ 30:47 / 3:15:50  UFC Fight Night 287  (com.colliderli.iina)
-$ nowplayingseek seek 12:34
-▶ 12:34 / 3:15:50  UFC Fight Night 287  (com.colliderli.iina)
+▶ 30:47 / 3:27:00  Seven Samurai  (org.videolan.vlc)
+
+$ nowplayingseek seek 1:02:03
+▶ 1:02:03 / 3:27:00  Seven Samurai  (org.videolan.vlc)
+
+$ nowplayingseek status --json
+{"title":"Seven Samurai","artist":"","album":"","app":"org.videolan.vlc","duration":12420,"position":3723.041,"playing":true,"rate":1,"timestamp":1789768358.106}
 ```
 
 ## Install
@@ -48,6 +53,7 @@ See [the Karabiner-Elements rule](docs/hotkeys.md#a-knob-in-karabiner-elements).
 | Command | |
 | --- | --- |
 | `status [--json]` | title, app, position / duration |
+| `status --raw` | everything macOS knows about the item, as JSON: chapters, media type, artwork, the file |
 | `position`, `duration` | seconds |
 | `seek <time>` | to `754`, `12:34` or `1:02:03` |
 | `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |

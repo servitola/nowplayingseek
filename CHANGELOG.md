@@ -10,6 +10,10 @@ version, so keep that heading as it is.
   it. For hotkey tools that run a command once per press and do not repeat it while the key is
   held — Karabiner-Elements is one. `[hold] interval` and `max_time` set the pace and the fuse.
 
+### Changed
+- The default ladder of `--progressive` is `4s:x2, 8s:x3, ...` instead of `5s:x2, 10s:x3, ...`: the
+  old one felt sluggish on a held key. A `pattern` in the config file is not affected.
+
 ### Fixed
 - The Karabiner-Elements recipe never repeated while the key was held, so `--progressive` had
   nothing to grow on. The recipe now uses `--hold`.

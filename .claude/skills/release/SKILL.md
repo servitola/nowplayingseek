@@ -1,0 +1,117 @@
+---
+name: release
+description: |
+  Releases nowplayingseek end to end: preflight, version and changelog, the owner's go-ahead,
+  tag and push, the Homebrew formula in servitola/tap, and the upgraded install on this Mac.
+
+  Use when: "выпускай", "выпусти релиз", "сделай релиз", "выкати новую версию", "обнови формулу",
+  "release it", "cut a release", "ship 0.3.0", "bump the version and publish"
+---
+
+# Releasing nowplayingseek
+
+`scripts/release.sh` does the mechanical steps and never commits, tags or pushes; this skill
+supplies the judgement and the order. Everything that leaves the machine waits for the owner's
+"yes" in Phase 3, because a pushed tag cannot be taken back once Homebrew has seen its tarball.
+
+The live checks drive whatever is playing on this Mac. That is intended; note the position
+first (`nowplayingseek position`) and put it back when you are done.
+
+## Phase 1: Preflight
+
+1. `scripts/release.sh check` — branch `main`, clean tree, in sync with `origin/main`, `make lint`,
+   `make test`, CI green on HEAD. A `BLOCK` line stops the release; fix the cause, then re-run `check`.
+   Local commits the CI has not seen are a blocker by design: pushing them is the owner's call.
+2. Read the run yourself when the script reports CI as not green: `gh run list --repo
+   servitola/nowplayingseek --limit 5`, `gh run view <id> --log-failed`.
+3. Walk the live checklist in `AGENTS.md` ("Testing") with a player running. `status` exit 1 means
+   nothing is playing: ask the owner to start something. Record which items ran; an item that did
+   not run is reported as skipped, not passed.
+
+**Checkpoint:** every `check` line is `ok`; the live checklist ran or the owner waived it in words.
+
+## Phase 2: Version and changelog
+
+1. Read `git log --oneline v<last>..HEAD` and `CHANGELOG.md` → `## Unreleased`. Every user-visible
+   change since the last tag has a line there; add the missing ones (Added / Changed / Fixed).
+2. Pick the version. Before 1.0: a new command, flag, config key or a change in what an existing
+   invocation does → minor; fixes and internals only → patch. State the reason in one sentence.
+3. `scripts/release.sh plan <version>` previews preflight, bump and formula without writing
+   anything (`--dry-run`, where used, is the first argument). Read the diff, then
+   `scripts/release.sh bump <version>`.
+4. `make test` (the CLI tests compare `--version` with `src/cli.js`), then commit exactly
+   `src/cli.js` and `CHANGELOG.md` as `nowplayingseek <version>`. No tag yet: `push.followTags`
+   is on for this machine, so a tag would ride along with the next push.
+
+**Checkpoint:** one new local commit, `build/nowplayingseek --version` prints `<version>`, no tag.
+
+## Phase 3: Stop gate
+
+1. Show the owner: the version and why, the `## <version>` section of `CHANGELOG.md` as it will
+   be published, `git show --stat HEAD`, and what happens next — push `main`, tag and push
+   `v<version>`, formula commit pushed to the tap.
+2. Wait for an explicit yes. Anything else means stop here; the bump commit is local and can stay
+   or be reset.
+
+**Checkpoint:** the owner's "yes" is in this conversation, after the summary.
+
+## Phase 4: Publish
+
+1. `git push origin main`, then wait for the `test` workflow on that commit: `gh run watch` or
+   `gh run list --commit <sha>`. Red means fix on `main` and start over; no tag exists yet.
+2. `git tag -a v<version> -m "nowplayingseek <version>"`, `git push origin v<version>`.
+3. `scripts/release.sh --dry-run formula <version>` — it downloads
+   `https://github.com/servitola/nowplayingseek/archive/refs/tags/v<version>.tar.gz` and shows the
+   formula diff with the sha256 of that download. A `<sha256 of the tarball…>` placeholder in place
+   of 64 hex characters means GitHub is not serving the archive yet: wait and retry.
+
+**Checkpoint:** tag on GitHub, CI green on it, the dry run shows a real 64-hex sha256.
+
+## Phase 5: Tap
+
+The tap is developed in `~/projects/homebrew-tap`. Its `origin` is gitea; GitHub is a
+force-mirror of it and only ever receives that mirror. `$(brew --repo servitola/tap)` is
+Homebrew's own clone of the GitHub side: read-only, commits go to the checkout below.
+
+0. `TAP_DIR=${TAP_DIR:-$HOME/projects/homebrew-tap}` — the script has the same default, the shell
+   you type the next commands into does not.
+1. `scripts/release.sh formula <version>` rewrites `url` and `sha256` in `Formula/nowplayingseek.rb`.
+2. `brew style "$TAP_DIR/Formula/nowplayingseek.rb"`.
+3. Commit only that file as `nowplayingseek <version>` — the checkout may hold the owner's
+   unrelated edits — and `git -C "$TAP_DIR" push origin main`.
+4. Wait for the mirror (`git ls-remote https://github.com/servitola/homebrew-tap main` equals the
+   new commit), then for `brew test-bot`: `gh run list --repo servitola/homebrew-tap --limit 3`.
+   It audits the formula with `--strict --online`, installs it from source and runs `brew test`.
+
+**Checkpoint:** tap CI green on the formula commit.
+
+## Phase 6: Install and verify here
+
+1. `brew update && brew upgrade servitola/tap/nowplayingseek`.
+2. `brew audit --strict --online servitola/tap/nowplayingseek` and `brew test servitola/tap/nowplayingseek`.
+3. `/opt/homebrew/bin/nowplayingseek --version` prints `<version>`.
+4. With something playing: `nowplayingseek status`, `nowplayingseek forward 10`, then `backward 10`.
+
+**Checkpoint:** the installed binary reports `<version>` and both live commands exit 0.
+
+## Phase 7: Loose ends
+
+1. Hotkeys: the owner's Karabiner rules call this CLI by full path. If a command or flag they use
+   changed, tell him which line to change — after `brew upgrade`, never before, or the hotkeys
+   call a command that is not installed yet. Karabiner lives in his dotfiles; edit it only on request.
+2. Update the `## Handoff` section of `~/projects/serho_topics/аудио-управлятор/CLAUDE.md` with the
+   released version and what is left open.
+
+**Checkpoint:** the handoff names `<version>`; the owner knows of any hotkey line to change.
+
+**Something failed after Phase 3?** Follow [rollback.md](references/rollback.md) — tag pushed
+but formula not, sha256 mismatch, red tap CI, a bad release already installed.
+
+## Final check
+
+- [ ] `scripts/release.sh check` was all `ok` before the bump
+- [ ] the owner's yes came after the summary and before the first push
+- [ ] sha256 in the formula came from the downloaded tarball
+- [ ] source CI and tap CI are green on the release commits
+- [ ] `nowplayingseek --version` from Homebrew prints the new version
+- [ ] skipped live checks are named as skipped in the final report

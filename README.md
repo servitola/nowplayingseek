@@ -70,6 +70,6 @@ Every command waits until the player has done what was asked: exit `0` means it 
 the rules and the dead ends are in [AGENTS.md](AGENTS.md); what is left to do is in
 [BACKLOG.md](BACKLOG.md).
 
-Copyright © 2026 Vladislav Konovalov. Free software under the [GNU AGPL 3.0](LICENSE): use it,
-change it, pass it on under the same terms. To ship it inside a product that is not under a
-compatible licence, write to servitola@gmail.com for a commercial one.
+## Licence
+
+[AGPL-3.0](LICENSE) © [servitola](https://github.com/servitola). For a commercial licence, open an issue.

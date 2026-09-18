@@ -58,7 +58,7 @@ const player = {
         const target = clampTarget(wanted, before.duration);
         const at = now();
         mediaRemote.setElapsedTime(target);
-        lastSeekFile.write({ target, at });
+        lastSeekFile.write({ target, at, app: before.app });
         return this.awaitLanding(target, at, before);
     },
 
@@ -85,7 +85,7 @@ const player = {
             target = next;
             last = { at, multiplier };
             mediaRemote.setElapsedTime(target);
-            lastSeekFile.write({ target, at, ...streak });
+            lastSeekFile.write({ target, at, app: before.app, ...streak });
         } while (!once && this.stillHeld());
 
         return last ? { state: this.awaitLanding(target, last.at, before), multiplier: last.multiplier } : { state: before, multiplier: 1 };

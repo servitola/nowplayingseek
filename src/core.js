@@ -30,7 +30,8 @@ function clampTarget(target, duration) {
 }
 
 function seekBase(state, lastSeek, now, pendingSeekMax) {
-    const pending = lastSeek && now - lastSeek.at < pendingSeekMax && (isMissing(state.timestamp) || state.timestamp < lastSeek.at);
+    const sameApp = lastSeek && lastSeek.app === state.app;
+    const pending = sameApp && now - lastSeek.at < pendingSeekMax && (isMissing(state.timestamp) || state.timestamp < lastSeek.at);
     return pending ? lastSeek.target : state.position;
 }
 

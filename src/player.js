@@ -1,6 +1,6 @@
 // MRMediaRemoteSendCommand returns true and hands the message to XPC asynchronously: a
 // process that exits right away never delivers it (measured: pause with no linger did
-// nothing, with 0.3 s it paused). next/prev have no state to poll for, so they linger.
+// nothing, with 0.3 s it paused). next/previous have no state to poll for, so they linger.
 const COMMAND_DELIVERY_SECONDS = 0.3;
 const POLL_SECONDS = 0.03;
 

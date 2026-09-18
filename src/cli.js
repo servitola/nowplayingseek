@@ -1,16 +1,16 @@
 ObjC.import('stdlib');
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
 
   status [--json]     title, app, position / duration
   position            current position, seconds
   duration            total length, seconds
-  fwd [time=10]       seek forward
-  back [time=10]      seek backward
+  forward [time=10]   seek forward
+  backward [time=10]  seek backward
   seek <time>         jump to an exact position (seek 754, seek 12:34)
-  toggle | play | pause | next | prev
+  toggle | play | pause | next | previous
   doctor              exit 0 when Now Playing is readable, 1 when it is not
 
 <time> is seconds (90, 12.5) or mm:ss / h:mm:ss (1:30, 1:02:03).
@@ -47,11 +47,11 @@ const COMMANDS = {
     duration() {
         printSeconds(player.requireState(), 'duration');
     },
-    fwd(args) {
-        print(formatStatus(player.seekBy(timeArgument('fwd', args[0], DEFAULT_STEP_SECONDS))));
+    forward(args) {
+        print(formatStatus(player.seekBy(timeArgument('forward', args[0], DEFAULT_STEP_SECONDS))));
     },
-    back(args) {
-        print(formatStatus(player.seekBy(-timeArgument('back', args[0], DEFAULT_STEP_SECONDS))));
+    backward(args) {
+        print(formatStatus(player.seekBy(-timeArgument('backward', args[0], DEFAULT_STEP_SECONDS))));
     },
     seek(args) {
         print(formatStatus(player.seekTo(timeArgument('seek', args[0]), player.requireState())));
@@ -67,7 +67,7 @@ const COMMANDS = {
     play: sendCommand,
     pause: sendCommand,
     next: sendCommand,
-    prev: sendCommand,
+    previous: sendCommand,
 };
 
 function run(argv) {

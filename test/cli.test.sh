@@ -55,7 +55,7 @@ expect 'unknown command shows usage' 64 stderr 'exit codes:' frobnicate
 expect 'unknown flag after a time' 64 stderr 'forward takes one time, --progressive, --hold and --knob, got "--progresive" on top' forward 10 --progresive
 expect 'hold with garbage' 64 stderr 'forward needs seconds or mm:ss, got "abc"' forward abc --hold --progressive
 expect 'a knob cannot be held' 64 stderr 'forward: --knob is one click of a knob, it goes without --hold and --progressive' forward --knob --hold
-expect 'release with an argument' 64 stderr 'release takes no arguments, got "now"' release now
+expect 'release with a wrong argument' 64 stderr 'release takes only forward, backward, got "now"' release now
 expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm:ss, got "--fast"' backward --fast
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
 expect 'config with an unknown argument' 64 stderr 'config takes "init" or nothing, got "--force"' config --force

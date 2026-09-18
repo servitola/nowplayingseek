@@ -41,37 +41,59 @@ const configFile = {
     },
 
     load() {
-        if (!this.exists()) { return resolveSettings([]); }
+        if (!this.exists()) {
+            return resolveSettings([]);
+        }
         const text = $.NSString.stringWithContentsOfFileEncodingError(this.path(), $.NSUTF8StringEncoding, null).js;
         try {
-            if (text === undefined) { throw new Failure(EXIT.config, 'not readable as UTF-8 text'); }
+            if (text === undefined) {
+                throw new Failure(EXIT.config, 'not readable as UTF-8 text');
+            }
             return resolveSettings(parseIni(text));
         } catch (error) {
-            if (error instanceof Failure) { error.message = `${this.path()}: ${error.message}`; }
+            if (error instanceof Failure) {
+                error.message = `${this.path()}: ${error.message}`;
+            }
             throw error;
         }
     },
 
     init() {
         const path = this.path();
-        if (this.exists()) { throw new Failure(EXIT.config, `${path} already exists`); }
+        if (this.exists()) {
+            throw new Failure(EXIT.config, `${path} already exists`);
+        }
         const directory = $(path).stringByDeletingLastPathComponent;
-        const written = $.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(directory, true, $(), null)
-            && $(`${formatSettings(resolveSettings([]).texts)}\n`).writeToFileAtomicallyEncodingError(path, true, $.NSUTF8StringEncoding, null);
-        if (!written) { throw new Failure(EXIT.config, `cannot write ${path}`); }
+        const written =
+            $.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(directory, true, $(), null)
+            && $(`${formatSettings(resolveSettings([]).texts)}\n`).writeToFileAtomicallyEncodingError(
+                path,
+                true,
+                $.NSUTF8StringEncoding,
+                null
+            );
+        if (!written) {
+            throw new Failure(EXIT.config, `cannot write ${path}`);
+        }
         return path;
     },
 };
 
 function timeArgument(command, text, fallback) {
-    if (text === undefined && fallback !== undefined) { return fallback; }
+    if (text === undefined && fallback !== undefined) {
+        return fallback;
+    }
     const seconds = parseTime(text || '');
-    if (isMissing(seconds)) { throw new Failure(EXIT.usage, `${command} needs seconds or mm:ss, got "${text || ''}"`); }
+    if (isMissing(seconds)) {
+        throw new Failure(EXIT.usage, `${command} needs seconds or mm:ss, got "${text || ''}"`);
+    }
     return seconds;
 }
 
 function printSeconds(state, field) {
-    if (isMissing(state[field])) { throw new Failure(EXIT.ignored, `${state.app || 'player'} does not report its ${field}`); }
+    if (isMissing(state[field])) {
+        throw new Failure(EXIT.ignored, `${state.app || 'player'} does not report its ${field}`);
+    }
     print(state[field].toFixed(PRINTED_DECIMALS));
 }
 
@@ -79,7 +101,9 @@ const sendCommand = (_args, name) => player.send(name);
 
 const seekCommand = direction => (args, name) => {
     const [time, ...extra] = args.filter(arg => arg !== PROGRESSIVE_FLAG);
-    if (extra.length > 0) { throw new Failure(EXIT.usage, `${name} takes one time and ${PROGRESSIVE_FLAG}, got "${extra.join(' ')}" on top`); }
+    if (extra.length > 0) {
+        throw new Failure(EXIT.usage, `${name} takes one time and ${PROGRESSIVE_FLAG}, got "${extra.join(' ')}" on top`);
+    }
     const step = timeArgument(name, time, player.settings.seek.step);
     const { state, multiplier } = player.seekBy(direction * step, args.includes(PROGRESSIVE_FLAG));
     print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
@@ -103,14 +127,20 @@ const COMMANDS = {
     },
     doctor() {
         if (!mediaRemote.read()) {
-            throw new Failure(EXIT.nothingPlaying,
-                'nothing readable — either nothing has played since login, or this macOS no longer lets osascript read Now Playing');
+            throw new Failure(
+                EXIT.nothingPlaying,
+                'nothing readable — either nothing has played since login, or this macOS no longer lets osascript read Now Playing'
+            );
         }
         print('ok: Now Playing is readable');
     },
     config(args) {
-        if (args[0] === 'init') { return print(`wrote ${configFile.init()}`); }
-        if (args.length > 0) { throw new Failure(EXIT.usage, `config takes "init" or nothing, got "${args.join(' ')}"`); }
+        if (args[0] === 'init') {
+            return print(`wrote ${configFile.init()}`);
+        }
+        if (args.length > 0) {
+            throw new Failure(EXIT.usage, `config takes "init" or nothing, got "${args.join(' ')}"`);
+        }
         const found = configFile.exists() ? '' : ' — not found, these are the defaults';
         print(`; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`);
     },
@@ -123,16 +153,24 @@ const COMMANDS = {
 
 function run(argv) {
     const [name, ...args] = argv;
-    if (!name || name === '-h' || name === '--help') { return print(USAGE); }
-    if (name === '--version') { return print(VERSION); }
+    if (!name || name === '-h' || name === '--help') {
+        return print(USAGE);
+    }
+    if (name === '--version') {
+        return print(VERSION);
+    }
 
     try {
-        if (!Object.hasOwn(COMMANDS, name)) { throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`); }
+        if (!Object.hasOwn(COMMANDS, name)) {
+            throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);
+        }
         player.settings = configFile.load().values;
         mediaRemote.load();
         COMMANDS[name](args, name);
     } catch (error) {
-        if (!(error instanceof Failure)) { throw error; }
+        if (!(error instanceof Failure)) {
+            throw error;
+        }
         print(`nowplayingseek: ${error.message}`, true);
         $.exit(error.code);
     }

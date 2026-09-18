@@ -12,9 +12,13 @@ const mediaRemote = {
 
     read() {
         const request = $.NSClassFromString('MRNowPlayingRequest');
-        if (!request) { return null; }
+        if (!request) {
+            return null;
+        }
         const item = request.localNowPlayingItem;
-        if (!item.js) { return null; }
+        if (!item.js) {
+            return null;
+        }
 
         const info = item.nowPlayingInfo;
         const value = key => {

@@ -23,47 +23,78 @@ const positive = parse => text => {
     return value > 0 ? value : null;
 };
 
-const parseNumber = text => NUMBER_PATTERN.test(text) ? Number.parseFloat(text) : null;
+const parseNumber = text => (NUMBER_PATTERN.test(text) ? Number.parseFloat(text) : null);
 
 const SETTINGS = {
     seek: {
-        step: { text: '10', parse: positive(parseTime), expects: 'seconds or mm:ss above zero',
-            about: 'forward / backward without a time' },
+        step: {
+            text: '10',
+            parse: positive(parseTime),
+            expects: 'seconds or mm:ss above zero',
+            about: 'forward / backward without a time',
+        },
     },
     progressive: {
-        pattern: { text: '5s:x2, 10s:x3, ...', parse: parsePattern,
+        pattern: {
+            text: '5s:x2, 10s:x3, ...',
+            parse: parsePattern,
             expects: '"<held seconds>:<multiplier>" points in ascending order, optionally ending with "..."',
-            about: 'forward / backward --progressive: once the key has been held this long, the step is multiplied.\n'
-                + 'A trailing "..." keeps going at the pace of the last two points: 15s:x4, 20s:x5 and so on.' },
-        max_multiplier: { text: '10', parse: positive(parseNumber), expects: 'a number above zero',
-            about: 'where "..." stops growing' },
-        streak_gap: { text: '1', parse: positive(parseNumber), expects: 'seconds above zero',
-            about: 'presses in one direction no further apart than this count as one hold' },
+            about:
+                'forward / backward --progressive: once the key has been held this long, the step is multiplied.\n'
+                + 'A trailing "..." keeps going at the pace of the last two points: 15s:x4, 20s:x5 and so on.',
+        },
+        max_multiplier: { text: '10', parse: positive(parseNumber), expects: 'a number above zero', about: 'where "..." stops growing' },
+        streak_gap: {
+            text: '1',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'presses in one direction no further apart than this count as one hold',
+        },
     },
     timing: {
-        verify_timeout: { text: '2.5', parse: positive(parseNumber), expects: 'seconds above zero',
-            about: 'how long to wait for the player to do what was asked before exit 2' },
+        verify_timeout: {
+            text: '2.5',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'how long to wait for the player to do what was asked before exit 2',
+        },
         // A seek shows up in Now Playing 50–150 ms after the call, and over a second when a web
         // page has to buffer (measured: Vivaldi + YouTube, macOS 26.6). Key repeat is faster
         // than that, so until Now Playing refreshes, a held hotkey must build on the previous
         // target instead of the stale position. The cap stops a player that ignores seeks from
         // accumulating targets forever.
-        pending_seek_max: { text: '3', parse: positive(parseNumber), expects: 'seconds above zero',
-            about: 'how long a held key keeps building on its previous target while Now Playing has not refreshed' },
+        pending_seek_max: {
+            text: '3',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'how long a held key keeps building on its previous target while Now Playing has not refreshed',
+        },
         // MRMediaRemoteSendCommand returns true and hands the message to XPC asynchronously: a
         // process that exits right away never delivers it (measured: pause with no linger did
         // nothing, with 0.3 s it paused). next/previous have no state to poll for, so they linger.
-        command_delivery: { text: '0.3', parse: positive(parseNumber), expects: 'seconds above zero',
-            about: 'how long next / previous linger so the command is delivered before the process exits' },
-        poll_interval: { text: '0.03', parse: positive(parseNumber), expects: 'seconds above zero',
-            about: 'pause between Now Playing reads while waiting' },
+        command_delivery: {
+            text: '0.3',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'how long next / previous linger so the command is delivered before the process exits',
+        },
+        poll_interval: {
+            text: '0.03',
+            parse: positive(parseNumber),
+            expects: 'seconds above zero',
+            about: 'pause between Now Playing reads while waiting',
+        },
     },
 };
 
 // ElapsedTime is a snapshot taken at Timestamp, not the current position.
 function livePosition(elapsed, rate, timestamp, now) {
-    if (isMissing(elapsed)) { return null; }
-    if (isMissing(timestamp)) { return elapsed; }
+    if (isMissing(elapsed)) {
+        return null;
+    }
+    if (isMissing(timestamp)) {
+        return elapsed;
+    }
     return elapsed + (rate || 0) * (now - timestamp);
 }
 
@@ -73,43 +104,52 @@ function clampTarget(target, duration) {
 }
 
 function seekBase(state, lastSeek, now, pendingSeekMax) {
-    const pending = lastSeek
-        && now - lastSeek.at < pendingSeekMax
-        && (isMissing(state.timestamp) || state.timestamp < lastSeek.at);
+    const pending = lastSeek && now - lastSeek.at < pendingSeekMax && (isMissing(state.timestamp) || state.timestamp < lastSeek.at);
     return pending ? lastSeek.target : state.position;
 }
 
 function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
-    if (!after || isMissing(after.timestamp) || after.timestamp < calledAt) { return false; }
-    if (superseded) { return true; }
+    if (!after || isMissing(after.timestamp) || after.timestamp < calledAt) {
+        return false;
+    }
+    if (superseded) {
+        return true;
+    }
     const drift = after.position - target;
     return drift > -1 && drift < 1 + verifyTimeout * (after.rate || 1);
 }
 
 function streakStart(lastSeek, direction, now, gap) {
-    const sameHold = lastSeek
-        && lastSeek.direction === direction
-        && !isMissing(lastSeek.streakStart)
-        && now - lastSeek.at <= gap;
+    const sameHold = lastSeek && lastSeek.direction === direction && !isMissing(lastSeek.streakStart) && now - lastSeek.at <= gap;
     return sameHold ? lastSeek.streakStart : now;
 }
 
 function parsePattern(text) {
     const parts = text.split(',').map(part => part.trim());
     const continues = ['...', '…'].includes(parts.at(-1));
-    if (continues) { parts.pop(); }
+    if (continues) {
+        parts.pop();
+    }
 
     const points = [];
     for (const part of parts) {
         const match = PATTERN_POINT.exec(part);
-        if (!match) { return null; }
+        if (!match) {
+            return null;
+        }
         const point = { after: Number.parseFloat(match[1]), multiplier: Number.parseFloat(match[2]) };
         const previous = points.at(-1);
-        if (point.multiplier <= 0 || (previous && point.after <= previous.after)) { return null; }
+        if (point.multiplier <= 0 || (previous && point.after <= previous.after)) {
+            return null;
+        }
         points.push(point);
     }
-    if (points.length === 0) { return null; }
-    if (!continues) { return { points, pace: null }; }
+    if (points.length === 0) {
+        return null;
+    }
+    if (!continues) {
+        return { points, pace: null };
+    }
 
     const last = points.at(-1);
     const previous = points.at(-2) || { after: 0, multiplier: 1 };
@@ -119,11 +159,14 @@ function parsePattern(text) {
 
 function multiplierAt(pattern, held, max) {
     const reached = pattern.points.filter(point => held >= point.after);
-    if (reached.length === 0) { return 1; }
+    if (reached.length === 0) {
+        return 1;
+    }
     const last = reached.at(-1);
-    const beyond = pattern.pace && reached.length === pattern.points.length
-        ? Math.floor((held - last.after) / pattern.pace.every) * pattern.pace.adds
-        : 0;
+    const beyond =
+        pattern.pace && reached.length === pattern.points.length
+            ? Math.floor((held - last.after) / pattern.pace.every) * pattern.pace.adds
+            : 0;
     return Math.min(max, last.multiplier + beyond);
 }
 
@@ -132,7 +175,9 @@ function parseIni(text) {
     let section = null;
     text.split(LINE_BREAK).forEach((raw, index) => {
         const line = raw.trim();
-        if (!line || line[0] === ';' || line[0] === '#') { return; }
+        if (!line || line[0] === ';' || line[0] === '#') {
+            return;
+        }
         const header = INI_SECTION.exec(line);
         if (header) {
             section = header[1].trim();
@@ -160,7 +205,9 @@ function resolveSettings(entries) {
     }
     for (const { section, key, text, line } of entries) {
         const known = Object.hasOwn(SETTINGS, section) && Object.hasOwn(SETTINGS[section], key);
-        if (!known) { throw new Failure(EXIT.config, `line ${line}: unknown setting [${section}] ${key}`); }
+        if (!known) {
+            throw new Failure(EXIT.config, `line ${line}: unknown setting [${section}] ${key}`);
+        }
         const value = SETTINGS[section][key].parse(text);
         if (isMissing(value)) {
             throw new Failure(EXIT.config, `line ${line}: [${section}] ${key} = "${text}" — expected ${SETTINGS[section][key].expects}`);
@@ -172,31 +219,48 @@ function resolveSettings(entries) {
 }
 
 function formatSettings(texts) {
-    return Object.entries(SETTINGS).map(([section, specs]) => {
-        const keys = Object.entries(specs).map(([key, spec]) =>
-            `${spec.about.split('\n').map(line => `; ${line}\n`).join('')}${key} = ${texts[section][key]}`);
-        return `[${section}]\n${keys.join('\n\n')}`;
-    }).join('\n\n');
+    return Object.entries(SETTINGS)
+        .map(([section, specs]) => {
+            const keys = Object.entries(specs).map(
+                ([key, spec]) =>
+                    `${spec.about
+                        .split('\n')
+                        .map(line => `; ${line}\n`)
+                        .join('')}${key} = ${texts[section][key]}`
+            );
+            return `[${section}]\n${keys.join('\n\n')}`;
+        })
+        .join('\n\n');
 }
 
 function expectedPlaying(command, wasPlaying) {
-    if (command === 'toggle') { return !wasPlaying; }
-    if (command === 'play') { return true; }
-    if (command === 'pause') { return false; }
+    if (command === 'toggle') {
+        return !wasPlaying;
+    }
+    if (command === 'play') {
+        return true;
+    }
+    if (command === 'pause') {
+        return false;
+    }
     return null;
 }
 
 function parseTime(text) {
-    if (!TIME_PATTERN.test(text)) { return null; }
+    if (!TIME_PATTERN.test(text)) {
+        return null;
+    }
     return text.split(':').reduce((total, part) => total * SECONDS_PER_MINUTE + Number.parseFloat(part), 0);
 }
 
 function formatTime(seconds) {
-    if (isMissing(seconds)) { return '--:--'; }
+    if (isMissing(seconds)) {
+        return '--:--';
+    }
     const whole = Math.floor(seconds);
     const pad = n => String(n).padStart(2, '0');
     const h = Math.floor(whole / SECONDS_PER_HOUR);
-    const m = Math.floor(whole % SECONDS_PER_HOUR / SECONDS_PER_MINUTE);
+    const m = Math.floor((whole % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
     const s = whole % SECONDS_PER_MINUTE;
     return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 }

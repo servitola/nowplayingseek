@@ -5,16 +5,20 @@ const failures = [];
 let count = 0;
 
 function failureOf(core, action) {
-    try { action(); } catch (error) { return error instanceof core.Failure ? `${error.code}: ${error.message}` : String(error); }
+    try {
+        action();
+    } catch (error) {
+        return error instanceof core.Failure ? `${error.code}: ${error.message}` : String(error);
+    }
     return 'no failure';
 }
 
 function same(actual, expected, name) {
     count += 1;
-    const ok = typeof expected === 'number' && typeof actual === 'number'
-        ? Math.abs(actual - expected) < 1e-9
-        : actual === expected;
-    if (!ok) { failures.push(`${name}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`); }
+    const ok = typeof expected === 'number' && typeof actual === 'number' ? Math.abs(actual - expected) < 1e-9 : actual === expected;
+    if (!ok) {
+        failures.push(`${name}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+    }
 }
 
 function testPosition(core) {
@@ -37,7 +41,11 @@ function testSeekBase(core) {
     same(core.seekBase(stale, null, 50, 3), 100, 'first seek starts from the read position');
     same(core.seekBase(stale, lastSeek, 50.03, 3), 110, 'held key: Now Playing not refreshed yet, previous target wins');
     same(core.seekBase(stale, lastSeek, 51.5, 3), 110, 'still buffering after a second: previous target still wins');
-    same(core.seekBase({ position: 111, timestamp: 50.1 }, lastSeek, 51, 3), 111, 'Now Playing refreshed after the seek: read position wins');
+    same(
+        core.seekBase({ position: 111, timestamp: 50.1 }, lastSeek, 51, 3),
+        111,
+        'Now Playing refreshed after the seek: read position wins'
+    );
     same(core.seekBase(stale, lastSeek, 60, 3), 100, 'player never refreshed: stop trusting the old target');
     same(core.seekBase(stale, lastSeek, 60, 20), 110, 'a longer pending_seek_max keeps trusting it');
     same(core.seekBase({ position: 100, timestamp: null }, lastSeek, 50.03, 3), 110, 'no timestamp at all counts as not refreshed');
@@ -45,14 +53,42 @@ function testSeekBase(core) {
 
 function testSeekLanded(core) {
     same(core.seekLanded(null, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), false, 'nothing playing any more');
-    same(core.seekLanded({ position: 100, timestamp: 40, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), false, 'not refreshed since the call');
-    same(core.seekLanded({ position: 110.2, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), true, 'refreshed and on target');
-    same(core.seekLanded({ position: 0, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), false, 'refreshed by an earlier seek, not ours');
-    same(core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), true, 'kept playing while we polled');
-    same(core.seekLanded({ position: 150, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: true, verifyTimeout: 2.5 }), true, 'a later key press took over');
-    same(core.seekLanded({ position: 110, timestamp: 50.1, rate: 0 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }), true, 'paused player on target');
+    same(
+        core.seekLanded({ position: 100, timestamp: 40, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }),
+        false,
+        'not refreshed since the call'
+    );
+    same(
+        core.seekLanded({ position: 110.2, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }),
+        true,
+        'refreshed and on target'
+    );
+    same(
+        core.seekLanded({ position: 0, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }),
+        false,
+        'refreshed by an earlier seek, not ours'
+    );
+    same(
+        core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }),
+        true,
+        'kept playing while we polled'
+    );
+    same(
+        core.seekLanded({ position: 150, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: true, verifyTimeout: 2.5 }),
+        true,
+        'a later key press took over'
+    );
+    same(
+        core.seekLanded({ position: 110, timestamp: 50.1, rate: 0 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 2.5 }),
+        true,
+        'paused player on target'
+    );
 
-    same(core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 0.5 }), false, 'a shorter verify_timeout tolerates less drift');
+    same(
+        core.seekLanded({ position: 112, timestamp: 50.1, rate: 1 }, 110, { calledAt: 50, superseded: false, verifyTimeout: 0.5 }),
+        false,
+        'a shorter verify_timeout tolerates less drift'
+    );
 }
 
 function testStreak(core) {
@@ -89,12 +125,24 @@ function testPattern(core) {
 
 function testIni(core) {
     const ini = '; comment\n# another\n\n[seek]\nstep = 1:30\r\n [ progressive ] \npattern=3s:x4\n';
-    same(JSON.stringify(core.parseIni(ini)), JSON.stringify([
-        { section: 'seek', key: 'step', text: '1:30', line: 5 },
-        { section: 'progressive', key: 'pattern', text: '3s:x4', line: 7 },
-    ]), 'ini: sections, comments, CRLF, spaces');
-    same(failureOf(core, () => core.parseIni('step = 5')), '78: line 1: expected "[section]" or "key = value" under one, got "step = 5"', 'ini: key outside a section');
-    same(failureOf(core, () => core.parseIni('[seek]\nstep')), '78: line 2: expected "[section]" or "key = value" under one, got "step"', 'ini: line without =');
+    same(
+        JSON.stringify(core.parseIni(ini)),
+        JSON.stringify([
+            { section: 'seek', key: 'step', text: '1:30', line: 5 },
+            { section: 'progressive', key: 'pattern', text: '3s:x4', line: 7 },
+        ]),
+        'ini: sections, comments, CRLF, spaces'
+    );
+    same(
+        failureOf(core, () => core.parseIni('step = 5')),
+        '78: line 1: expected "[section]" or "key = value" under one, got "step = 5"',
+        'ini: key outside a section'
+    );
+    same(
+        failureOf(core, () => core.parseIni('[seek]\nstep')),
+        '78: line 2: expected "[section]" or "key = value" under one, got "step"',
+        'ini: line without ='
+    );
 }
 
 function testSettings(core) {
@@ -102,15 +150,35 @@ function testSettings(core) {
     const defaults = core.resolveSettings([]);
     same(defaults.values.seek.step, 10, 'settings: default step');
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
-    same(core.multiplierAt(defaults.values.progressive.pattern, 10, defaults.values.progressive.max_multiplier), 3, 'settings: default pattern');
+    same(
+        core.multiplierAt(defaults.values.progressive.pattern, 10, defaults.values.progressive.max_multiplier),
+        3,
+        'settings: default pattern'
+    );
     const custom = core.resolveSettings(core.parseIni(ini));
     same(custom.values.seek.step, 90, 'settings: step accepts mm:ss');
     same(custom.values.progressive.pattern.points[0].multiplier, 4, 'settings: pattern from the file');
     same(custom.values.progressive.streak_gap, 1, 'settings: untouched keys keep their defaults');
-    same(failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstep = 0'))), '78: line 2: [seek] step = "0" — expected seconds or mm:ss above zero', 'settings: bad value');
-    same(failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstpe = 5'))), '78: line 2: unknown setting [seek] stpe', 'settings: unknown key');
-    same(failureOf(core, () => core.resolveSettings(core.parseIni('[toString]\nx = 5'))), '78: line 2: unknown setting [toString] x', 'settings: unknown section');
-    same(JSON.stringify(core.resolveSettings(core.parseIni(core.formatSettings(custom.texts))).values), JSON.stringify(custom.values), 'settings: the printed config reads back the same');
+    same(
+        failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstep = 0'))),
+        '78: line 2: [seek] step = "0" — expected seconds or mm:ss above zero',
+        'settings: bad value'
+    );
+    same(
+        failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstpe = 5'))),
+        '78: line 2: unknown setting [seek] stpe',
+        'settings: unknown key'
+    );
+    same(
+        failureOf(core, () => core.resolveSettings(core.parseIni('[toString]\nx = 5'))),
+        '78: line 2: unknown setting [toString] x',
+        'settings: unknown section'
+    );
+    same(
+        JSON.stringify(core.resolveSettings(core.parseIni(core.formatSettings(custom.texts))).values),
+        JSON.stringify(custom.values),
+        'settings: the printed config reads back the same'
+    );
 }
 
 function testTransport(core) {
@@ -137,16 +205,33 @@ function testTime(core) {
 }
 
 function testStatus(core) {
-    same(core.formatStatus({ playing: true, position: 61, duration: 125, title: 'T', artist: 'A', app: 'x.y' }),
-        '▶ 01:01 / 02:05  T — A  (x.y)', 'status line');
-    same(core.formatStatus({ playing: false, position: 0, duration: null, title: 'T', artist: null, app: null }),
-        '⏸ 00:00 / --:--  T  (?)', 'status line with holes');
+    same(
+        core.formatStatus({ playing: true, position: 61, duration: 125, title: 'T', artist: 'A', app: 'x.y' }),
+        '▶ 01:01 / 02:05  T — A  (x.y)',
+        'status line'
+    );
+    same(
+        core.formatStatus({ playing: false, position: 0, duration: null, title: 'T', artist: null, app: null }),
+        '⏸ 00:00 / --:--  T  (?)',
+        'status line with holes'
+    );
 
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
 
-const GROUPS = [testPosition, testSeekBase, testSeekLanded, testStreak, testPattern, testIni, testSettings, testTransport, testTime, testStatus];
+const GROUPS = [
+    testPosition,
+    testSeekBase,
+    testSeekLanded,
+    testStreak,
+    testPattern,
+    testIni,
+    testSettings,
+    testTransport,
+    testTime,
+    testStatus,
+];
 
 function run(argv) {
     const source = $.NSString.stringWithContentsOfFileEncodingError(argv[0], $.NSUTF8StringEncoding, null).js;

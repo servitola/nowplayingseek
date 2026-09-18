@@ -2,11 +2,6 @@
 
 What is left, most pressing first. State as of 2026-09-18; delete a line when it is done.
 
-## Slimming pass
-- The health pass added a lot. Go through every non-source artifact, drop what duplicates another
-  file or says what the code or `--help` already says. Gates, test coverage, Dead ends and CLI
-  behaviour stay as they are.
-
 ## Release 0.3.0
 - Waits for the owner's "выпускай" and then goes by the `release` skill. First the local commits
   have to be pushed and CI has to be green on them — `scripts/release.sh check` blocks until then.

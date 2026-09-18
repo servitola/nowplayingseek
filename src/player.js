@@ -91,7 +91,9 @@ const player = {
             direction: Math.sign(delta),
             streakStart: streakStart(lastSeek, Math.sign(delta), now, acceleration.streak_gap),
         };
-        const multiplier = progressive ? multiplierAt(acceleration.pattern, now - streak.streakStart, acceleration.max_multiplier) : 1;
+        const multiplier = progressive
+            ? multiplierAt(acceleration.pattern, now - streak.streakStart, acceleration.max_multiplier, acceleration.ramp)
+            : 1;
         const base = seekBase(before, lastSeek, now, timing.pending_seek_max);
         return { state: this.seekTo(base + delta * multiplier, before, streak), multiplier };
     },
@@ -119,7 +121,9 @@ const player = {
         let sent = null;
         for (;;) {
             const at = now();
-            const multiplier = progressive ? multiplierAt(acceleration.pattern, at - streak.streakStart, acceleration.max_multiplier) : 1;
+            const multiplier = progressive
+                ? multiplierAt(acceleration.pattern, at - streak.streakStart, acceleration.max_multiplier, acceleration.ramp)
+                : 1;
             const next = nextHoldTarget(target, delta, multiplier, before.duration);
             if (isMissing(next)) {
                 break;

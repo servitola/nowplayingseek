@@ -10,6 +10,12 @@ function testPattern(core) {
     same(core.multiplierAt(core.parsePattern('5:2,10:3'), 600, 10), 3, 'pattern: without "..." the last point holds; s and x are optional');
     same(core.multiplierAt(core.parsePattern('2s:x1.5, …'), 6.5, 10), 2.5, 'pattern: one point continues from 0s:x1; typographic ellipsis');
     same(core.multiplierAt(core.parsePattern('1s:x5, 3s:x30'), 3, 10), 10, 'pattern: written points are capped too');
+    const smooth = core.parsePattern('smooth');
+    same(core.multiplierAt(smooth, 0, 3, 5), 1, 'smooth: a tap is exactly one step');
+    same(core.multiplierAt(smooth, 1, 3, 5) < 1.1, true, 'smooth: the first second stays precise');
+    same(core.multiplierAt(smooth, 5, 3, 5), 1 + 2 * (1 - Math.exp(-1)), 'smooth: at ramp it is 63 % of the way');
+    same(core.multiplierAt(smooth, 60, 3, 5), 3, 'smooth: and it settles at max_multiplier');
+    same(core.multiplierAt(smooth, 2.2, 3, 5) > core.multiplierAt(smooth, 2, 3, 5), true, 'smooth: every step is longer than the last');
     same(core.parsePattern('3s:x3, 10s:x3, ...').pace.adds, 0, 'pattern: a flat tail is allowed');
     same(core.parsePattern('10s:x3, 5s:x2'), null, 'pattern: descending times are rejected');
     same(core.parsePattern('5s:x0'), null, 'pattern: zero multiplier is rejected');
@@ -50,21 +56,9 @@ function testSettings(core) {
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
     same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
     same(defaults.values.hold.max_time, 30, 'settings: default hold fuse');
-    same(
-        core.multiplierAt(defaults.values.progressive.pattern, 10, defaults.values.progressive.max_multiplier),
-        3,
-        'settings: default pattern'
-    );
-    same(
-        core.multiplierAt(defaults.values.progressive.pattern, 4, defaults.values.progressive.max_multiplier),
-        2,
-        'settings: the default ladder doubles at 4 s'
-    );
-    same(
-        core.multiplierAt(defaults.values.progressive.pattern, 3.9, defaults.values.progressive.max_multiplier),
-        1,
-        'settings: and not before'
-    );
+    same(defaults.values.progressive.pattern.smooth, true, 'settings: the default pattern is the smooth curve');
+    same(defaults.values.progressive.max_multiplier, 3, 'settings: default max multiplier');
+    same(defaults.values.progressive.ramp, 5, 'settings: default ramp');
     const custom = core.resolveSettings(core.parseIni(ini));
     same(custom.values.seek.step, 90, 'settings: step accepts mm:ss');
     same(custom.values.progressive.pattern.points[0].multiplier, 4, 'settings: pattern from the file');

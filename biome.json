@@ -70,9 +70,9 @@
             }
         },
         {
-            "includes": ["src/core.js", "src/config.js"],
+            "includes": ["src/core.js", "src/pattern.js", "src/config.js"],
             "javascript": {
-                "globals": ["EXIT", "Failure", "isMissing", "parseTime"]
+                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "parsePattern"]
             },
             "linter": {
                 "rules": {
@@ -92,6 +92,7 @@
                                         "nextHoldTarget",
                                         "expectedPlaying",
                                         "parseTime",
+                                        "parsePattern",
                                         "formatStatus",
                                         "parseIni",
                                         "resolveSettings",

@@ -71,7 +71,8 @@ const seekCommand = direction => (args, name) => {
     const step = timeArgument(name, time, player.settings.seek.step);
     const seek = args.includes(HOLD_FLAG) ? 'holdBy' : 'seekBy';
     const { state, multiplier } = player[seek](direction * step, args.includes(PROGRESSIVE_FLAG));
-    print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
+    const shown = Number(multiplier.toFixed(1));
+    print(formatStatus(state) + (shown === 1 ? '' : `  ×${shown}`));
 };
 
 const COMMANDS = {

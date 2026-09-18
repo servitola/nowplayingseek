@@ -12,7 +12,7 @@ version, so keep that heading as it is.
 
 ### Changed
 - `--progressive` grows smoothly: every step is a little longer than the last, a tap and the
-  first second stay precise, and it settles at ×3 — `max_multiplier` and the new `ramp`. The
+  first second stay precise, and it settles at ×2.5 — `max_multiplier` and the new `ramp`. The
   staircase lurched at every jump and ran up to ×10.
 - `backward` at the very start and `forward` at the very end do nothing and exit 0 instead of
   asking the player for a seek to where it already is.

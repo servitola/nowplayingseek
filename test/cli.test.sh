@@ -74,7 +74,7 @@ expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or
 
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config
-expect 'config without a file: defaults' 0 stdout 'max_multiplier = 3' config
+expect 'config without a file: defaults' 0 stdout 'max_multiplier = 2.5' config
 [ -e "$xdg/nowplayingseek" ] && fail 'config without a file created something'
 
 expect 'config init' 0 stdout "wrote $xdg/nowplayingseek/config.ini" config init

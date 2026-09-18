@@ -37,8 +37,8 @@ function testSettings(core) {
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
     same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
     same(defaults.values.hold.max_time, 30, 'settings: default hold fuse');
-    same(defaults.values.progressive.max_multiplier, 3, 'settings: default max multiplier');
-    same(defaults.values.progressive.ramp, 5, 'settings: default ramp');
+    same(defaults.values.progressive.max_multiplier, 2.5, 'settings: default max multiplier');
+    same(defaults.values.progressive.ramp, 6, 'settings: default ramp');
     const custom = core.resolveSettings(core.parseIni(ini));
     same(custom.values.seek.step, 90, 'settings: step accepts mm:ss');
     same(custom.values.progressive.ramp, 3, 'settings: ramp from the file');

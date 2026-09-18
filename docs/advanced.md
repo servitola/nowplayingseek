@@ -8,31 +8,31 @@ Nothing here is needed for everyday use.
 
 With `--progressive` the step grows the longer the key is held, a little with every step. A tap
 is exactly one step and the first second of holding is almost that, so a short hold stays
-precise; then it gathers pace and settles at three times the step — fast enough to cross a
-film in a few seconds of holding, and no faster.
+precise; then it gathers pace and settles at two and a half times the step — fast enough to
+cross a film in a few seconds of holding, and no faster.
 
 | held | each step | in total |
 | --- | --- | --- |
 | a tap | 10 s | 0:10 |
-| 1 s | 10.5 s | 0:50 |
-| 2 s | 12 s | 1:48 |
-| 3 s | 15 s | 2:59 |
-| 5 s | 22 s | 6:10 |
-| 7 s | 27 s | 10:19 |
-| 10 s | 30 s | 17:29 |
+| 1 s | 10 s | 0:50 |
+| 2 s | 11 s | 1:44 |
+| 3 s | 13 s | 2:45 |
+| 5 s | 17 s | 5:17 |
+| 7 s | 21 s | 8:30 |
+| 10 s | 24 s | 14:11 |
 
 The curve is `1 + (max_multiplier − 1) · (1 − e^−(held / ramp)²)`: `max_multiplier` is where it
 settles, `ramp` is how long it takes to get two thirds of the way there.
 
 ```ini
 [progressive]
-max_multiplier = 3
-ramp = 5
+max_multiplier = 2.5
+ramp = 6
 ```
 
 Presses in one direction no further apart than `streak_gap` count as one hold, so fast tapping
 and a spun knob accelerate too; the other direction, a pause or a `seek` starts over. When the
-step was multiplied, the output line ends with the multiplier: `×1.6`.
+step was multiplied, the output line ends with the multiplier: `×1.3`.
 
 ## Hold
 

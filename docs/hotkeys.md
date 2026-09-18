@@ -14,19 +14,25 @@ repeat it while the key is held, so the press starts a loop and the release stop
   "manipulators": [
     { "type": "basic",
       "from": { "key_code": "right_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo forward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = forward ] && [ $n -lt 150 ]; do /opt/homebrew/bin/nowplayingseek forward 10 --progressive; n=$((n+1)); done" }],
+      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo forward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = forward ] && [ $n -lt 300 ]; do /opt/homebrew/bin/nowplayingseek forward 10 --progressive >/dev/null 2>&1 & sleep 0.25; n=$((n+1)); done" }],
       "to_after_key_up": [{ "shell_command": "rm -f \"${TMPDIR:-/tmp/}nowplayingseek.hold\"" }] },
     { "type": "basic",
       "from": { "key_code": "left_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo backward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = backward ] && [ $n -lt 150 ]; do /opt/homebrew/bin/nowplayingseek backward 10 --progressive; n=$((n+1)); done" }],
+      "to": [{ "shell_command": "f=\"${TMPDIR:-/tmp/}nowplayingseek.hold\"; echo backward > \"$f\"; n=0; while [ \"$(cat \"$f\" 2>/dev/null)\" = backward ] && [ $n -lt 300 ]; do /opt/homebrew/bin/nowplayingseek backward 10 --progressive >/dev/null 2>&1 & sleep 0.25; n=$((n+1)); done" }],
       "to_after_key_up": [{ "shell_command": "rm -f \"${TMPDIR:-/tmp/}nowplayingseek.hold\"" }] }
   ]
 }
 ```
 
-A tap is one step. Held, it makes about two steps a second, and with `--progressive` they grow
-after five seconds. The 150 is a fuse for a release that never arrives. For a tap-only key the
-whole command is `/opt/homebrew/bin/nowplayingseek forward 10`.
+A tap is one step; held, the key makes four steps a second. Three numbers set the feel:
+
+- `sleep 0.25` — the pace while held; `0.5` is a calm two steps a second.
+- `10` — the step. With `--progressive` it grows while you hold, and how fast is the
+  [`pattern`](advanced.md#progressive-seek) setting: the default doubles it after 5 s, and
+  `pattern = 3.75s:x2, 7.5s:x3, ...` in the config file gets there a third sooner.
+- `300` — a fuse: the loop ends by itself if the release never arrives.
+
+For a key that should not repeat, the whole command is `/opt/homebrew/bin/nowplayingseek forward 10`.
 
 A rotary knob is two keys to the system, one per direction — volume up and down out of
 the box. Reassign them in the keyboard's firmware (VIA, QMK) to keys you do not use, such

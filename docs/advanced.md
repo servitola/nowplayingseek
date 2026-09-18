@@ -31,6 +31,10 @@ max_multiplier = 2.5
 ramp = 6
 ```
 
+The curve multiplies whatever step you give: `forward 30 --hold --progressive` is a 30 s press, then
+steps from 12 s up to 75 s — three times the pace of the table above. Lower `max_multiplier` if
+a long step makes a long hold too fast.
+
 Separate presses no further apart than `streak_gap` count as one hold and grow the same way, but
 never drop below a whole step; the other direction, a pause or a `seek` starts over. When the
 step was multiplied, the output line ends with the multiplier: `×1.4`.

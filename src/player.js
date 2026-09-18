@@ -3,29 +3,6 @@ const HOLD_TOKEN = `${$.NSProcessInfo.processInfo.processIdentifier}-${PROCESS_S
 
 const SHORTEST_INTERVAL = 0.05;
 
-const now = () => Date.now() / MILLISECONDS_PER_SECOND;
-
-function jsonFile(name) {
-    const path = `${$.NSTemporaryDirectory().js}nowplayingseek.${name}.json`;
-    return {
-        read() {
-            const text = $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, null);
-            try {
-                return text.js ? JSON.parse(text.js) : null;
-            } catch {
-                return null;
-            }
-        },
-        write(value) {
-            $(JSON.stringify(value)).writeToFileAtomicallyEncodingError(path, true, $.NSUTF8StringEncoding, null);
-        },
-    };
-}
-
-const lastSeekFile = jsonFile('last-seek');
-const holdFile = jsonFile('hold');
-const releaseFiles = { 1: jsonFile('release-forward'), [-1]: jsonFile('release-backward') };
-
 function waitUntil(condition, timing) {
     const deadline = Date.now() + timing.verify_timeout * MILLISECONDS_PER_SECOND;
     while (Date.now() < deadline) {
@@ -65,38 +42,56 @@ const player = {
         return this.awaitLanding(target, at, before);
     },
 
-    seekBy(delta, { progressive, hold, knob }) {
-        const { timing, progressive: curve } = this.settings;
+    seekBy(delta, mode) {
         const before = this.requirePosition();
+        const direction = Math.sign(delta);
+        const once = !mode.hold || releasedSince(releaseFiles[direction].read(), PROCESS_STARTED);
+        if (!once) {
+            holdFile.write({ holder: HOLD_TOKEN });
+        }
+
+        const run = locked(() => this.begin(before, delta, mode));
+        while (run.last && !once && this.stillHeld(direction, before.app, run.last.at)) {
+            if (!this.step(run, delta, before)) {
+                break;
+            }
+        }
+        return run.last
+            ? { state: this.awaitLanding(run.target, run.last.at, before), multiplier: run.last.multiplier }
+            : { state: before, multiplier: 1 };
+    },
+
+    begin(before, delta, mode) {
+        const { timing, progressive: curve } = this.settings;
         const lastSeek = lastSeekFile.read();
         const direction = Math.sign(delta);
         const streak = {
             direction,
             streakStart: streakStart(lastSeek, direction, now(), curve.streak_gap),
-            rate: knob ? knobRate(lastSeek, direction, now(), curve.streak_gap) : undefined,
+            rate: mode.knob ? knobRate(lastSeek, direction, now(), curve.streak_gap) : undefined,
         };
-        const growth = this.growth({ progressive, knob }, streak);
-        const once = !hold || releasedSince(releaseFiles[direction].read(), PROCESS_STARTED);
-        if (!once) {
-            holdFile.write({ holder: HOLD_TOKEN });
+        const run = {
+            target: seekBase(before, lastSeek, now(), timing.pending_seek_max),
+            last: null,
+            streak,
+            growth: this.growth(mode, streak),
+        };
+        this.step(run, delta, before);
+        return run;
+    },
+
+    step(run, delta, before) {
+        const at = now();
+        const multiplier = run.growth(at, run.last !== null);
+        const next = nextHoldTarget(run.target, delta, multiplier, before.duration);
+        if (isMissing(next)) {
+            return false;
         }
-
-        let target = seekBase(before, lastSeek, now(), timing.pending_seek_max);
-        let last = null;
-        do {
-            const at = now();
-            const multiplier = growth(at, last !== null);
-            const next = nextHoldTarget(target, delta, multiplier, before.duration);
-            if (isMissing(next)) {
-                break;
-            }
-            target = next;
-            last = { at, multiplier };
-            mediaRemote.setElapsedTime(target);
-            lastSeekFile.write({ target, at, app: before.app, ...streak });
-        } while (!once && this.stillHeld(direction, before.app, last.at));
-
-        return last ? { state: this.awaitLanding(target, last.at, before), multiplier: last.multiplier } : { state: before, multiplier: 1 };
+        run.target = next;
+        run.last = { at, multiplier };
+        mediaRemote.setElapsedTime(next);
+        lastSeekFile.write({ target: next, at, app: before.app, ...run.streak });
+        return true;
     },
 
     growth({ progressive, knob }, streak) {
@@ -128,9 +123,14 @@ const player = {
     awaitLanding(target, calledAt, before) {
         const { timing } = this.settings;
         let after = null;
+        let sentAt = calledAt;
         const landed = waitUntil(() => {
             after = mediaRemote.read();
             const superseded = lastSeekFile.read()?.target !== target;
+            if (seekOvertaken(after, target, { sentAt, superseded, verifyTimeout: timing.verify_timeout })) {
+                sentAt = now();
+                mediaRemote.setElapsedTime(target);
+            }
             return seekLanded(after, target, { calledAt, superseded, verifyTimeout: timing.verify_timeout });
         }, timing);
         if (!landed) {

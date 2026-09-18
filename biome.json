@@ -87,6 +87,7 @@
                                         "clampTarget",
                                         "seekBase",
                                         "seekLanded",
+                                        "seekOvertaken",
                                         "streakStart",
                                         "multiplierAt",
                                         "nextHoldTarget",
@@ -108,7 +109,14 @@
             }
         },
         {
-            "includes": ["src/mediaremote.js", "src/player.js", "src/configfile.js", "src/cli.js"],
+            "includes": [
+                "src/mediaremote.js",
+                "src/files.js",
+                "src/player.js",
+                "src/configfile.js",
+
+                "src/cli.js"
+            ],
             "javascript": {
                 "globals": [
                     "$",
@@ -125,6 +133,7 @@
                     "clampTarget",
                     "seekBase",
                     "seekLanded",
+                    "seekOvertaken",
                     "streakStart",
                     "multiplierAt",
                     "holdContinues",
@@ -140,7 +149,12 @@
                     "formatSettings",
                     "mediaRemote",
                     "player",
-                    "configFile"
+                    "configFile",
+                    "now",
+                    "locked",
+                    "lastSeekFile",
+                    "holdFile",
+                    "releaseFiles"
                 ]
             },
             "linter": {
@@ -150,8 +164,17 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "function": ["run"],
-                                    "variable": ["mediaRemote", "player", "configFile"]
+                                    "function": ["run", "locked", "jsonFile"],
+                                    "variable": [
+                                        "mediaRemote",
+                                        "player",
+                                        "configFile",
+                                        "asNowplayingCli",
+                                        "now",
+                                        "lastSeekFile",
+                                        "holdFile",
+                                        "releaseFiles"
+                                    ]
                                 }
                             }
                         }

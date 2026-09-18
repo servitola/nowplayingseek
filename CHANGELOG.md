@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 0.4.0 — 2026-09-19
+
 ### Added
 - `forward` / `backward --hold` and `release`: a hotkey's key down starts seeking, its key up stops
   it. For hotkey tools that run a command once per press and do not repeat it while the key is

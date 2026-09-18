@@ -109,7 +109,7 @@ update_formula() {
 	url="https://github.com/$repo/archive/refs/tags/v$version.tar.gz"
 
 	tarball=$(mktemp)
-	if curl -fsSL -o "$tarball" "$url"; then
+	if curl -fsL -o "$tarball" "$url"; then
 		sha=$(shasum -a 256 "$tarball" | cut -d' ' -f1)
 	elif $dry_run; then
 		sha="<sha256 of the tarball GitHub serves once v$version is pushed>"

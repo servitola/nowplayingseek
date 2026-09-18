@@ -7,9 +7,14 @@ README.md explains what the tool is and why it has to run under `osascript`. Rea
 - `src/core.js` stays free of `$` and `ObjC`: the test evaluates it on its own.
 - A new decision goes into `core.js` as a pure function with a test; `player.js` only
   wires reads, calls and polling around those.
+- A new tunable is one entry in `SETTINGS` in `core.js` — default, parser, `about` line. The
+  config reader, `config`, `config init` and the unknown-key check all derive from that table;
+  add the key to the sample in README "Config".
 - `make test` needs no playback. Anything touching playback is checked by hand with a
   player running: `seek`, a held hotkey (five `forward` 30 ms apart must give +50 s),
-  `toggle` twice, `backward` at 0, `seek` past the end.
+  `toggle` twice, `backward` at 0, `seek` past the end, and thirty `forward 1 --progressive`
+  60 ms apart under `XDG_CONFIG_HOME` with `pattern = 0.5s:x2, 1s:x3, ...` — the `×N` suffixes
+  must climb and the distance moved must equal their sum.
 - Release: bump `VERSION` in `src/cli.js`, tag `v<version>`, push, then update `url` and
   `sha256` in `~/projects/homebrew-tap/Formula/nowplayingseek.rb`.
 

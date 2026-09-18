@@ -1,26 +1,65 @@
 ObjC.import('stdlib');
 
 const VERSION = '0.2.0';
+const PROGRESSIVE_FLAG = '--progressive';
 
 const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
 
-  status [--json]     title, app, position / duration
-  position            current position, seconds
-  duration            total length, seconds
-  forward [time=10]   seek forward
-  backward [time=10]  seek backward
-  seek <time>         jump to an exact position (seek 754, seek 12:34)
+  status [--json]                   title, app, position / duration
+  position                          current position, seconds
+  duration                          total length, seconds
+  forward [time] [--progressive]    seek forward; without <time>, by the configured step (10)
+  backward [time] [--progressive]   seek backward
+  seek <time>                       jump to an exact position (seek 754, seek 12:34)
   toggle | play | pause | next | previous
-  doctor              exit 0 when Now Playing is readable, 1 when it is not
+  doctor                            exit 0 when Now Playing is readable, 1 when it is not
+  config                            print the settings in effect and where they come from
+  config init                       write a config file with the defaults
 
 <time> is seconds (90, 12.5) or mm:ss / h:mm:ss (1:30, 1:02:03).
+--progressive multiplies the step the longer the key is held — see "pattern" in the config.
 
-exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command, 64 usage`;
+config: $XDG_CONFIG_HOME/nowplayingseek/config.ini, ~/.config/nowplayingseek/config.ini by default
+
+exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command, 64 usage, 78 bad config`;
 
 function print(text, toStderr) {
     const handle = toStderr ? $.NSFileHandle.fileHandleWithStandardError : $.NSFileHandle.fileHandleWithStandardOutput;
     handle.writeData($(text + '\n').dataUsingEncoding($.NSUTF8StringEncoding));
 }
+
+const configFile = {
+    path() {
+        const xdg = $.NSProcessInfo.processInfo.environment.objectForKey('XDG_CONFIG_HOME').js;
+        return (xdg || $.NSHomeDirectory().js + '/.config') + '/nowplayingseek/config.ini';
+    },
+
+    exists() {
+        return $.NSFileManager.defaultManager.fileExistsAtPath(this.path());
+    },
+
+    load() {
+        if (!this.exists()) return resolveSettings([]);
+        const text = $.NSString.stringWithContentsOfFileEncodingError(this.path(), $.NSUTF8StringEncoding, null).js;
+        try {
+            if (text === undefined) throw new Failure(EXIT.config, 'not readable as UTF-8 text');
+            return resolveSettings(parseIni(text));
+        } catch (error) {
+            if (error instanceof Failure) error.message = `${this.path()}: ${error.message}`;
+            throw error;
+        }
+    },
+
+    init() {
+        const path = this.path();
+        if (this.exists()) throw new Failure(EXIT.config, `${path} already exists`);
+        const directory = $(path).stringByDeletingLastPathComponent;
+        const written = $.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(directory, true, $(), null)
+            && $(formatSettings(resolveSettings([]).texts) + '\n').writeToFileAtomicallyEncodingError(path, true, $.NSUTF8StringEncoding, null);
+        if (!written) throw new Failure(EXIT.config, `cannot write ${path}`);
+        return path;
+    },
+};
 
 function timeArgument(command, text, fallback) {
     if (text === undefined && fallback !== undefined) return fallback;
@@ -36,6 +75,14 @@ function printSeconds(state, field) {
 
 const sendCommand = (args, name) => player.send(name);
 
+const seekCommand = direction => (args, name) => {
+    const [time, ...extra] = args.filter(arg => arg !== PROGRESSIVE_FLAG);
+    if (extra.length) throw new Failure(EXIT.usage, `${name} takes one time and ${PROGRESSIVE_FLAG}, got "${extra.join(' ')}" on top`);
+    const step = timeArgument(name, time, player.settings.seek.step);
+    const { state, multiplier } = player.seekBy(direction * step, args.includes(PROGRESSIVE_FLAG));
+    print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
+};
+
 const COMMANDS = {
     status(args) {
         const state = player.requireState();
@@ -47,12 +94,8 @@ const COMMANDS = {
     duration() {
         printSeconds(player.requireState(), 'duration');
     },
-    forward(args) {
-        print(formatStatus(player.seekBy(timeArgument('forward', args[0], DEFAULT_STEP_SECONDS))));
-    },
-    backward(args) {
-        print(formatStatus(player.seekBy(-timeArgument('backward', args[0], DEFAULT_STEP_SECONDS))));
-    },
+    forward: seekCommand(1),
+    backward: seekCommand(-1),
     seek(args) {
         print(formatStatus(player.seekTo(timeArgument('seek', args[0]), player.requireState())));
     },
@@ -62,6 +105,12 @@ const COMMANDS = {
                 'nothing readable — either nothing has played since login, or this macOS no longer lets osascript read Now Playing');
         }
         print('ok: Now Playing is readable');
+    },
+    config(args) {
+        if (args[0] === 'init') return print('wrote ' + configFile.init());
+        if (args.length) throw new Failure(EXIT.usage, `config takes "init" or nothing, got "${args.join(' ')}"`);
+        const found = configFile.exists() ? '' : ' — not found, these are the defaults';
+        print(`; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`);
     },
     toggle: sendCommand,
     play: sendCommand,
@@ -77,6 +126,7 @@ function run(argv) {
 
     try {
         if (!Object.hasOwn(COMMANDS, name)) throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);
+        player.settings = configFile.load().values;
         mediaRemote.load();
         COMMANDS[name](args, name);
     } catch (error) {

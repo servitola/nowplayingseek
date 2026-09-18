@@ -19,8 +19,20 @@ $ nowplayingseek forward 60
 ▶ 13:34 / 3:15:50  UFC Fight Night 287  (com.colliderli.iina)
 ```
 
-The system `fast_forward` / `rewind` media keys give you neither a position nor a step
-of your choice. This does.
+## Why
+
+I wanted two keys on my keyboard: 10 seconds back and 10 seconds forward, for whatever
+is playing, whichever app has the focus. macOS cannot do that. Its media keys cover
+play/pause, next and previous; the `fast_forward` / `rewind` keys give you neither a
+position nor a step of your choice; and a player's own arrow-key shortcuts work only
+while its window is focused — and differ from player to player.
+
+So this is a command that seeks the current item by exactly the step you ask for, and
+any hotkey tool can call it — see [Hotkeys](#hotkeys).
+
+It gets better if your keyboard has a rotary knob, as many mechanical ones do. Bind the
+two directions of the knob to `forward` and `backward` and it becomes a jog wheel: turn it
+to scrub through the video or the podcast, in any app, without reaching for the mouse.
 
 ## Install
 
@@ -70,6 +82,11 @@ Karabiner-Elements, ⌃⌥→ and ⌃⌥←:
 
 Holding the key works: steps add up even though key repeat is faster than Now Playing
 refreshes.
+
+A rotary knob is two keys to the system, one per direction — volume up and down out of
+the box. Reassign them in the keyboard's firmware (VIA, QMK) to keys you do not use, such
+as F13 and F14, and bind those the same way. Every click of the knob is one press, so with
+[`--progressive`](#progressive-seek) a fast spin covers more ground than a slow one.
 
 Without third-party software: Shortcuts.app → new shortcut → "Run Shell Script" →
 `/opt/homebrew/bin/nowplayingseek forward 10` → ⓘ → "Add Keyboard Shortcut".

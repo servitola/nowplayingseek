@@ -39,7 +39,6 @@ current_version() {
 	sed -n "s/^const VERSION = '\(.*\)';$/\1/p" "$version_file"
 }
 
-# Prints the diff between a file and its edited copy; installs the copy unless this is a dry run.
 apply() {
 	target=$1 edited=$2
 	diff -u "$target" "$edited" | sed "1s|.*|--- $target|; 2s|.*|+++ $target (after)|" || true

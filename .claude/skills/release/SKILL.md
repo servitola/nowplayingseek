@@ -21,9 +21,12 @@ first (`nowplayingseek position`) and put it back when you are done.
 
 1. `scripts/release.sh check`. A `BLOCK` line stops the release; fix the cause, then re-run it.
    Local commits the CI has not seen are a blocker by design: pushing them is the owner's call.
-2. Read the run yourself when the script reports CI as not green: `gh run list --repo
+2. The last CI run carries no annotations — a deprecation warning today is a red run later. This
+   prints nothing when clean:
+   `for id in $(gh api repos/servitola/nowplayingseek/commits/main/check-runs --jq '.check_runs[].id'); do gh api repos/servitola/nowplayingseek/check-runs/$id/annotations --jq '.[].message'; done`
+3. Read the run yourself when the script reports CI as not green: `gh run list --repo
    servitola/nowplayingseek --limit 5`, `gh run view <id> --log-failed`.
-3. Walk the live checklist in `AGENTS.md` ("Testing") with a player running. `status` exit 1 means
+4. Walk the live checklist in `AGENTS.md` ("Testing") with a player running. `status` exit 1 means
    nothing is playing: ask the owner to start something. Record which items ran; an item that did
    not run is reported as skipped, not passed.
 

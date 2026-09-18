@@ -1,0 +1,36 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - run: pipx install pre-commit==4.6.2
+      - run: make lint
+      - run: make test
+      - run: make dist
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/*.tar.gz
+      - name: attach assets to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          version=${GITHUB_REF_NAME#v}
+          notes=$(sh scripts/release.sh notes "$version")
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/*.tar.gz dist/*.tar.gz.sha256 --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/*.tar.gz dist/*.tar.gz.sha256 \
+              --verify-tag --title "nowplayingseek $version" --notes "$notes"
+          fi

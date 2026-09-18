@@ -61,17 +61,27 @@ first (`nowplayingseek position`) and put it back when you are done.
 
 1. `git push origin main`, then wait for the `test` workflow on that commit: `gh run watch` or
    `gh run list --commit <sha>`. Red means fix on `main` and start over; no tag exists yet.
-2. `git tag -a v<version> -m "nowplayingseek <version>"`, `git push origin v<version>`. The workflow
-   does not run on tags; the tag is green because the commit under it is.
-3. GitHub release, no assets — Homebrew builds from the source tarball, and an unsigned copy of the
-   script would only be a second thing to trust:
-   `gh release create v<version> --verify-tag --latest --title "nowplayingseek <version>" --notes "$(scripts/release.sh notes <version>)"`,
-   then `gh release list` shows it as Latest.
-4. `scripts/release.sh --dry-run formula <version>` shows the formula diff with the sha256 of the
-   tarball it downloaded. A `<sha256 of the tarball…>` placeholder in place of 64 hex characters
-   means GitHub is not serving the archive yet: wait and retry.
+2. `git tag -a v<version> -m "nowplayingseek <version>"`, `git push origin v<version>`. `test.yml`
+   does not run on tags; that push instead triggers `.github/workflows/release.yml`: it builds on
+   macOS, runs `make lint test`, then `make dist` (the script plus a universal artwork bundle,
+   LICENSE, README, a `.sha256`), attests build provenance for the tarball, and creates (or, if
+   the release already exists, updates) the GitHub release for this tag with those two files
+   attached and the notes taken from `scripts/release.sh notes <version>` — the same notes this
+   phase used to type by hand.
+3. `gh run list --repo servitola/nowplayingseek --workflow release.yml --branch v<version> --limit 1`
+   until it shows a conclusion, then `gh run view <id> --log-failed` if it is not `success`. Red
+   here means the tag is burned (tags are not re-pushed, see `references/rollback.md`) — fix and
+   release the next patch version, do not retry this tag.
+4. `gh release view v<version> --json assets --jq '.assets[].name'` names the tarball and the
+   `.sha256`; `gh release list` shows the release as Latest. `gh attestation verify
+   <a downloaded copy of the tarball> --owner servitola` confirms the provenance signature.
+5. `scripts/release.sh --dry-run formula <version>` shows the tap formula diff with the sha256 of
+   the *source* tarball it downloaded — the Homebrew formula still builds from source, unrelated
+   to the release asset above; see Phase 5. A `<sha256 of the tarball…>` placeholder in place of
+   64 hex characters means GitHub is not serving the source archive yet: wait and retry.
 
-**Checkpoint:** tag and release on GitHub, the dry run shows a real 64-hex sha256.
+**Checkpoint:** tag and release on GitHub, `release.yml` green with the tarball and checksum
+attached and attested, the dry run of `formula` shows a real 64-hex sha256.
 
 ## Phase 5: Tap
 

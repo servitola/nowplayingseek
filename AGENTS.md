@@ -179,7 +179,10 @@ paw on the knob, the finger on the key.
 ## Release
 
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows
-what it would do. Nothing is pushed, tagged or published without the owner's word.
+what it would do. Nothing is pushed, tagged or published without the owner's word. Pushing the tag
+is what publishes: `.github/workflows/release.yml` then builds `make dist` (see `make dist` in
+`docs/development.md`) and attaches the tarball and its checksum to the release itself — nobody
+runs `make dist` by hand for a release.
 
 ## Dead ends — measured 2026-09-18 on macOS 26.6, do not retry
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,

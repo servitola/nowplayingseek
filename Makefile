@@ -15,6 +15,11 @@ FAKE_TARGET := build/nowplayingseek-fake
 TEST_TARGET := build/test.js
 ARTWORK_SRC := native/artwork.m
 ARTWORK_BUNDLE := build/nowplayingseek-artwork.bundle
+ARTWORK_BUNDLE_UNIVERSAL := build/nowplayingseek-artwork-universal.bundle
+DIST_VERSION := $(shell sed -n "s/^const VERSION = '\(.*\)';$$/\1/p" src/cli.js)
+DIST_NAME := nowplayingseek-$(DIST_VERSION)-macos
+DIST_STAGE := dist/$(DIST_NAME)
+DIST_TARBALL := dist/$(DIST_NAME).tar.gz
 
 # JXA has no module system, so the sources are concatenated into the one file
 # osascript runs. The order is the dependency order.
@@ -23,7 +28,7 @@ $(TARGET): $(SOURCES)
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(SOURCES); } > $@
 	chmod +x $@
 
-.PHONY: build test test-speed test-live test-world coverage typecheck globals lint install uninstall clean
+.PHONY: build test test-speed test-live test-world coverage typecheck globals lint install uninstall clean dist
 
 build: $(TARGET) $(ARTWORK_BUNDLE)
 
@@ -50,6 +55,12 @@ $(TEST_TARGET): $(TESTS)
 $(ARTWORK_BUNDLE): $(ARTWORK_SRC)
 	@mkdir -p build
 	clang -fobjc-arc -Wall -Wextra -bundle -framework Foundation -o $@ $<
+
+# One tarball for both kinds of Mac: clang links a fat Mach-O directly, no separate asset per
+# arch and no Rosetta needed to build it, so this is the whole cost of "universal" here.
+$(ARTWORK_BUNDLE_UNIVERSAL): $(ARTWORK_SRC)
+	@mkdir -p build
+	clang -fobjc-arc -Wall -Wextra -bundle -framework Foundation -arch arm64 -arch x86_64 -o $@ $<
 
 test: $(TARGET) $(FAKE_TARGET) $(TEST_TARGET) $(ARTWORK_BUNDLE)
 	osascript -l JavaScript $(TEST_TARGET) $(PURE)
@@ -95,5 +106,21 @@ install: $(TARGET) $(ARTWORK_BUNDLE)
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps $(DESTDIR)$(PREFIX)/bin/nowplayingseek-artwork.bundle
 
+# The release asset: the built script, the universal artwork bundle beside it (src/system/paths.js
+# resolves the bundle next to whatever path osascript was run from, so this only works if both
+# land in the same directory), LICENSE and README. touch -h fixes every mtime before the tar so
+# two runs over the same checkout produce the same bytes; gzip -n drops its own timestamp too.
+dist: $(TARGET) $(ARTWORK_BUNDLE_UNIVERSAL)
+	rm -rf dist
+	mkdir -p $(DIST_STAGE)
+	install -m 755 $(TARGET) $(DIST_STAGE)/nowplayingseek
+	install -m 755 $(ARTWORK_BUNDLE_UNIVERSAL) $(DIST_STAGE)/nowplayingseek-artwork.bundle
+	install -m 644 LICENSE README.md $(DIST_STAGE)/
+	ln -sf nowplayingseek $(DIST_STAGE)/nps
+	touch -h -t 200001010000 $(DIST_STAGE) $(DIST_STAGE)/*
+	tar --uid 0 --gid 0 --numeric-owner -cf - -C dist $(DIST_NAME) | gzip -n -9 >$(DIST_TARBALL)
+	cd dist && shasum -a 256 $(DIST_NAME).tar.gz >$(DIST_NAME).tar.gz.sha256
+	cd dist && shasum -a 256 -c $(DIST_NAME).tar.gz.sha256
+
 clean:
-	rm -rf build
+	rm -rf build dist

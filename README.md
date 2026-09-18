@@ -1,8 +1,8 @@
 # nowplayingseek
 
-<p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="70%"></p>
-
 [![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![tested on macOS 26](https://img.shields.io/badge/tested%20on-macOS%2026-black)](docs/how-it-works.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
+
+<p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="70%"></p>
 
 A command-line tool for macOS. It seeks whatever is playing.
 
@@ -33,6 +33,7 @@ It comes through [Homebrew](https://brew.sh); if `brew` is not on this Mac yet, 
 One script, also installed as `nps`. No dependencies. It runs on `osascript`, which is already there.
 
 Homebrew 7 wants third-party taps trusted: the full name above trusts this one formula, no more.
+No Homebrew? [Download the release tarball instead](docs/install.md).
 
 ## A key
 

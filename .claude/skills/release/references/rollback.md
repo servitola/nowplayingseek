@@ -8,6 +8,8 @@ never pushed — and even then deleting it is the owner's decision.
 | Where it failed | State | What to do |
 | --- | --- | --- |
 | Source CI red on the pushed bump commit | no tag yet — Phase 4 tags only after green | Fix on `main` with a new commit and resume at Phase 4 step 1; the version stays. |
+| `release.yml` red (lint, test, or `make dist` failed on the tag) | no release asset published, tag itself is fine | The tag stays — tags are not re-pushed here. Fix on `main`, bump the next patch version, and resume Phase 2 for it; this tag's release, if `gh release view` shows nothing, can be left empty or deleted by the owner's word. |
+| `release.yml` green but `gh release view` shows no assets | the create-or-upload step failed after the build | Re-run the failed job (`gh run rerun <id> --failed`); it is idempotent — `make dist` and the upload both start clean. |
 | Tag pushed, formula not updated | users still get the previous version | Nothing is broken. Resume at Phase 4 step 3. |
 | `formula` step: tarball "is not there yet" | GitHub has not built the archive | Wait, retry. Check the tag exists: `git ls-remote origin refs/tags/v<version>`. |
 | sha256 in the formula differs from a fresh download | formula would fail to install | Re-run `scripts/release.sh formula <version>`; it always takes the sha from the download. If it keeps changing, the tag was moved — stop and tell the owner. |

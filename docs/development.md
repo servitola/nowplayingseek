@@ -19,13 +19,14 @@ One script for `osascript`, no dependencies at run time. `make` concatenates `sr
 | `make globals` | rewrites the lists in `biome.json` after a name starts to cross files |
 | `make coverage` | lines of logic the unit tests never reach |
 | `make typecheck` | TypeScript's checker over the built file |
+| `make dist` | the release tarball in `dist/`: the script, the universal artwork bundle, LICENSE, README, and a `.sha256` beside it. What `.github/workflows/release.yml` runs on a pushed tag; [docs/install.md](install.md) is the reader-facing side |
 
 `pre-commit install` once after cloning; commits go through the hook.
 
 ### Response time
 
 The tool is bound to a hotkey, so startup latency is the product; `test/speed.test.sh`'s budgets
-came from these, measured on the owner's M1 Max, macOS 26.6, 2026-09-18:
+came from these, measured on the owner's M1 Max, macOS 26.6, 2026-09-19:
 
 - The real build, `/usr/bin/time -p`, 3 runs each: `status --json` 0.08 s, `artwork <path>` 0.08 s,
   `get` 0.08 s, `get --no-artwork` 0.06 s.

@@ -33,10 +33,17 @@ function clampTarget(target, duration) {
     return Math.max(0, Math.min(upper, target));
 }
 
+// A refresh can belong to an older seek: at key-repeat pace its timestamp is later than the newest
+// seek's, while the position is still the older target. Only a position near the last target counts.
 function seekBase(state, lastSeek, now, pendingSeekMax) {
-    const sameApp = lastSeek && lastSeek.app === state.app;
-    const pending = sameApp && now - lastSeek.at < pendingSeekMax && (isMissing(state.timestamp) || state.timestamp < lastSeek.at);
-    return pending ? lastSeek.target : state.position;
+    const recent = lastSeek && lastSeek.app === state.app && now - lastSeek.at < pendingSeekMax;
+    if (!recent) {
+        return state.position;
+    }
+    const refreshed = !isMissing(state.timestamp) && state.timestamp >= lastSeek.at;
+    const drift = state.position - lastSeek.target;
+    const arrived = drift > -1 && drift < 1 + (now - lastSeek.at) * (state.rate || 0);
+    return refreshed && arrived ? state.position : lastSeek.target;
 }
 
 function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
@@ -48,6 +55,13 @@ function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
     }
     const drift = after.position - target;
     return drift > -1 && drift < 1 + verifyTimeout * (after.rate || 1);
+}
+
+// Seeks sent 30 ms apart by separate processes reach the player in any order. The newest process
+// sees a refresh that is not its own target and sends it again.
+function seekOvertaken(after, target, { sentAt, superseded, verifyTimeout }) {
+    const refreshed = Boolean(after) && !isMissing(after.timestamp) && after.timestamp >= sentAt;
+    return refreshed && !superseded && !seekLanded(after, target, { calledAt: sentAt, superseded, verifyTimeout });
 }
 
 function streakStart(lastSeek, direction, now, gap) {

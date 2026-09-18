@@ -57,8 +57,10 @@ fast = 12
 
 Most hotkey tools run a command once per press, however long the key stays down. With `--hold`
 the command itself keeps going: `nowplayingseek forward --hold` makes a step every
-`interval` seconds until `nowplayingseek release` is run — bind the first to the key down and
-the second to the key up. A tap is still one step. Another `--hold` takes over from the one
+`interval` seconds until `nowplayingseek release forward` is run — bind the first to the key
+down and the second to the key up. The release names its direction so that, when fingers roll
+from one key to the other, letting go of the first does not stop the second; a bare `release`
+stops both. A tap is still one step. Another `--hold` takes over from the one
 before it, so switching direction needs no release in between, and a hold ends by itself after
 `max_time` in case the release never arrives.
 

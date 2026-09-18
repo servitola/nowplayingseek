@@ -74,7 +74,8 @@ function knobMultiplier(rate, { max_multiplier, fast }) {
     return ease(rate / fast, 1, max_multiplier);
 }
 
-const holdContinues = (record, token) => Boolean(record) && record.holder === token;
+const holdContinues = (record, token, released, startedAt) =>
+    Boolean(record) && record.holder === token && !releasedSince(released, startedAt);
 
 const releasedSince = (record, startedAt) => Boolean(record) && !isMissing(record.releasedAt) && record.releasedAt >= startedAt;
 

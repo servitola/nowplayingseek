@@ -19,11 +19,11 @@ key up ends it:
     { "type": "basic",
       "from": { "key_code": "right_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
       "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward --hold --progressive" }],
-      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release" }] },
+      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release forward" }] },
     { "type": "basic",
       "from": { "key_code": "left_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
       "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward --hold --progressive" }],
-      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release" }] }
+      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release backward" }] }
   ]
 }
 ```
@@ -67,8 +67,8 @@ local function run(...)
   local arguments = { ... }
   return function() hs.task.new("/opt/homebrew/bin/nowplayingseek", nil, arguments):start() end
 end
-hs.hotkey.bind({ "ctrl", "alt" }, "right", run("forward", "--hold", "--progressive"), run("release"))
-hs.hotkey.bind({ "ctrl", "alt" }, "left", run("backward", "--hold", "--progressive"), run("release"))
+hs.hotkey.bind({ "ctrl", "alt" }, "right", run("forward", "--hold", "--progressive"), run("release", "forward"))
+hs.hotkey.bind({ "ctrl", "alt" }, "left", run("backward", "--hold", "--progressive"), run("release", "backward"))
 ```
 
 skhd, in `~/.config/skhd/skhdrc`:

@@ -39,9 +39,10 @@ Three things the API does not tell you:
 
 A key held down is two processes, because hotkey tools run a command once per press: `--hold`
 on the key down keeps stepping, `release` on the key up tells it to stop through a file in the
-temporary directory. A newer `--hold` takes that file over, which stops the older one. On a
-quick tap the `release` can get there first; the `--hold` sees a release newer than itself and
-makes its one step.
+temporary directory — one file per direction, which the hold only reads, so a release cannot be
+overwritten and lost. A newer `--hold` takes over from an older one through a file of its own.
+On a quick tap the `release` can get there first; the `--hold` sees a release newer than itself
+and makes its one step.
 
 ## Limits
 

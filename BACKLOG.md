@@ -18,5 +18,4 @@ What is left, most pressing first. State as of 2026-09-18; delete a line when it
 
 ## Questions for the owner
 - `⌃⇧⇪X/Z` now call `forward/backward 10 --progressive` on 0.3.0 — confirm a tap and a hold both work.
-- `brew "nowplaying-cli"` in the owner's brewfile is no longer used by anything — remove?
 - The friend who got the old `audioctl.zip` could use `brew install servitola/tap/nowplayingseek`.

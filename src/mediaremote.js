@@ -49,6 +49,11 @@ const mediaRemote = {
         };
     },
 
+    info() {
+        const item = $.NSClassFromString('MRNowPlayingRequest')?.localNowPlayingItem;
+        return item?.js && item.nowPlayingInfo.js ? item.nowPlayingInfo : null;
+    },
+
     raw() {
         const request = $.NSClassFromString('MRNowPlayingRequest');
         const item = request?.localNowPlayingItem;

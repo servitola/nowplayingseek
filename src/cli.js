@@ -56,9 +56,18 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
+const DIALECTS = { 'nowplaying-cli': asNowplayingCli };
 const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
-const FLAGS = { status: ['--json', '--raw'], release: Object.keys(DIRECTIONS), seek: null, forward: null, backward: null, config: null };
+const FLAGS = {
+    status: ['--json', '--raw'],
+    get: null,
+    release: Object.keys(DIRECTIONS),
+    seek: null,
+    forward: null,
+    backward: null,
+    config: null,
+};
 
 function rejectUnknownArguments(name, args) {
     const allowed = Object.hasOwn(FLAGS, name) ? FLAGS[name] : [];
@@ -135,6 +144,9 @@ const COMMANDS = {
         const asked = args.map(arg => DIRECTIONS[arg]);
         player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));
     },
+    get: args => asNowplayingCli.get(args),
+    'get-raw': () => asNowplayingCli.run(['get-raw']),
+    togglePlayPause: () => player.send('toggle'),
     toggle: sendCommand,
     play: sendCommand,
     pause: sendCommand,
@@ -152,6 +164,11 @@ function run(argv) {
     }
 
     try {
+        if (Object.hasOwn(DIALECTS, name)) {
+            player.settings = configFile.load().values;
+            mediaRemote.load();
+            return DIALECTS[name].run(args);
+        }
         if (!Object.hasOwn(COMMANDS, name)) {
             throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);
         }

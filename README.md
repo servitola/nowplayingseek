@@ -92,6 +92,46 @@ as F13 and F14, and bind those the same way. Every click of the knob is one pres
 Without third-party software: Shortcuts.app → new shortcut → "Run Shell Script" →
 `/opt/homebrew/bin/nowplayingseek forward 10` → ⓘ → "Add Keyboard Shortcut".
 
+Hammerspoon, in `~/.hammerspoon/init.lua`:
+
+```lua
+local function seek(direction)
+  return function()
+    hs.task.new("/opt/homebrew/bin/nowplayingseek", nil, { direction, "10", "--progressive" }):start()
+  end
+end
+hs.hotkey.bind({ "ctrl", "alt" }, "right", seek("forward"), nil, seek("forward"))
+hs.hotkey.bind({ "ctrl", "alt" }, "left", seek("backward"), nil, seek("backward"))
+```
+
+skhd, in `~/.config/skhd/skhdrc`:
+
+```
+ctrl + alt - right : /opt/homebrew/bin/nowplayingseek forward 10
+ctrl + alt - left  : /opt/homebrew/bin/nowplayingseek backward 10
+```
+
+BetterTouchTool, Keyboard Maestro, a Raycast script command, a Stream Deck button — anything
+that can run a shell command takes the same line. A USB foot pedal is a key like any other:
+bind it and you have a transcription pedal for every player.
+
+## Compared with
+
+| | nowplayingseek | [nowplaying-cli] | [media-control] | the player's own keys |
+| --- | --- | --- | --- | --- |
+| Seek by a step you choose | `forward 45`, `backward 5` | no, `seek` is absolute | fixed 15 s | fixed, differs per player |
+| Works while another app has the focus | yes | yes | yes | no |
+| Step grows while the key is held | `--progressive` | no | no | no |
+| `12:34` as a time | yes | seconds only | seconds only | — |
+| Track metadata, artwork, live stream of changes | title, artist, album | yes | yes, the most complete | — |
+| Install | one script, personal tap | homebrew-core | homebrew-core | — |
+
+If you need artwork or a stream of Now Playing updates for a status bar, take `media-control`.
+This tool is for moving through what plays.
+
+[nowplaying-cli]: https://github.com/kirtan-shah/nowplaying-cli
+[media-control]: https://github.com/ungive/media-control
+
 ## How it works, and why it is a script
 
 Since macOS 15.4 `mediaremoted` answers Now Playing *reads* only to processes whose

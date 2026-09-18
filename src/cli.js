@@ -3,6 +3,8 @@ ObjC.import('stdlib');
 const VERSION = '0.3.0';
 const PROGRESSIVE_FLAG = '--progressive';
 const HOLD_FLAG = '--hold';
+const KNOB_FLAG = '--knob';
+const SEEK_FLAGS = [PROGRESSIVE_FLAG, HOLD_FLAG, KNOB_FLAG];
 const PRINTED_DECIMALS = 3;
 
 const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
@@ -24,6 +26,7 @@ advanced (docs/advanced.md):
   forward | backward --progressive  the step grows the longer the key is held
   forward | backward --hold         keep seeking until "release" — for a hotkey's key down
   release                           stop a --hold — for the key up
+  forward | backward --knob         one click of a keyboard knob: the faster it spins, the longer the step
   config                            print the settings in effect and the config file path
   config init                       write ~/.config/nowplayingseek/config.ini with the defaults`;
 
@@ -64,15 +67,19 @@ function rejectUnknownArguments(name, args) {
 }
 
 const seekCommand = direction => (args, name) => {
-    const [time, ...extra] = args.filter(arg => arg !== PROGRESSIVE_FLAG && arg !== HOLD_FLAG);
+    const [time, ...extra] = args.filter(arg => !SEEK_FLAGS.includes(arg));
     if (extra.length > 0) {
-        throw new Failure(EXIT.usage, `${name} takes one time, ${PROGRESSIVE_FLAG} and ${HOLD_FLAG}, got "${extra.join(' ')}" on top`);
+        throw new Failure(
+            EXIT.usage,
+            `${name} takes one time, ${PROGRESSIVE_FLAG}, ${HOLD_FLAG} and ${KNOB_FLAG}, got "${extra.join(' ')}" on top`
+        );
     }
-    const step = timeArgument(name, time, player.settings.seek.step);
-    const { state, multiplier } = player.seekBy(direction * step, {
-        progressive: args.includes(PROGRESSIVE_FLAG),
-        hold: args.includes(HOLD_FLAG),
-    });
+    const [progressive, hold, knob] = SEEK_FLAGS.map(flag => args.includes(flag));
+    if (knob && (hold || progressive)) {
+        throw new Failure(EXIT.usage, `${name}: ${KNOB_FLAG} is one click of a knob, it goes without ${HOLD_FLAG} and ${PROGRESSIVE_FLAG}`);
+    }
+    const step = timeArgument(name, time, player.settings[knob ? 'knob' : 'seek'].step);
+    const { state, multiplier } = player.seekBy(direction * step, { progressive, hold, knob });
     const shown = Number(multiplier.toFixed(1));
     print(formatStatus(state) + (shown === 1 ? '' : `  ×${shown}`));
 };

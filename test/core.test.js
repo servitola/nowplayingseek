@@ -82,6 +82,22 @@ function testStreak(core) {
     same(core.streakStart({ target: 110, at: 50 }, 1, 50.05, 1), 50.05, 'an absolute seek or a 0.2.0 store breaks the hold');
 }
 
+function testKnob(core) {
+    const click = { target: 110, at: 50, direction: 1, rate: 10 };
+    same(core.knobRate(null, 1, 50, 1), 0, 'knob: the first click has no pace yet');
+    same(core.knobRate(click, 1, 50.05, 1), 15, 'knob: 50 ms after a click at 10 a second — halfway to 20 a second');
+    same(core.knobRate(click, -1, 50.05, 1), 0, 'knob: the other way starts over');
+    same(core.knobRate(click, 1, 51.5, 1), 0, 'knob: a pause longer than the gap starts over');
+    same(core.knobRate({ ...click, rate: undefined }, 1, 50.1, 1), 5, 'knob: after a key press, not a click');
+    same(core.knobRate(click, 1, 50, 1), 55, 'knob: two clicks at the same instant do not divide by zero');
+
+    const knob = { max_multiplier: 4, fast: 12 };
+    same(core.knobMultiplier(0, knob), 1, 'knob: a single click is one step');
+    same(core.knobMultiplier(2, knob) < 1.1, true, 'knob: slow clicks stay precise');
+    same(core.knobMultiplier(12, knob), 1 + 3 * (1 - Math.exp(-1)), 'knob: at fast it is 63 % of the way');
+    same(core.knobMultiplier(100, knob), 4, 'knob: a flick settles at max_multiplier');
+}
+
 function testHold(core) {
     same(core.holdContinues({ holder: 'a' }, 'a'), true, 'hold: nobody took over');
     same(core.holdContinues({ holder: 'b' }, 'a'), false, 'hold: another press took over');
@@ -138,4 +154,4 @@ function testStatus(core) {
     const failure = new core.Failure(core.EXIT.ignored, 'x');
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
-GROUPS.push(testPosition, testSeekBase, testSeekLanded, testStreak, testHold, testTransport, testTime, testStatus);
+GROUPS.push(testPosition, testSeekBase, testSeekLanded, testStreak, testKnob, testHold, testTransport, testTime, testStatus);

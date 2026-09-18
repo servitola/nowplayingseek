@@ -6,33 +6,48 @@ Nothing here is needed for everyday use.
 
 ## Progressive seek
 
-With `--progressive` the step grows the longer the key is held, a little with every step. A tap
-is exactly one step and the first second of holding is almost that, so a short hold stays
-precise; then it gathers pace and settles at two and a half times the step — fast enough to
+With `--progressive` the step grows the longer the key is held, a little with every step. A press
+is always one whole step. Keep the key down and it glides off in small steps, so a short hold
+stays short; then it gathers pace and settles at two and a half times the step — fast enough to
 cross a film in a few seconds of holding, and no faster.
 
 | held | each step | in total |
 | --- | --- | --- |
 | a tap | 10 s | 0:10 |
-| 1 s | 10 s | 0:50 |
-| 2 s | 11 s | 1:44 |
-| 3 s | 13 s | 2:45 |
-| 5 s | 17 s | 5:17 |
-| 7 s | 21 s | 8:30 |
-| 10 s | 24 s | 14:11 |
+| 1 s | 5 s | 0:26 |
+| 2 s | 6 s | 0:52 |
+| 3 s | 9 s | 1:28 |
+| 5 s | 14 s | 3:20 |
+| 7 s | 20 s | 6:10 |
+| 10 s | 24 s | 11:38 |
 
-The curve is `1 + (max_multiplier − 1) · (1 − e^−(held / ramp)²)`: `max_multiplier` is where it
-settles, `ramp` is how long it takes to get two thirds of the way there.
+The curve is `start + (max_multiplier − start) · (1 − e^−(held / ramp)²)`: where it begins, where
+it settles, and how long it takes to get two thirds of the way.
 
 ```ini
 [progressive]
+start = 0.4
 max_multiplier = 2.5
 ramp = 6
 ```
 
-Presses in one direction no further apart than `streak_gap` count as one hold, so fast tapping
-and a spun knob accelerate too; the other direction, a pause or a `seek` starts over. When the
-step was multiplied, the output line ends with the multiplier: `×1.3`.
+Separate presses no further apart than `streak_gap` count as one hold and grow the same way, but
+never drop below a whole step; the other direction, a pause or a `seek` starts over. When the
+step was multiplied, the output line ends with the multiplier: `×1.4`.
+
+## Knob
+
+`forward --knob` and `backward --knob` are one click of a keyboard knob. The tool measures the
+pace of the clicks and lengthens the step with it, by the same kind of curve: a slow click is
+`step`, a flick settles at `max_multiplier` times that, and `fast` is the pace, in clicks a
+second, that gets two thirds of the way there.
+
+```ini
+[knob]
+step = 3
+max_multiplier = 5
+fast = 12
+```
 
 ## Hold
 

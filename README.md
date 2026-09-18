@@ -26,11 +26,11 @@ No dependencies: it is a script for `osascript`, which ships with macOS.
 ## Bind it to keys
 
 Shortcuts.app → new shortcut → "Run Shell Script" → `/opt/homebrew/bin/nowplayingseek forward 10`
-→ ⓘ → "Add Keyboard Shortcut". The same line works in Karabiner-Elements, Hammerspoon, skhd,
+→ ⓘ → "Add Keyboard Shortcut". The same line works in [Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd,
 BetterTouchTool, Raycast — ready-made snippets are in [docs/hotkeys.md](docs/hotkeys.md).
 
-A rotary knob on the keyboard becomes a jog wheel: bind its two directions to `forward` and
-`backward`, add `--progressive`, and a fast spin scrubs further than a slow one.
+If you have a mechanical keyboard with a knob, it becomes a jog wheel: slow clicks move by
+seconds, a flick by minutes — see [our Karabiner-Elements rule](docs/hotkeys.md#a-knob-in-karabiner-elements).
 
 ## Commands
 

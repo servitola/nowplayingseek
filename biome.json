@@ -1,0 +1,200 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "includes": ["src/**/*.js", "test/**/*.js", "biome.json"]
+    },
+    "formatter": {
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 140
+    },
+    "javascript": {
+        "globals": ["$", "ObjC", "Application", "Path", "delay"],
+        "formatter": {
+            "quoteStyle": "single",
+            "semicolons": "always",
+            "arrowParentheses": "asNeeded",
+            "trailingCommas": "es5",
+            "operatorLinebreak": "before"
+        }
+    },
+    "linter": {
+        "rules": {
+            "preset": "all",
+            "nursery": "off",
+            "a11y": "error",
+            "complexity": "error",
+            "correctness": "error",
+            "performance": "error",
+            "security": "error",
+            "style": "error",
+            "suspicious": "error"
+        }
+    },
+    "overrides": [
+        {
+            "includes": ["**"],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "useQwikValidLexicalScope": "off",
+                        "noUnusedVariables": {
+                            "level": "error",
+                            "options": {
+                                "ignore": {
+                                    "function": ["run"]
+                                }
+                            }
+                        }
+                    },
+                    "style": {
+                        "noTernary": "off",
+                        "useNamingConvention": {
+                            "level": "error",
+                            "options": {
+                                "conventions": [
+                                    {
+                                        "selector": {
+                                            "kind": "objectLiteralProperty"
+                                        },
+                                        "formats": ["camelCase", "snake_case"]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/core.js"],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": {
+                            "level": "error",
+                            "options": {
+                                "ignore": {
+                                    "function": [
+                                        "livePosition",
+                                        "clampTarget",
+                                        "seekBase",
+                                        "seekLanded",
+                                        "streakStart",
+                                        "multiplierAt",
+                                        "parseIni",
+                                        "resolveSettings",
+                                        "formatSettings",
+                                        "expectedPlaying",
+                                        "formatStatus"
+                                    ],
+                                    "variable": ["MILLISECONDS_PER_SECOND"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/mediaremote.js"],
+            "javascript": {
+                "globals": ["$", "ObjC", "Application", "Path", "delay", "MILLISECONDS_PER_SECOND", "livePosition"]
+            },
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": {
+                            "level": "error",
+                            "options": {
+                                "ignore": {
+                                    "variable": ["mediaRemote"]
+                                }
+                            }
+                        }
+                    },
+                    "security": {
+                        "noSecrets": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/player.js"],
+            "javascript": {
+                "globals": [
+                    "$",
+                    "ObjC",
+                    "Application",
+                    "Path",
+                    "delay",
+                    "MILLISECONDS_PER_SECOND",
+                    "EXIT",
+                    "Failure",
+                    "isMissing",
+                    "clampTarget",
+                    "seekBase",
+                    "seekLanded",
+                    "streakStart",
+                    "multiplierAt",
+                    "expectedPlaying",
+                    "mediaRemote"
+                ]
+            },
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": {
+                            "level": "error",
+                            "options": {
+                                "ignore": {
+                                    "variable": ["player"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/cli.js"],
+            "javascript": {
+                "globals": [
+                    "$",
+                    "ObjC",
+                    "Application",
+                    "Path",
+                    "delay",
+                    "EXIT",
+                    "Failure",
+                    "isMissing",
+                    "parseTime",
+                    "formatStatus",
+                    "parseIni",
+                    "resolveSettings",
+                    "formatSettings",
+                    "mediaRemote",
+                    "player"
+                ]
+            }
+        },
+        {
+            "includes": ["test/**"],
+            "linter": {
+                "rules": {
+                    "security": {
+                        "noGlobalEval": "off"
+                    },
+                    "style": {
+                        "noMagicNumbers": "off"
+                    }
+                }
+            }
+        }
+    ]
+}

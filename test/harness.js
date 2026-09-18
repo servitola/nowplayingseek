@@ -25,7 +25,7 @@ function same(actual, expected, name) {
 function run(argv) {
     const source = argv.map(path => $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, null).js).join('\n');
     const core = eval(`${source};({ livePosition, clampTarget, seekBase, seekLanded, expectedPlaying,
-        parseTime, formatTime, formatStatus, Failure, EXIT, streakStart, parsePattern, multiplierAt,
+        parseTime, formatTime, formatStatus, Failure, EXIT, streakStart, multiplierAt,
         parseIni, resolveSettings, formatSettings, holdContinues, releasedSince, nextHoldTarget })`);
 
     for (const group of GROUPS) {

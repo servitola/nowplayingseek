@@ -74,7 +74,7 @@ expect 'backward with garbage, progressive' 64 stderr 'backward needs seconds or
 
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config
-expect 'config without a file: defaults' 0 stdout 'pattern = smooth' config
+expect 'config without a file: defaults' 0 stdout 'max_multiplier = 3' config
 [ -e "$xdg/nowplayingseek" ] && fail 'config without a file created something'
 
 expect 'config init' 0 stdout "wrote $xdg/nowplayingseek/config.ini" config init
@@ -93,22 +93,22 @@ write_config '[sekk]' 'step = 5'
 expect 'unknown section' 78 stderr 'line 2: unknown setting [sekk] step' config
 write_config '; comment' '[seek]' 'step = 0'
 expect 'bad value' 78 stderr 'line 3: [seek] step = "0" — expected seconds or mm:ss above zero' config
-write_config '[progressive]' 'pattern = 10s:x3, 5s:x2'
-expect 'descending pattern' 78 stderr 'line 2: [progressive] pattern = "10s:x3, 5s:x2" — expected' config
+write_config '[progressive]' 'pattern = 5s:x2, 10s:x3, ...'
+expect 'the 0.3.0 ladder is gone' 78 stderr 'line 2: unknown setting [progressive] pattern' config
 write_config '[progressive]' 'ramp = 0'
 expect 'ramp of zero' 78 stderr 'line 2: [progressive] ramp = "0" — expected seconds above zero' config
 write_config '[hold]' 'interval = 0'
 expect 'hold interval of zero' 78 stderr 'line 2: [hold] interval = "0" — expected seconds above zero' config
-write_config '[progressive]' 'pattern = fast'
-expect 'garbage pattern' 78 stderr '[progressive] pattern = "fast"' config
+write_config '[progressive]' 'max_multiplier = fast'
+expect 'garbage number' 78 stderr '[progressive] max_multiplier = "fast" — expected a number above zero' config
 write_config 'step = 5'
 expect 'key outside a section' 78 stderr 'line 1: expected "[section]" or "key = value" under one, got "step = 5"' config
 expect 'a broken config stops other commands too' 78 stderr 'line 1:' forward abc
 expect 'a broken config does not stop help' 0 stdout 'exit codes:' --help
 
-write_config '# mine' '[seek]' 'step = 1:30' '' '[progressive]' 'pattern = 2s:x2, …' 'max_multiplier = 4.5'
+write_config '# mine' '[seek]' 'step = 1:30' '' '[progressive]' 'ramp = 2.5' 'max_multiplier = 4.5'
 expect 'override: step' 0 stdout 'step = 1:30' config
-expect 'override: pattern' 0 stdout 'pattern = 2s:x2, …' config
+expect 'override: ramp' 0 stdout 'ramp = 2.5' config
 expect 'override: max_multiplier' 0 stdout 'max_multiplier = 4.5' config
 expect 'override: untouched keys keep defaults' 0 stdout 'streak_gap = 1' config
 expect 'a valid config lets argument errors through' 64 stderr 'got "abc"' seek abc

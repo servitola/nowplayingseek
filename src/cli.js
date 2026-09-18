@@ -20,7 +20,7 @@ const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "n
 
 exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command, 64 usage, 78 bad config
 
-advanced (README "Advanced"):
+advanced (docs/advanced.md):
   forward | backward --progressive  the step grows the longer the key is held
   forward | backward --hold         keep seeking until "release" — for a hotkey's key down
   release                           stop a --hold — for the key up
@@ -69,8 +69,10 @@ const seekCommand = direction => (args, name) => {
         throw new Failure(EXIT.usage, `${name} takes one time, ${PROGRESSIVE_FLAG} and ${HOLD_FLAG}, got "${extra.join(' ')}" on top`);
     }
     const step = timeArgument(name, time, player.settings.seek.step);
-    const seek = args.includes(HOLD_FLAG) ? 'holdBy' : 'seekBy';
-    const { state, multiplier } = player[seek](direction * step, args.includes(PROGRESSIVE_FLAG));
+    const { state, multiplier } = player.seekBy(direction * step, {
+        progressive: args.includes(PROGRESSIVE_FLAG),
+        hold: args.includes(HOLD_FLAG),
+    });
     const shown = Number(multiplier.toFixed(1));
     print(formatStatus(state) + (shown === 1 ? '' : `  ×${shown}`));
 };
@@ -92,7 +94,7 @@ const COMMANDS = {
         if (args.length > 1) {
             throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
         }
-        print(formatStatus(player.seekTo(timeArgument('seek', args[0]), player.requireState())));
+        print(formatStatus(player.seekTo(timeArgument('seek', args[0]))));
     },
     doctor() {
         if (!mediaRemote.read()) {

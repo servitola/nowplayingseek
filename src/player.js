@@ -1,39 +1,27 @@
-const lastSeekStore = {
-    path: `${$.NSTemporaryDirectory().js}nowplayingseek.last-seek.json`,
-
-    read() {
-        const text = $.NSString.stringWithContentsOfFileEncodingError(this.path, $.NSUTF8StringEncoding, null);
-        try {
-            return text.js ? JSON.parse(text.js) : null;
-        } catch {
-            return null;
-        }
-    },
-
-    write(lastSeek) {
-        $(JSON.stringify(lastSeek)).writeToFileAtomicallyEncodingError(this.path, true, $.NSUTF8StringEncoding, null);
-    },
-};
-
 const PROCESS_STARTED = Date.now() / MILLISECONDS_PER_SECOND;
+const HOLD_TOKEN = `${$.NSProcessInfo.processInfo.processIdentifier}-${PROCESS_STARTED}`;
 
-const holdStore = {
-    path: `${$.NSTemporaryDirectory().js}nowplayingseek.hold.json`,
-    token: `${$.NSProcessInfo.processInfo.processIdentifier}-${PROCESS_STARTED}`,
+const now = () => Date.now() / MILLISECONDS_PER_SECOND;
 
-    read() {
-        const text = $.NSString.stringWithContentsOfFileEncodingError(this.path, $.NSUTF8StringEncoding, null);
-        try {
-            return text.js ? JSON.parse(text.js) : null;
-        } catch {
-            return null;
-        }
-    },
+function jsonFile(name) {
+    const path = `${$.NSTemporaryDirectory().js}nowplayingseek.${name}.json`;
+    return {
+        read() {
+            const text = $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, null);
+            try {
+                return text.js ? JSON.parse(text.js) : null;
+            } catch {
+                return null;
+            }
+        },
+        write(value) {
+            $(JSON.stringify(value)).writeToFileAtomicallyEncodingError(path, true, $.NSUTF8StringEncoding, null);
+        },
+    };
+}
 
-    write(record) {
-        $(JSON.stringify(record)).writeToFileAtomicallyEncodingError(this.path, true, $.NSUTF8StringEncoding, null);
-    },
-};
+const lastSeekFile = jsonFile('last-seek');
+const holdFile = jsonFile('hold');
 
 function waitUntil(condition, timing) {
     const deadline = Date.now() + timing.verify_timeout * MILLISECONDS_PER_SECOND;
@@ -57,94 +45,74 @@ const player = {
         return state;
     },
 
-    seekTo(wanted, before, streak) {
-        if (isMissing(before.position)) {
-            throw new Failure(EXIT.ignored, `${before.app || 'player'} does not report a position`);
+    requirePosition() {
+        const state = this.requireState();
+        if (isMissing(state.position)) {
+            throw new Failure(EXIT.ignored, `${state.app || 'player'} does not report a position`);
         }
+        return state;
+    },
 
+    seekTo(wanted) {
+        const before = this.requirePosition();
         const target = clampTarget(wanted, before.duration);
-        const calledAt = Date.now() / MILLISECONDS_PER_SECOND;
+        const at = now();
         mediaRemote.setElapsedTime(target);
-        lastSeekStore.write({ target, at: calledAt, ...streak });
-        return this.awaitLanding(target, calledAt, before);
+        lastSeekFile.write({ target, at });
+        return this.awaitLanding(target, at, before);
     },
 
-    awaitLanding(target, calledAt, before) {
-        let after = null;
-        const landed = waitUntil(() => {
-            after = mediaRemote.read();
-            const superseded = lastSeekStore.read()?.target !== target;
-            return seekLanded(after, target, { calledAt, superseded, verifyTimeout: this.settings.timing.verify_timeout });
-        }, this.settings.timing);
-        if (!landed) {
-            throw new Failure(EXIT.ignored, `${before.app || 'player'} ignored the seek (this player or page has no seek support)`);
-        }
-        return after;
-    },
-
-    seekBy(delta, progressive) {
-        const { timing, progressive: acceleration } = this.settings;
-        const before = this.requireState();
-        const now = Date.now() / MILLISECONDS_PER_SECOND;
-        const lastSeek = lastSeekStore.read();
-        const streak = {
-            direction: Math.sign(delta),
-            streakStart: streakStart(lastSeek, Math.sign(delta), now, acceleration.streak_gap),
-        };
-        const multiplier = progressive
-            ? multiplierAt(acceleration.pattern, now - streak.streakStart, acceleration.max_multiplier, acceleration.ramp)
-            : 1;
-        const base = seekBase(before, lastSeek, now, timing.pending_seek_max);
-        return { state: this.seekTo(base + delta * multiplier, before, streak), multiplier };
-    },
-
-    // One process seeks for as long as the key is down: it does not wait for a step to land
-    // before the next, only for the last one, so the pace is hold.interval and not the player's.
-    holdBy(delta, progressive) {
-        const { timing, progressive: acceleration, hold } = this.settings;
-        const before = this.requireState();
-        if (isMissing(before.position)) {
-            throw new Failure(EXIT.ignored, `${before.app || 'player'} does not report a position`);
-        }
-        const now = () => Date.now() / MILLISECONDS_PER_SECOND;
-        const lastSeek = lastSeekStore.read();
-        const streak = {
-            direction: Math.sign(delta),
-            streakStart: streakStart(lastSeek, Math.sign(delta), now(), acceleration.streak_gap),
-        };
-        const tap = releasedSince(holdStore.read(), PROCESS_STARTED);
-        if (!tap) {
-            holdStore.write({ holder: holdStore.token });
+    seekBy(delta, { progressive, hold }) {
+        const { timing, progressive: curve } = this.settings;
+        const before = this.requirePosition();
+        const lastSeek = lastSeekFile.read();
+        const direction = Math.sign(delta);
+        const streak = { direction, streakStart: streakStart(lastSeek, direction, now(), curve.streak_gap) };
+        const once = !hold || releasedSince(holdFile.read(), PROCESS_STARTED);
+        if (!once) {
+            holdFile.write({ holder: HOLD_TOKEN });
         }
 
         let target = seekBase(before, lastSeek, now(), timing.pending_seek_max);
-        let sent = null;
-        for (;;) {
+        let last = null;
+        do {
             const at = now();
-            const multiplier = progressive
-                ? multiplierAt(acceleration.pattern, at - streak.streakStart, acceleration.max_multiplier, acceleration.ramp)
-                : 1;
+            const multiplier = progressive ? multiplierAt(at - streak.streakStart, curve) : 1;
             const next = nextHoldTarget(target, delta, multiplier, before.duration);
             if (isMissing(next)) {
                 break;
             }
             target = next;
-            sent = { at, multiplier };
+            last = { at, multiplier };
             mediaRemote.setElapsedTime(target);
-            lastSeekStore.write({ target, at, ...streak });
-            if (tap) {
-                break;
-            }
-            delay(hold.interval);
-            if (!holdContinues(holdStore.read(), holdStore.token) || now() - PROCESS_STARTED > hold.max_time) {
-                break;
-            }
-        }
-        return sent ? { state: this.awaitLanding(target, sent.at, before), multiplier: sent.multiplier } : { state: before, multiplier: 1 };
+            lastSeekFile.write({ target, at, ...streak });
+        } while (!once && this.stillHeld());
+
+        return last ? { state: this.awaitLanding(target, last.at, before), multiplier: last.multiplier } : { state: before, multiplier: 1 };
+    },
+
+    stillHeld() {
+        const { interval, max_time } = this.settings.hold;
+        delay(interval);
+        return holdContinues(holdFile.read(), HOLD_TOKEN) && now() - PROCESS_STARTED < max_time;
     },
 
     release() {
-        holdStore.write({ releasedAt: Date.now() / MILLISECONDS_PER_SECOND });
+        holdFile.write({ releasedAt: now() });
+    },
+
+    awaitLanding(target, calledAt, before) {
+        const { timing } = this.settings;
+        let after = null;
+        const landed = waitUntil(() => {
+            after = mediaRemote.read();
+            const superseded = lastSeekFile.read()?.target !== target;
+            return seekLanded(after, target, { calledAt, superseded, verifyTimeout: timing.verify_timeout });
+        }, timing);
+        if (!landed) {
+            throw new Failure(EXIT.ignored, `${before.app || 'player'} ignored the seek (this player or page has no seek support)`);
+        }
+        return after;
     },
 
     send(command) {

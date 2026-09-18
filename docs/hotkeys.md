@@ -34,8 +34,7 @@ how it grows are in the [config file](advanced.md#config-file).
 
 ## A knob, in Karabiner-Elements
 
-If you have a mechanical keyboard with a knob, it can be a jog wheel for every video and podcast
-on the Mac. A knob is two keys to the system, one per direction — volume up and down out of the
+If you have a mechanical keyboard with a knob, it is a jog wheel. A knob is two keys to the system, one per direction — volume up and down out of the
 box. Reassign them in the keyboard's firmware (VIA, QMK, the vendor's app) to keys you do not
 use, such as F13 and F14, and give those to `--knob`:
 

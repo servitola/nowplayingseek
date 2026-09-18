@@ -26,7 +26,7 @@ key up ends it:
 ```
 
 A tap is one step; held, the key makes five steps a second, and with `--progressive` they grow.
-The pace, the step and the ladder are in the [config file](advanced.md#config-file).
+The pace, the step and how it grows are in the [config file](advanced.md#config-file).
 
 A rotary knob is two keys to the system, one per direction — volume up and down out of
 the box. Reassign them in the keyboard's firmware (VIA, QMK) to keys you do not use, such

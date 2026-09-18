@@ -26,7 +26,6 @@ settles, `ramp` is how long it takes to get two thirds of the way there.
 
 ```ini
 [progressive]
-pattern = smooth
 max_multiplier = 3
 ramp = 5
 ```
@@ -34,16 +33,6 @@ ramp = 5
 Presses in one direction no further apart than `streak_gap` count as one hold, so fast tapping
 and a spun knob accelerate too; the other direction, a pause or a `seek` starts over. When the
 step was multiplied, the output line ends with the multiplier: `×1.6`.
-
-For steps that jump at moments you choose, `pattern` takes a ladder instead —
-`<held seconds>:<multiplier>` points, `s` and `x` optional:
-
-| `pattern` | |
-| --- | --- |
-| `4s:x2, 8s:x3, ...` | `...` continues at the pace of the last two points — `12s:x4`, `16s:x5` — up to `max_multiplier` |
-| `2s:x2, ...` | one point continues from `0s:x1`: +1 every 2 s |
-| `3s:x2, 6s:x5, 10s:x20` | no `...`: stays at ×20, if `max_multiplier` lets it |
-| `1s:x1.5, 2s:x3, ...` | fractions work: +1.5 every second |
 
 ## Hold
 

@@ -9,6 +9,13 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pipx install pre-commit==4.6.2
+      - run: make lint
+
   test:
     runs-on: macos-26
     steps:

@@ -6,10 +6,21 @@ version, so keep that heading as it is.
 ## Unreleased
 
 ### Added
+- `make test-live`: the live checklist as a script — VLC on generated silence, paused, 29 cases.
 - `status --raw`: every key macOS holds for the item, as JSON — chapters, media type, the size of
   the artwork, the file's URL where the player gives one.
 
+### Changed
+- `forward`, a hold and the knob stop 5 s short of the end: landing on the very end finished the
+  item, and a page with autoplay loaded the next one. `seek <time>` stays exact.
+- A hold ends by itself after 10 s, not 30 (`[hold] max_time`): that is ten minutes of film, and a
+  release that never arrives costs that much less.
+
 ### Fixed
+- A hold stops when another app becomes Now Playing, instead of sending it the old app's targets.
+- `pause`, `toggle`, `play`, `next`, `previous` exit 1 when nothing is playing; they exited 0.
+- `forward 0` is refused (exit 64); with `--hold` it was a stack trace.
+- A player that reports no playback rate while playing no longer has its position stand still.
 - Rolling from one held key to the other: letting go of the first stopped the second. `release`
   now takes a direction — `release forward`, `release backward` — and the recipes pass it; a bare
   `release` still stops both.

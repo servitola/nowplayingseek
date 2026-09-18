@@ -2,6 +2,7 @@ const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = 3600;
 const MILLISECONDS_PER_SECOND = 1000;
 const SHORTEST_CLICK = 0.01;
+const END_MARGIN = 5;
 
 const TIME_PATTERN = /^\d+(\.\d+)?$|^\d+(:[0-5]?\d){1,2}$/;
 
@@ -14,7 +15,7 @@ function Failure(code, message) {
 
 const isMissing = value => value === null || value === undefined;
 
-const effectiveRate = (isPlaying, rate) => (isPlaying ? rate : 0);
+const effectiveRate = (isPlaying, rate) => (isPlaying ? rate || 1 : 0);
 
 // ElapsedTime is a snapshot taken at Timestamp, not the current position.
 function livePosition(elapsed, rate, timestamp, now) {
@@ -79,9 +80,12 @@ const holdContinues = (record, token, released, startedAt) =>
 
 const releasedSince = (record, startedAt) => Boolean(record) && !isMissing(record.releasedAt) && record.releasedAt >= startedAt;
 
+// A step that lands on the very end ends the item, and a page with autoplay loads the next one.
 function nextHoldTarget(target, delta, multiplier, duration) {
-    const next = clampTarget(target + delta * multiplier, duration);
-    return next === target ? null : next;
+    const margin = delta > 0 ? END_MARGIN : 0;
+    const upper = duration > 0 ? duration - margin : Number.POSITIVE_INFINITY;
+    const next = Math.max(0, Math.min(upper, target + delta * multiplier));
+    return Math.sign(next - target) === Math.sign(delta) ? next : null;
 }
 
 function expectedPlaying(command, wasPlaying) {

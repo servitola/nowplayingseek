@@ -56,6 +56,7 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
+const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
 const FLAGS = { status: ['--json', '--raw'], release: Object.keys(DIRECTIONS), seek: null, forward: null, backward: null, config: null };
 
@@ -81,6 +82,9 @@ const seekCommand = direction => (args, name) => {
         throw new Failure(EXIT.usage, `${name}: ${KNOB_FLAG} is one click of a knob, it goes without ${HOLD_FLAG} and ${PROGRESSIVE_FLAG}`);
     }
     const step = timeArgument(name, time, player.settings[knob ? 'knob' : 'seek'].step);
+    if (step === 0) {
+        throw new Failure(EXIT.usage, `${name} needs a step above zero`);
+    }
     const { state, multiplier } = player.seekBy(direction * step, { progressive, hold, knob });
     const shown = Number(multiplier.toFixed(1));
     print(formatStatus(state) + (shown === 1 ? '' : `  ×${shown}`));
@@ -153,7 +157,9 @@ function run(argv) {
         }
         player.settings = configFile.load().values;
         rejectUnknownArguments(name, args);
-        mediaRemote.load();
+        if (!OFFLINE.includes(name)) {
+            mediaRemote.load();
+        }
         COMMANDS[name](args, name);
     } catch (error) {
         if (!(error instanceof Failure)) {

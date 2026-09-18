@@ -12,7 +12,7 @@ $(TARGET): $(SOURCES)
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(SOURCES); } > $@
 	chmod +x $@
 
-.PHONY: build test lint install uninstall clean
+.PHONY: build test test-live lint install uninstall clean
 
 build: $(TARGET)
 
@@ -23,6 +23,10 @@ $(TEST_TARGET): $(TESTS)
 test: $(TARGET) $(TEST_TARGET)
 	osascript -l JavaScript $(TEST_TARGET) $(PURE)
 	sh test/cli.test.sh $(TARGET)
+
+# Opens VLC on generated silence and drives it; refuses while something is playing.
+test-live: $(TARGET)
+	sh test/live.test.sh $(TARGET)
 
 lint:
 	pre-commit run --all-files

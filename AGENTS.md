@@ -21,7 +21,8 @@ is a plain global in the files after it. The order is the dependency order:
 | `src/cli.js` | commands, usage, the config file, `run(argv)` — the entry point `osascript` calls |
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js`;
-`test/cli.test.sh` drives the built tool.
+`test/cli.test.sh` drives the built tool. Both lists are spelled out in the `Makefile`: a new file
+in `src/` or `test/` is not built or run until it is added there.
 
 ## Commands and gates
 

@@ -22,8 +22,7 @@ $(TEST_TARGET): $(TESTS)
 
 test: $(TARGET) $(TEST_TARGET)
 	osascript -l JavaScript $(TEST_TARGET) $(PURE)
-	$(TARGET) --version
-	$(TARGET) --help > /dev/null
+	sh test/cli.test.sh $(TARGET)
 
 lint:
 	pre-commit run --all-files

@@ -168,6 +168,46 @@ Three things the API does not tell you:
 - Private API. Tested on macOS 26.6 only. Apple can close this door in any update — run
   `nowplayingseek doctor` while something is playing to find out.
 
+## Questions
+
+**How do I skip forward 10 seconds on a Mac with a keyboard shortcut, in any app?** Install
+the tool and bind `nowplayingseek forward 10` to a key — see [Hotkeys](#hotkeys). The key
+works whichever app is in front, because it talks to Now Playing and not to a window.
+
+**Is there a Mac hotkey to rewind 10 seconds?** Not built in. The media keys do play/pause,
+next and previous; `nowplayingseek backward 10` on a hotkey is the missing one.
+
+**Can the knob on my keyboard scrub a video?** Yes: remap its two directions to spare keys
+in VIA or QMK, bind them to `forward` and `backward`, add `--progressive` so that a fast spin
+goes further.
+
+**Why does `MRMediaRemoteGetNowPlayingInfo` return nothing in my own program?** Since macOS
+15.4 `mediaremoted` answers only processes whose bundle identifier starts with `com.apple.`.
+Run the call inside one that qualifies — `/usr/bin/osascript` as here, or `/usr/bin/perl` as
+[ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) does.
+
+**The hotkey moves the wrong player.** macOS elects one app as Now Playing, and that is the
+one driven — see [Limits](#limits). Press play in the app you mean.
+
+**Exit 2 on a web page.** The page has no MediaSession `seekto` handler; nothing outside the
+browser can seek it.
+
+## For scripts and AI agents
+
+Every command is one line in, one line out, and the exit code is the truth: `0` it happened,
+`1` nothing is playing, `2` the player ignored it, `64` bad arguments, `78` bad config.
+
+| Asked | Run |
+| --- | --- |
+| what is playing, where am I, how much is left | `nowplayingseek status --json` — `position` and `duration` in seconds, `playing`, `app` |
+| go back a minute | `nowplayingseek backward 60` |
+| jump to 12:30 | `nowplayingseek seek 12:30` |
+| pause, resume, next | `nowplayingseek pause`, `play`, `next` |
+| can this Mac be driven at all | `nowplayingseek doctor` |
+
+Only the elected app can be addressed. When `status` shows another player than the one the
+person means, tell them to press play there; do not retry.
+
 ## Advanced
 
 Nothing here is needed for everyday use.

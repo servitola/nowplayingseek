@@ -2,9 +2,10 @@
 
 # nowplayingseek
 
-Control whatever macOS considers "now playing" — the thing in the Control Center media
-widget, be it a browser tab, IINA, Music or Spotify — from the command line: read the
-position, jump to an exact second, seek by a step, pause.
+Skip 10 seconds back or forward in whatever is playing on your Mac — a YouTube tab, IINA,
+Music, Spotify, a podcast — from a global hotkey, a keyboard knob or a script, whichever app
+has the focus. It is a command-line tool for the thing in the Control Center media widget:
+read the position, jump to an exact second, seek by any step, pause.
 
 ```console
 $ nowplayingseek status

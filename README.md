@@ -15,9 +15,13 @@ macOS has no such key. This is the command behind it.
 
 ## Why
 
-I wanted two keys: ten seconds back, ten seconds forward, in anything that plays.
-I searched. What existed had been broken by macOS 15.4 and stayed so for a year; mended, it still
-could not seek by a step. So I made this. [The longer story](docs/how-it-works.md#why-it-exists).
+I tune my computer with hotkeys — [my dotfiles](https://github.com/servitola/dotfiles) are mostly that.
+I gave the rewind and fast-forward signals a key each. They were no pleasure: no step of my choosing,
+and every player took them in its own way. I looked for a tool that would let me do the seeking myself. I tried what
+there was; none did.
+
+Then a friend bought a keyboard with a knob and wanted it to wind whatever he was watching.
+So I made this. [The longer story](docs/how-it-works.md#why-it-exists).
 
 ## Install
 

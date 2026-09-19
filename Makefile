@@ -13,7 +13,7 @@ $(TARGET): $(SOURCES)
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(SOURCES); } > $@
 	chmod +x $@
 
-.PHONY: build test test-live test-world lint install uninstall clean
+.PHONY: build test test-live test-world coverage typecheck globals lint install uninstall clean
 
 build: $(TARGET)
 
@@ -37,10 +37,25 @@ test-live: $(TARGET)
 	sh test/live.test.sh $(TARGET)
 
 # What we believe about VLC, QuickTime, macOS, Homebrew and nowplaying-cli, checked against them.
+# Not strict: the sources carry no annotations, so this finds a wrong name, a wrong count of
+# arguments, a property nothing has — not an implicit any. For development; CI does not run it.
+typecheck: $(TARGET)
+	@mkdir -p build/types
+	tail -n +2 $(TARGET) > build/types/nowplayingseek.js
+	npx -y -p typescript@7.0.2 tsc --allowJs --checkJs --noEmit --target es2023 --lib es2023 --strict false build/types/nowplayingseek.js scripts/jxa.d.ts
+
+coverage:
+	node scripts/coverage.js "$(PURE)" "$(TESTS)"
+
 test-world: $(TARGET)
 	sh test/world.test.sh $(TARGET)
 
+globals:
+	node scripts/globals.js
+	pre-commit run biome-check --files biome.json || true
+
 lint:
+	node scripts/globals.js --check
 	pre-commit run --all-files
 
 install: $(TARGET)

@@ -46,6 +46,15 @@ function testPaint(core) {
         'painted: no app name, nothing in its place'
     );
 }
+function testPaintChange(core) {
+    const esc = String.fromCharCode(ESC_CODE);
+    const inked = (code, text) => `${esc}[${code}m${text}${esc}[0m`;
+    same(
+        core.paintChange({ icon: '⏸', words: 'paused' }, '12:30:05'),
+        `${inked(2, '12:30:05')}  ${inked(1, '⏸ paused')}`,
+        'change: the clock dim, what happened bold'
+    );
+}
 function testPaintText(core) {
     const esc = String.fromCharCode(ESC_CODE);
     const plain = text =>
@@ -101,4 +110,4 @@ function testPaintJson(core) {
     same(painted.includes(`${inked(36, '"artist"')}: ${inked(2, 'null')}`), true, 'json: null is dim');
     same(painted.includes(`${inked(36, '"position"')}: ${inked(1, '3961.5')}`), true, 'json: a number is bold');
 }
-GROUPS.push(testPaint, testPaintText, testPaintJson);
+GROUPS.push(testPaint, testPaintChange, testPaintText, testPaintJson);

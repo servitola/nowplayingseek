@@ -5,6 +5,11 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Added
+- For development: `make coverage` (lines of logic the unit tests never reach — none now),
+  `make typecheck` (TypeScript's checker over the built file) and `make globals`, which writes the
+  lists in `biome.json` that were kept by hand.
+
 ### Fixed
 - `watch` and `stream` end when their reader does. They used to learn of a closed pipe from their
   next write, and with nothing changing in the player there was none: `stream | head -2` left a

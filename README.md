@@ -56,12 +56,12 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 
 | Command | |
 | --- | --- |
+| `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
 | `status` | title, app, position / duration |
 | `watch` | stays: where it is, second by second, and what happens to it |
 | `stream` | stays: every change as it happens; JSON lines in a pipe, [for scripts](docs/scripting.md#following-changes) |
 | `position`, `duration` | seconds |
 | `seek <time>` | to `754`, `12:34` or `1:02:03` |
-| `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
 | `toggle`, `play`, `pause`, `next`, `previous` | transport |
 | `doctor` | exit 0 when Now Playing is readable |
 | `config`, `config set <setting> <value>` | the settings in effect; [change one](docs/advanced.md#config-file) |

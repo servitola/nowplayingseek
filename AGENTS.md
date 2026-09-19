@@ -20,7 +20,7 @@ src/logic/      knows nothing of macOS — every function here has a unit test
     seek.js         where a step starts, whether it landed, whether an older seek overtook it
     hold.js         a held key and its release; the --progressive curve; the pace of a knob
     stream.js       what changed between two reads
-    paint.js        the status line for a terminal: bold, dim, a bar
+    paint.js        what a terminal gets: the status line, the help page, JSON, ini — bold, dim, one hue
     words.js        the seek words of playerctl and mpc; playerctl's format strings
     config.js       the SETTINGS table; ini
 src/system/     the only place with $ and ObjC
@@ -32,7 +32,8 @@ src/player.js   a step, a hold, waiting for the player — ties logic to system
 src/dialects/   one file a tool; they call player and system, never each other's insides
     nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
     shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)
-src/cli.js      our own commands, usage, `run(argv)` — the entry point `osascript` calls
+src/cli.js      our own commands, `run(argv)` — the entry point `osascript` calls
+src/usage.js    the help page; after cli.js, because it names the version
 ```
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js` and run

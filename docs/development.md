@@ -162,7 +162,7 @@ rather than re-parsing the `Makefile` text, since `SOURCES` is itself built from
 ### Response time
 
 The tool is bound to a hotkey, so startup latency is the product; `test/speed.test.sh`'s budgets
-came from these, measured on the owner's M1 Max, macOS 26.6, 2026-09-19:
+came from these, measured on the owner's M1 Max, macOS 26.6, 2026-09-20:
 
 - The real build, `/usr/bin/time -p`, 3 runs each: `status --json` 0.08 s, `artwork <path>` 0.08 s,
   `get` 0.08 s, `get --no-artwork` 0.06 s.

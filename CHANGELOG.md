@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.09.20 — 2026-09-20
+
 ### Changed
 - An unknown `[section]` or key in `config.ini` is ignored, once named on stderr with its line
   number, instead of stopping every command with exit 78 — a config file outlives the version
@@ -17,6 +19,13 @@ version, so keep that heading as it is.
   `media-control get` and `stream` carry it too, as base64 `artworkData`, unless `--no-artwork`.
   Needs a small compiled helper loaded into `/usr/bin/perl` — `make build`/`install` build it,
   see `docs/how-it-works.md#artwork`.
+- `make dist` builds a release tarball — the script, the universal artwork bundle, `LICENSE`,
+  `README.md` — beside its `.sha256`, and pushing a tag now builds and attaches it to the GitHub
+  release with build provenance. Releases used to carry only GitHub's source archives, so there
+  was nothing to download without Homebrew; `docs/install.md` walks that path.
+- `docs/shortcuts.md`: binding a key in the Shortcuts app, step by step, with screenshots, for
+  someone who has never opened Terminal. Karabiner assumes a comfort with automation tools that
+  most people do not have.
 - For development: `make test-speed` runs `--help`, `status`, `get` and `forward` 21 times each
   against the fake player and fails when the median goes past a budget, so a slower `cli.js` or a
   cache that stopped caching is caught before it doubles the time a hotkey takes to answer.

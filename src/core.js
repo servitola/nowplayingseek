@@ -4,6 +4,7 @@ const MILLISECONDS_PER_SECOND = 1000;
 const MICROSECONDS = 1e6;
 const SHORTEST_CLICK = 0.01;
 const END_MARGIN = 5;
+const MOST_RESENDS = 2;
 
 const TIME_PATTERN = /^\d+(\.\d+)?$|^\d+(:[0-5]?\d){1,2}$/;
 
@@ -60,7 +61,10 @@ function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
 
 // Seeks sent 30 ms apart by separate processes reach the player in any order. The newest process
 // sees a refresh that is not its own target and sends it again.
-function seekOvertaken(after, target, { sentAt, superseded, verifyTimeout }) {
+function seekOvertaken(after, target, { sentAt, superseded, verifyTimeout, resent = 0 }) {
+    if (resent >= MOST_RESENDS) {
+        return false;
+    }
     const refreshed = Boolean(after) && !isMissing(after.timestamp) && after.timestamp >= sentAt;
     return refreshed && !superseded && !seekLanded(after, target, { calledAt: sentAt, superseded, verifyTimeout });
 }

@@ -36,7 +36,7 @@ whether this Mac lets Now Playing be read. Exit code 1 from a shortcut means not
 
 ## A key, in Karabiner-Elements
 
-<p align="center"><img src="images/banner-hotkeys.webp" alt="The panda presses one glowing fast-forward key; a thread of light runs to a glass player where the film blurs forward" width="100%"></p>
+<p align="center"><img src="images/with-karabiner.webp" alt="The panda, in a cap worn backwards, presses a key; a thread of light runs from it through the icon of Karabiner-Elements into a player, where the film winds forward" width="70%"></p>
 
 [Karabiner-Elements](https://karabiner-elements.pqrs.org/) is a free keyboard customiser for
 macOS. ⌃⌥→ and ⌃⌥←: Karabiner runs a `shell_command` once per press and does not

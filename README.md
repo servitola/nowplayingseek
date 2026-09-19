@@ -2,6 +2,8 @@
 
 # nowplayingseek
 
+[![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![macOS 15.4+](https://img.shields.io/badge/macOS-15.4%2B-black)](docs/how-it-works.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
+
 A command-line tool for macOS. It seeks whatever is playing.
 
 Ten seconds back. Ten seconds forward.
@@ -26,7 +28,8 @@ $ nowplayingseek status --json
 ## Why
 
 I wanted two keys: ten seconds back, ten seconds forward, in anything that plays.
-I searched. There was no such thing. So I made it. [The longer story](docs/how-it-works.md#why-it-exists).
+I searched. What existed had been broken by macOS 15.4 and stayed so for a year; mended, it still
+could not seek by a step. So I made this. [The longer story](docs/how-it-works.md#why-it-exists).
 
 ## Install
 
@@ -36,8 +39,7 @@ brew install servitola/tap/nowplayingseek
 
 One script. No dependencies. It runs on `osascript`, which is already there.
 
-Homebrew 7 wants third-party taps trusted. Naming the formula in full, as above, trusts this one
-formula and nothing else in the tap; there is no separate step.
+Homebrew 7 wants third-party taps trusted: the full name above trusts this one formula, no more.
 
 ## A key
 
@@ -90,9 +92,8 @@ Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
 
 ## Development
 
-`make build`, `make test` (needs nothing playing), `make lint` (needs `pre-commit`),
-`make install PREFIX=~/.local`. Layout, rules and dead ends: [AGENTS.md](AGENTS.md). What is
-left: [BACKLOG.md](BACKLOG.md).
+`make build`, `make test`, `make test-live` (VLC, silent), `make lint`, `make install PREFIX=~/.local`.
+Layout, rules and dead ends: [AGENTS.md](AGENTS.md). What is left: [BACKLOG.md](BACKLOG.md).
 
 ## Licence
 

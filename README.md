@@ -36,20 +36,20 @@ Homebrew 7 wants third-party taps trusted: the full name above trusts this one f
 
 ## A key
 
-Give `forward` and `backward` a key each. A press is ten seconds.
+Give `forward` and `backward` a key each. Two ways to do it:
 
-Hold the key and it moves off in small steps, gathers pace, then settles. Release, and it stops.
-A short hold stays short. A long one crosses the film.
+| <img src="docs/images/with-shortcuts.webp" alt="The panda taps the icon of the Shortcuts app; the handle of a progress bar jumps forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The panda holds a glowing key down under the icon of Karabiner-Elements; the handle races forward" width="100%"> |
+| --- | --- |
+| **Shortcuts** — the app every Mac already has. Nothing else to install. A press moves by the step you wrote. | **[Karabiner-Elements](https://karabiner-elements.pqrs.org/)** — free, for those who remap keys. Hold the key: it moves off in small steps, gathers pace, settles. Release, and it stops. |
 
-With nothing but what the Mac came with — the Shortcuts app:
+In Shortcuts:
 
-1. Shortcuts → **+** → find the action **Run Shell Script**.
+1. **+** → find the action **Run Shell Script**.
 2. In its box: `/opt/homebrew/bin/nowplayingseek forward 30` (on an Intel Mac, `/usr/local/bin/…`).
 3. The first run asks for Shortcuts → Settings → Advanced → **Allow Running Scripts**.
 4. **ⓘ** → **Add Keyboard Shortcut**, press the keys you want. Make a second one with `backward 30`.
 
-A key from Shortcuts is a press, never a hold. For the hold, and for a knob:
-[Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd — [docs/hotkeys.md](docs/hotkeys.md).
+In Karabiner-Elements, Hammerspoon, skhd and the rest: [docs/hotkeys.md](docs/hotkeys.md).
 
 ## A knob
 

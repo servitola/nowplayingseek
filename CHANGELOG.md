@@ -11,7 +11,7 @@ version, so keep that heading as it is.
   (`get`, `stream`, its fourteen commands, `send`, `shuffle`, `repeat`, `speed`) directly; playerctl,
   mpc and shpotify behind their names — `nowplayingseek playerctl position 30+`. What is and is
   not supported: docs/migrating.md.
-- `make test-live`: the live checklist as a script — VLC on generated silence, paused, 29 cases.
+- `make test-live`: the live checklist as a script — VLC on generated silence, paused, 72 cases.
 - `status --raw`: every key macOS holds for the item, as JSON — chapters, media type, the size of
   the artwork, the file's URL where the player gives one.
 
@@ -26,10 +26,6 @@ version, so keep that heading as it is.
 
 ### Fixed
 - `seek` to the position the player is already at exited 2 on a paused web page; it exits 0.
-- A hold checked which app was elected before its pause and stepped after it: an app elected in
-  between got the old one's target. It looks after the pause now.
-- The three private calls behind `shuffle`, `repeat` and `speed` were looked up at start: one of
-  them missing on some macOS would have stopped every command. They are looked up when used.
 - Presses 30 ms apart — key repeat, a knob — lost one press in two runs out of three: separate
   processes read the same last seek, took a refresh meant for an older seek as their own, and the
   player received the seeks out of order. A lock, a stricter reading of a refresh, and a re-send

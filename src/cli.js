@@ -116,6 +116,9 @@ const COMMANDS = {
     forward: seekCommand(1),
     backward: seekCommand(-1),
     seek(args) {
+        if (args.includes('--micros')) {
+            return asMediaControl.seek(args);
+        }
         if (args.length > 1) {
             throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
         }

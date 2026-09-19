@@ -215,7 +215,7 @@ at 2:00
 expect_exit 'as media-control: seek in seconds' 0 media-control seek 22.4
 cases=$((cases + 1))
 [ -s "$work/out" ] && fail "as media-control: a seek prints something: $(cat "$work/out")"
-expect_move 'as media-control: seek 22.4' 0 22.3 22.5
+expect_move 'as media-control: seek 22.4 (VLC keeps whole seconds)' 0 22 22.5
 expect_exit 'as media-control: seek in microseconds' 0 seek 30000000 --micros
 expect_move 'as media-control: seek 30000000 --micros' 0 29.9 30.1
 expect_exit 'as media-control: get' 0 get --now
@@ -238,6 +238,36 @@ cases=$((cases + 1))
 grep -q '"diff":true,"payload":{[^}]*"playing":true' "$work/stream" || fail "stream did not report play as a diff: $(cat "$work/stream")"
 cases=$((cases + 1))
 grep -q '"diff":true,"payload":{[^}]*"playing":false' "$work/stream" || fail "stream did not report pause as a diff: $(cat "$work/stream")"
+
+for words in 'repeat track' 'repeat off' 'shuffle off' 'speed 1' 'skip-fifteen-seconds' 'go-back-fifteen-seconds'; do
+	# shellcheck disable=SC2086
+	expect_exit "as media-control: $words" 0 $words
+done
+
+# playerctl, mpc and shpotify: three ways to spell a seek.
+at 2:00
+expect_exit 'as playerctl: position 30+' 0 playerctl position 30+
+expect_move 'as playerctl: position 30+' 120 30 30
+expect_exit 'as playerctl: position 10-' 0 playerctl position 10-
+expect_move 'as playerctl: position 10-' 120 20 20
+expect_exit 'as playerctl: position 45' 0 playerctl position 45
+expect_move 'as playerctl: position 45' 0 45 45
+cases=$((cases + 1))
+[ "$("$bin" playerctl status)" = Paused ] || fail "as playerctl: status is $("$bin" playerctl status)"
+cases=$((cases + 1))
+[ "$("$bin" playerctl metadata --format '{{ title }} {{ duration(position) }}')" = 'silence.wav 0:45' ] || fail "as playerctl: metadata --format gives $("$bin" playerctl metadata --format '{{ title }} {{ duration(position) }}')"
+expect_exit 'as mpc: seek +10' 0 mpc seek +10
+expect_move 'as mpc: seek +10' 45 10 10
+expect_exit 'as mpc: seek 50%' 0 mpc seek 50%
+expect_move 'as mpc: seek 50%' 0 150 150
+cases=$((cases + 1))
+"$bin" mpc status | grep -qF '[paused] #1/1   2:30/5:00 (50%)' || fail "as mpc: status is $("$bin" mpc status | tr '\n' '|')"
+expect_exit 'as shpotify: pos 90' 0 spotify pos 90
+expect_move 'as shpotify: pos 90' 0 90 90
+cases=$((cases + 1))
+"$bin" spotify status | grep -qF 'Position: 1:30 / 5:00' || fail "as shpotify: status is $("$bin" spotify status | tr '\n' '|')"
+expect_exit 'as shpotify: replay' 0 spotify replay
+expect_move 'as shpotify: replay' 0 0 0.5
 
 if [ "$failures" -gt 0 ]; then
 	echo "$failures of $cases live cases failed" >&2

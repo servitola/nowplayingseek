@@ -145,6 +145,17 @@ left() {
 left 1 watch
 left 2 stream --no-artwork
 
+# The picture in the README is drawn outside this repo; it has shown yesterday's output twice.
+player true && told 'status --json for the picture' 0 '' status --json
+cases=$((cases + 1))
+python3 - "$work/stdout" docs/demo.svg <<'PY' || fail 'docs/demo.svg does not show the JSON that status --json writes today: run the demo script (AGENTS.md)'
+import html, json, re, sys
+keys = lambda value: {key: keys(inner) for key, inner in value.items()} if isinstance(value, dict) else None
+lines = [line for line in html.unescape(re.sub(r"<[^>]+>", "\n", open(sys.argv[2], encoding="utf-8").read())).split("\n") if line.strip()]
+shown = json.loads("".join(lines[next(index for index, line in enumerate(lines) if line.strip() == "{"):]))
+sys.exit(keys(shown) != keys(json.load(open(sys.argv[1], encoding="utf-8"))))
+PY
+
 player true && rm "$work/fake/state.json"
 told 'nothing is playing' 1 '' status
 told 'nothing is playing: transport' 1 '' pause

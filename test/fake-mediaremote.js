@@ -18,7 +18,20 @@ const mediaRemote = {
         return state && { ...state.now, rate: effectiveRate(state.now.playing, state.now.rate) };
     },
     info: () => null,
-    raw: () => null,
+    raw(known) {
+        const state = known || this.read();
+        return (
+            state && {
+                app: state.app,
+                playing: state.playing,
+                Title: state.title,
+                Duration: state.duration,
+                ElapsedTime: state.position,
+                PlaybackRate: state.rate,
+                Timestamp: state.timestamp,
+            }
+        );
+    },
     setElapsedTime(seconds) {
         fakeLog(`setElapsedTime ${seconds}`);
         const state = fakeState();

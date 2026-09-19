@@ -113,6 +113,14 @@ XDG_CONFIG_HOME=$xdg "$bin" media-control get --no-artwork | grep -qE '^(null|\{
 cases=$((cases + 1))
 XDG_CONFIG_HOME=$xdg "$bin" get --now | grep -qE '^(null|\{)' || fail 'get with no property, its word taken directly, is not the JSON of media-control'
 
+# playerctl, mpc and shpotify, behind their names.
+expect 'as playerctl: a player cannot be chosen' 1 stderr 'choosing a player is out of its reach' playerctl -p spotify play
+expect 'as playerctl: volume' 1 stderr 'volume is out of its reach' playerctl volume 0.5
+expect 'as playerctl: the sign goes after the number' 64 stderr 'does not know "position +30" in the dialect of playerctl' playerctl position +30
+expect 'as mpc: volume' 1 stderr 'volume is out of its reach' mpc volume +5
+expect 'as shpotify: play by name' 1 stderr 'playing by name is out of its reach' spotify play 'Seven Samurai'
+expect 'as shpotify: an unknown word' 64 stderr 'does not know "share url" in the dialect of spotify' spotify share url
+
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config
 expect 'config without a file: defaults' 0 stdout 'max_multiplier = 2.5' config

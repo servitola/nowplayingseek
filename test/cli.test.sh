@@ -142,8 +142,13 @@ expect 'as playerctl: volume' 1 stderr 'volume is out of its reach' playerctl vo
 expect 'as playerctl: the sign goes after the number' 64 stderr 'does not know "position +30" in the dialect of playerctl' playerctl position +30
 expect 'as mpc: volume' 1 stderr 'volume is out of its reach' mpc volume +5
 expect 'as mpc: an unknown word, whatever is or is not playing' 64 stderr 'does not know "crossfade 5" in the dialect of mpc' mpc crossfade 5
+expect 'as playerctl: a loop word it does not have' 64 stderr 'does not know "repeat sometimes" in the dialect of playerctl' playerctl loop sometimes
+expect 'as playerctl: open' 1 stderr 'opening a file or a URL is out of its reach' playerctl open https://example.com
+expect 'as shpotify: quit' 1 stderr 'quitting the player is out of its reach' spotify quit
+expect 'as shpotify: toggle what' 64 stderr 'does not know "toggle volume" in the dialect of spotify' spotify toggle volume
 expect 'as shpotify: play by name' 1 stderr 'playing by name is out of its reach' spotify play 'Seven Samurai'
-expect 'as shpotify: an unknown word' 64 stderr 'does not know "share url" in the dialect of spotify' spotify share url
+expect 'as shpotify: an unknown word' 64 stderr 'does not know "dance now" in the dialect of spotify' spotify dance now
+expect 'as shpotify: share' 1 stderr 'a link to share is out of its reach' spotify share url
 
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config

@@ -63,7 +63,10 @@ const asPlayerctl = {
             position: () => this.position(args[0]),
             metadata: () => this.metadata(args),
             stop: () => asMediaControl.send(MC_COMMANDS.indexOf('stop')),
+            shuffle: () => setOrToggle('playerctl', 'shuffle', args[0], { on: 3, off: 1 }),
+            loop: () => setOrToggle('playerctl', 'repeat', args[0], { none: 1, track: 2, playlist: 3 }),
             volume: () => refuse('playerctl', 'volume'),
+            open: () => refuse('playerctl', 'opening a file or a URL'),
         };
         return Object.hasOwn(words, command) ? words[command]() : unknown('playerctl', [command, ...args]);
     },

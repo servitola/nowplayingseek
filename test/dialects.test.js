@@ -28,6 +28,22 @@ function testDialectWords(core) {
         'playerctl: duration, uc, lc'
     );
     same(core.playerctlFormat('[{{ album }}{{ nosuch }}]', fields), '[]', 'playerctl: what is not there is empty');
+    same(core.playerctlFormat('{{ trunc(title, 5) }}', fields), 'Seven…', 'playerctl: trunc cuts and says so');
+    same(core.playerctlFormat('{{ trunc(artist, 50) }}', fields), 'Hayasaka', 'playerctl: trunc leaves a short one alone');
+    same(core.playerctlFormat('{{ default(album, "no album") }}', fields), 'no album', 'playerctl: default fills what is empty');
+    same(core.playerctlFormat('{{ default(artist, "nobody") }}', fields), 'Hayasaka', 'playerctl: default keeps what is there');
+    same(core.playerctlFormat('{{ emoji(status) }}', fields), '▶️', 'playerctl: emoji of the status');
+    same(core.playerctlFormat('{{ markup_escape(title) }}', { title: 'A & <B>' }), 'A &amp; &lt;B&gt;', 'playerctl: markup_escape');
+    same(
+        failureOf(core, () => core.playerctlFormat('{{ volume }}', fields)),
+        "64: playerctl's {{ volume }} has nothing behind it here: Now Playing knows no volume",
+        'playerctl: a variable we cannot fill is refused, not left empty'
+    );
+    same(
+        failureOf(core, () => core.playerctlFormat('{{ shout(title) }}', fields)),
+        "64: nowplayingseek does not know the helper shout() of playerctl's format strings",
+        'playerctl: an unknown helper is refused, not printed as it stands'
+    );
     same(core.clock(3725.9), '62:05', 'a clock counts minutes past the hour, as mpc and shpotify do');
 }
 GROUPS.push(testDialectWords);

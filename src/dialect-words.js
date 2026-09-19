@@ -23,6 +23,9 @@ function mpcSeek(text, duration) {
         return null;
     }
     const [, sign, number, percent] = match;
+    if (percent && !(duration > 0)) {
+        return null;
+    }
     const amount = percent ? (Number.parseFloat(number) / PERCENT) * duration : parseTime(number);
     if (isMissing(amount)) {
         return null;

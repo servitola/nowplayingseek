@@ -55,7 +55,7 @@ const asNowplayingCli = {
     get(args) {
         const names = args.filter(arg => arg !== '--json');
         const info = this.info();
-        const lookUp = name => info.objectForKey(KEY_PREFIX + name[0].toUpperCase() + name.slice(1));
+        const lookUp = name => info.objectForKey(KEY_PREFIX + name.charAt(0).toUpperCase() + name.slice(1));
         if (names.length < args.length) {
             const asked = $.NSMutableDictionary.dictionary;
             for (const name of names) {

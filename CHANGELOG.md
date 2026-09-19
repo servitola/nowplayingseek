@@ -5,6 +5,19 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Changed
+- One way to answer, for every command. No flag: a line for people. `--json`: the same as JSON,
+  indented — **in a pipe as well, where it used to be one line**. `--minify` (or `--compact`): JSON
+  on one line; a script that reads piped `status --json` line by line wants this now. `--raw`: the
+  keys macOS itself holds. The order of the flags does not matter.
+- `play`, `pause`, `toggle`, `next` and `previous` answer with the status line, as `seek` always
+  did; they used to say nothing.
+
+### Added
+- `--json`, `--minify` and `--raw` on `seek`, `forward`, `backward`, `play`, `pause`, `toggle`,
+  `next`, `previous`, `position`, `duration`, `doctor` and `config` — they were `status` only.
+  `pause --json` pauses and says where it stopped, in one call.
+
 ## 0.6.1 — 2026-09-19
 
 ### Changed

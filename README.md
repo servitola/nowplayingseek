@@ -36,9 +36,9 @@ Homebrew 7 wants third-party taps trusted: the full name above trusts this one f
 
 ## A key
 
-Give `forward` and `backward` a key each. Two ways to do it:
+Give `forward` and `backward` a key each. The key goes through an app that binds it; the film winds. Two such apps:
 
-| <img src="docs/images/with-shortcuts.webp" alt="The panda taps the icon of the Shortcuts app; the handle of a progress bar jumps forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The panda holds a glowing key down under the icon of Karabiner-Elements; the handle races forward" width="100%"> |
+| <img src="docs/images/with-shortcuts.webp" alt="The panda presses a key; a thread of light runs from it through the icon of the Shortcuts app into a player, where the film winds forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The same, and the thread runs through the icon of Karabiner-Elements" width="100%"> |
 | --- | --- |
 | **Shortcuts** — the app every Mac already has. Nothing else to install. A press moves by the step you wrote. | **[Karabiner-Elements](https://karabiner-elements.pqrs.org/)** — free, for those who remap keys. Hold the key: it moves off in small steps, gathers pace, settles. Release, and it stops. |
 

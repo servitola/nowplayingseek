@@ -70,7 +70,7 @@ function mcTimes(payload, state, raw, options) {
 const mediaControlReads = {
     payload(options) {
         const state = mediaRemote.read();
-        const raw = mediaRemote.raw();
+        const raw = mediaRemote.raw(state);
         const process = mediaRemote.process();
         const titled = Boolean(state?.title) || options['allow-missing-title'];
         if (!(state && raw && process && titled)) {

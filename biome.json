@@ -139,7 +139,10 @@
                 "src/dialects/media-control-help.js",
                 "src/dialects/media-control-read.js",
                 "src/dialects/media-control.js",
-                "src/dialects/others.js",
+                "src/dialects/shared.js",
+                "src/dialects/playerctl.js",
+                "src/dialects/mpc.js",
+                "src/dialects/shpotify.js",
                 "src/dialects/index.js",
                 "src/cli.js"
             ],
@@ -203,7 +206,11 @@
                     "asPlayerctl",
                     "asMpc",
                     "asShpotify",
-                    "dialectFor"
+                    "dialectFor",
+                    "appName",
+                    "refuse",
+                    "unknown",
+                    "move"
                 ]
             },
             "linter": {
@@ -213,7 +220,7 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "function": ["run", "locked", "jsonFile", "dialectFor"],
+                                    "function": ["run", "locked", "jsonFile", "dialectFor", "refuse", "unknown", "move"],
                                     "variable": [
                                         "mediaRemote",
                                         "player",
@@ -229,7 +236,8 @@
                                         "releaseFiles",
                                         "asPlayerctl",
                                         "asMpc",
-                                        "asShpotify"
+                                        "asShpotify",
+                                        "appName"
                                     ]
                                 }
                             }

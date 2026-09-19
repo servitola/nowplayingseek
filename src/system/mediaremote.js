@@ -55,14 +55,14 @@ const mediaRemote = {
         return item?.js && item.nowPlayingInfo.js ? item.nowPlayingInfo : null;
     },
 
-    raw() {
+    raw(known) {
         const request = $.NSClassFromString('MRNowPlayingRequest');
         const item = request?.localNowPlayingItem;
         if (!item?.js) {
             return null;
         }
         const info = item.nowPlayingInfo;
-        const state = this.read();
+        const state = known || this.read();
         if (!state) {
             return null;
         }

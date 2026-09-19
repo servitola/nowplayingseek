@@ -2,7 +2,7 @@
 
 [← README](../README.md)
 
-<p align="center"><img src="banner-compared.webp" alt="Four dull remotes lie on the desk; the panda holds up a fifth, made of glowing glass" width="100%"></p>
+<p align="center"><img src="images/banner-compared.webp" alt="Four dull remotes lie on the desk; the panda holds up a fifth, made of glowing glass" width="100%"></p>
 
 | | nowplayingseek | [nowplaying-cli] | [media-control] | the player's own keys |
 | --- | --- | --- | --- | --- |

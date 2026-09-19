@@ -2,7 +2,7 @@
 
 [← README](../README.md)
 
-<p align="center"><img src="banner-development.webp" alt="The panda tightens a bolt inside an opened glass player; three test lamps beside it glow green" width="100%"></p>
+<p align="center"><img src="images/banner-development.webp" alt="The panda tightens a bolt inside an opened glass player; three test lamps beside it glow green" width="100%"></p>
 
 One script for `osascript`, no dependencies at run time. `make` concatenates `src/` into
 `build/nowplayingseek`; there are no modules, so the order in the `Makefile` is the dependency order.

@@ -87,4 +87,71 @@ function testTemplate(core) {
     const uncommented = template.replace('; step = 10', 'step = 7');
     same(core.resolveSettings(core.parseIni(uncommented)).values.seek.step, 7, 'template: uncomment a line and it is in force');
 }
-GROUPS.push(testMultiplier, testIni, testSettings, testTemplate);
+function testSet(core) {
+    const set = (text, name, value) => core.withSetting(text, core.settingAssignment(name, value));
+    const read = text => core.resolveSettings(core.parseIni(text)).values;
+    same(read(set(core.settingsTemplate(), 'knob.fast', '24')).knob.fast, 24, 'set: uncomments the line init wrote');
+    same(core.parseIni(set(core.settingsTemplate(), 'knob.fast', '24')).length, 1, 'set: and leaves every other default commented');
+    same(set('[knob]\nfast = 18\n', 'knob.fast', '24'), '[knob]\nfast = 24\n', 'set: a live line is changed in place');
+    same(
+        set('[knob]\nfast = 18\n; fast = 9\n', 'knob.fast', '24'),
+        '[knob]\nfast = 24\n; fast = 9\n',
+        'set: the live line wins over a comment'
+    );
+    same(
+        set('[seek]\nstep = 5\n\n[knob]\nfast = 18\n', 'knob.step', '3'),
+        '[seek]\nstep = 5\n\n[knob]\nfast = 18\nstep = 3\n',
+        'set: a new key joins its section'
+    );
+    same(
+        set('[knob]\nfast = 18\n\n[hold]\ninterval = 1\n', 'knob.step', '3'),
+        '[knob]\nfast = 18\nstep = 3\n\n[hold]\ninterval = 1\n',
+        'set: not the section after it'
+    );
+    same(set('[seek]\nstep = 5\n', 'knob.step', '3'), '[seek]\nstep = 5\n\n[knob]\nstep = 3\n', 'set: a missing section is added');
+    same(set('', 'knob.step', '1:30'), '[knob]\nstep = 1:30\n', 'set: an empty file gets the section alone');
+    same(
+        read(set('[knob]\n; comment = with an equals sign\n', 'seek.step', '7')).seek.step,
+        7,
+        'set: the same key in another section is another key'
+    );
+}
+
+function testSetRefuses(core) {
+    same(
+        failureOf(core, () => core.settingAssignment('fast', '24')),
+        '64: config set needs a setting such as knob.fast, got "fast"',
+        'set: the section is part of the name'
+    );
+    same(
+        failureOf(core, () => core.settingAssignment('knob.fats', '24')),
+        '64: config set needs a setting such as knob.fast, got "knob.fats"',
+        'set: unknown key'
+    );
+    same(
+        failureOf(core, () => core.settingAssignment('toString.x', '1')),
+        '64: config set needs a setting such as knob.fast, got "toString.x"',
+        'set: unknown section'
+    );
+    same(
+        failureOf(core, () => core.settingAssignment()),
+        '64: config set needs a setting such as knob.fast, got ""',
+        'set: nothing at all'
+    );
+    same(
+        failureOf(core, () => core.settingAssignment('knob.fast', '0')),
+        '64: config set knob.fast needs clicks a second above zero, got "0"',
+        'set: a value that would not read back'
+    );
+    same(
+        failureOf(core, () => core.settingAssignment('knob.fast')),
+        '64: config set knob.fast needs clicks a second above zero, got ""',
+        'set: no value'
+    );
+    same(
+        failureOf(core, () => core.settingAssignment('hold.interval', '1:30')),
+        '64: config set hold.interval needs seconds above zero, got "1:30"',
+        'set: the same parser as the file'
+    );
+}
+GROUPS.push(testMultiplier, testIni, testSettings, testTemplate, testSet, testSetRefuses);

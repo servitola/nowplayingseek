@@ -26,10 +26,14 @@ function run(argv) {
     const source = argv.map(path => $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, null).js).join('\n');
     const core = eval(`${source};({ livePosition, clampTarget, seekBase, seekLanded, expectedPlaying,
         parseTime, formatTime, formatStatus, Failure, EXIT, streakStart, multiplierAt,
-        parseIni, resolveSettings, formatSettings, settingsTemplate, holdContinues, releasedSince, nextHoldTarget, knobRate, knobMultiplier, effectiveRate, seekOvertaken, alreadyThere, formatChapter, orderRaw, humanNotes, withHuman, streamChange, playerctlPosition, mpcSeek, playerctlFormat, clock, paintStatus, describeChange, fitToWidth, parseColumns, visibleLength, paintUsage, paintIni, paintJson })`);
+        parseIni, resolveSettings, formatSettings, settingsTemplate, holdContinues, releasedSince, nextHoldTarget, knobRate, knobMultiplier, effectiveRate, seekOvertaken, alreadyThere, formatChapter, orderRaw, humanNotes, withHuman, streamChange, playerctlPosition, mpcSeek, playerctlFormat, clock, paintStatus, describeChange, fitToWidth, parseColumns, visibleLength, paintUsage, paintIni, paintJson, paintError })`);
 
     for (const group of GROUPS) {
-        group(core);
+        try {
+            group(core);
+        } catch (error) {
+            failures.push(`${group.name} stopped half way: ${error.message || error}`);
+        }
     }
 
     if (failures.length > 0) {

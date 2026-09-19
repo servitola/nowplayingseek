@@ -11,7 +11,7 @@ function paintedBar(position, duration) {
 }
 
 // For a terminal only. A pipe gets formatStatus, the line scripts already parse.
-function paintStatus(state, { app, multiplier }) {
+function paintStatus(state, { app, multiplier, chapter }) {
     const timed = state.duration > 0;
     const length = timed ? ink('dim', ` / ${formatTime(state.duration)}`) : '';
     const who = [state.title, state.artist].filter(Boolean);
@@ -19,6 +19,7 @@ function paintStatus(state, { app, multiplier }) {
         `${ink('accent', state.playing ? '▶' : '⏸')} ${ink('bold', formatTime(state.position))}${length}`,
         timed ? paintedBar(state.position || 0, state.duration) : null,
         who.length > 0 ? [ink('bold', who[0]), ...who.slice(1)].join(' — ') : null,
+        chapter ? ink('dim', `ch ${chapter}`) : null,
         app ? ink('dim', `· ${app}`) : null,
         multiplier === 1 ? null : ink('accent', `×${multiplier}`),
     ];

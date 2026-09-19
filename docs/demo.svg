@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="617" height="503" viewBox="0 0 617 503" role="img" aria-label="nps status, backward, seek and status --json in a terminal">
-<rect width="617" height="503" rx="10" fill="#16181d"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="617" height="629" viewBox="0 0 617 629" role="img" aria-label="nps status, backward, seek and status --json in a terminal">
+<rect width="617" height="629" rx="10" fill="#16181d"/>
 <g fill="#3a3f4b"><circle cx="20" cy="18" r="5"/><circle cx="38" cy="18" r="5"/><circle cx="56" cy="18" r="5"/></g>
 <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#d7dae0">
 <text x="22" y="50" xml:space="preserve"><tspan fill-opacity="0.45">$ </tspan><tspan font-weight="700">nps status</tspan></text>
@@ -16,12 +16,18 @@
 <text x="22" y="281" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;title&quot;</tspan><tspan>: &quot;Seven Samurai&quot;,</tspan></text>
 <text x="22" y="302" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;artist&quot;</tspan><tspan>: &quot;&quot;,</tspan></text>
 <text x="22" y="323" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;album&quot;</tspan><tspan>: &quot;&quot;,</tspan></text>
-<text x="22" y="344" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;org.videolan.vlc&quot;,</tspan><tspan fill-opacity="0.5">  VLC</tspan></text>
-<text x="22" y="365" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: </tspan><tspan font-weight="700">12420</tspan><tspan>,</tspan><tspan fill-opacity="0.5">  3:27:00</tspan></text>
-<text x="22" y="386" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: </tspan><tspan font-weight="700">3723</tspan><tspan>,</tspan><tspan fill-opacity="0.5">  1:02:03</tspan></text>
+<text x="22" y="344" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;org.videolan.vlc&quot;,</tspan></text>
+<text x="22" y="365" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: </tspan><tspan font-weight="700">12420</tspan><tspan>,</tspan></text>
+<text x="22" y="386" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: </tspan><tspan font-weight="700">3723</tspan><tspan>,</tspan></text>
 <text x="22" y="407" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;playing&quot;</tspan><tspan>: </tspan><tspan font-weight="700">true</tspan><tspan>,</tspan></text>
 <text x="22" y="428" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;rate&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1</tspan><tspan>,</tspan></text>
-<text x="22" y="449" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1789768358.106</tspan><tspan fill-opacity="0.5">  19 Sep 2026 at 10:45:37</tspan></text>
-<text x="22" y="470" xml:space="preserve"><tspan>}</tspan></text>
+<text x="22" y="449" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1789768358.106</tspan><tspan>,</tspan></text>
+<text x="22" y="470" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;human&quot;</tspan><tspan>: {</tspan></text>
+<text x="22" y="491" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: &quot;3:27:00&quot;,</tspan></text>
+<text x="22" y="512" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: &quot;1:02:03&quot;,</tspan></text>
+<text x="22" y="533" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: &quot;19 Sep 2026 at 10:45:37&quot;,</tspan></text>
+<text x="22" y="554" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;VLC&quot;</tspan></text>
+<text x="22" y="575" xml:space="preserve"><tspan>  }</tspan></text>
+<text x="22" y="596" xml:space="preserve"><tspan>}</tspan></text>
 </g>
 </svg>

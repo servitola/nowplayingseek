@@ -20,20 +20,30 @@ const watching = {
         return paintStatus(state, { app: terminal.appName(state), multiplier: 1, chapter, columns });
     },
 
+    log(changes, state) {
+        const app = state && terminal.appName(state);
+        return changes.map(change => `${paintChange(change, terminal.clock(), state, app)}\n`).join('');
+    },
+
+    opening(state) {
+        return state
+            ? this.log(logOf({ icon: '♪', words: named(state) }, state), state)
+            : `${ink('dim', terminal.clock())}  nothing is playing\n`;
+    },
+
     painted({ live }) {
         let previous = this.read();
         let started = false;
-        this.write(live ? this.status(previous, terminal.columns()) : `${this.status(previous)}\n`);
+        this.write(live ? this.status(previous, terminal.columns()) : this.opening(previous));
         while (!terminal.readerGone()) {
             delay(player.settings.watch.interval);
             const current = this.read();
             const change = describeChange(previous, current, started);
-            const line = this.status(current, live ? terminal.columns() : undefined);
             if (change) {
-                this.write(`${live ? REDRAW : ''}${paintChange(change, terminal.clock())}\n${live ? '' : `${line}\n`}`);
+                this.write((live ? REDRAW : '') + this.log(logOf(change, current), current));
             }
             if (live) {
-                this.write(REDRAW + line);
+                this.write(REDRAW + this.status(current, terminal.columns()));
             }
             started = true;
             previous = current;

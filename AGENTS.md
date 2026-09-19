@@ -20,7 +20,8 @@ src/logic/      knows nothing of macOS — every function here has a unit test
     seek.js         where a step starts, whether it landed, whether an older seek overtook it
     hold.js         a held key and its release; the --progressive curve; the pace of a knob
     stream.js       what changed between two reads
-    item.js         the order of --raw; the chapter as 6/13
+    item.js         the order of --raw; the chapter as 6/13; the `human` block
+    watch.js        what happened between two reads, in a word; fitting a line to the terminal
     paint.js        what a terminal gets: the status line, the help page, JSON, ini — bold, dim, one hue
     words.js        the seek words of playerctl and mpc; playerctl's format strings
     config.js       the SETTINGS table; ini
@@ -30,6 +31,7 @@ src/system/     the only place with $ and ObjC
     terminal.js     is stdout a terminal; an app's name from its bundle id
     configfile.js   find, load and write config.ini
 src/player.js   a step, a hold, waiting for the player — ties logic to system
+src/watch.js    the loop of `watch` and of `stream` in a terminal: one line redrawn, events above it
 src/dialects/   one file a tool; they call player and system, never each other's insides
     nowplaying-cli.js   media-control.js (+ -read.js, -help.js)   playerctl.js   mpc.js
     shpotify.js   shared.js (refuse, unknown, move)   index.js (which first word is which tool)

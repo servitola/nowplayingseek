@@ -19,12 +19,19 @@ version, so keep that heading as it is.
   the four artwork keys into one `Artwork` object at the end.
 
 ### Fixed
+- `stream --debounce` held back a play or a pause as well; media-control reports those at once.
 - A step waiting to see itself land could send its target again to an app elected in the meantime:
   seen once in three tries, a second player thrown 10 s back while a hold on the first was ending.
   The wait now ends when the elected app changes, and a re-send never crosses apps.
 - `status --raw` wrote a file's URL as `{}`.
 
 ### Added
+- `watch`: stays, and shows where the item is, redrawn once a second, with a line for whatever
+  happens to it — played, paused, seeked to, a new item, nothing playing. The line is redrawn with a
+  carriage return and nothing else, because `osascript` cannot catch Ctrl-C to tidy a terminal up;
+  a long title is cut to the terminal's width. `[watch] interval` sets the pace.
+- `stream` in a terminal shows the same events in words instead of raw JSON. A pipe gets the
+  media-control protocol byte for byte, as before.
 - `make test-world`: what the project believes about software it does not own, checked against it —
   that a binary of our own reads nothing of Now Playing and one signed `com.apple.*` does, that VLC
   reports a rate of 1 while paused and keeps whole seconds, that QuickTime does neither, that

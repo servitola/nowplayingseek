@@ -76,12 +76,23 @@
                 "src/logic/hold.js",
                 "src/logic/stream.js",
                 "src/logic/item.js",
+                "src/logic/watch.js",
                 "src/logic/paint.js",
                 "src/logic/words.js",
                 "src/logic/config.js"
             ],
             "javascript": {
-                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS", "formatTime"]
+                "globals": [
+                    "EXIT",
+                    "Failure",
+                    "isMissing",
+                    "parseTime",
+                    "SECONDS_PER_MINUTE",
+                    "MICROSECONDS",
+                    "formatTime",
+                    "visibleLength",
+                    "fitToWidth"
+                ]
             },
             "linter": {
                 "rules": {
@@ -119,7 +130,11 @@
                                         "formatChapter",
                                         "humanNotes",
                                         "withHuman",
-                                        "settingsTemplate"
+                                        "settingsTemplate",
+                                        "describeChange",
+                                        "fitToWidth",
+                                        "parseColumns",
+                                        "paintStatusParts"
                                     ],
                                     "variable": [
                                         "EXIT",
@@ -133,7 +148,10 @@
                                         "alreadyThere",
                                         "paintUsage",
                                         "paintIni",
-                                        "paintError"
+                                        "paintError",
+                                        "visibleLength",
+                                        "paintChange",
+                                        "ESCAPE"
                                     ]
                                 }
                             }
@@ -159,6 +177,7 @@
                 "src/dialects/shpotify.js",
                 "src/dialects/index.js",
                 "src/usage.js",
+                "src/watch.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -239,7 +258,15 @@
                     "humanNotes",
                     "setOrToggle",
                     "withHuman",
-                    "settingsTemplate"
+                    "settingsTemplate",
+                    "describeChange",
+                    "fitToWidth",
+                    "parseColumns",
+                    "visibleLength",
+                    "paintChange",
+                    "watching",
+                    "formatChapter",
+                    "ESCAPE"
                 ]
             },
             "linter": {
@@ -268,7 +295,8 @@
                                         "asShpotify",
                                         "appName",
                                         "terminal",
-                                        "USAGE"
+                                        "USAGE",
+                                        "watching"
                                     ]
                                 }
                             }
@@ -278,7 +306,7 @@
             }
         },
         {
-            "includes": ["src/system/mediaremote.js", "src/dialects/media-control-read.js", "test/item.test.js"],
+            "includes": ["src/system/mediaremote.js", "src/dialects/media-control-read.js", "test/item.test.js", "test/watch.test.js"],
             "linter": {
                 "rules": {
                     "security": {

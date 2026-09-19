@@ -49,10 +49,36 @@ function testPaint(core) {
 function testPaintChange(core) {
     const esc = String.fromCharCode(ESC_CODE);
     const inked = (code, text) => `${esc}[${code}m${text}${esc}[0m`;
+    const plain = text =>
+        text
+            .split(esc)
+            .join('')
+            .replace(/\[[0-9;]*m/g, '');
+    const state = { title: 'Seven Samurai', artist: 'Kurosawa', position: 3961, duration: 12_420, playing: false };
     same(
-        core.paintChange({ icon: '⏸', words: 'paused' }, '12:30:05'),
-        `${inked(2, '12:30:05')}  ${inked(1, '⏸ paused')}`,
-        'change: the clock dim, what happened bold'
+        core.paintChange({ icon: '×', words: 'nothing is playing' }, '12:30:05', null, null),
+        `${inked(2, '12:30:05')}  ${inked(1, '× nothing is playing')}`,
+        'log: the clock dim, what happened bold'
+    );
+    same(
+        plain(core.paintChange({ icon: '♪', words: 'Seven Samurai — Kurosawa' }, '12:30:05', state, 'IINA')),
+        '12:30:05  ♪ Seven Samurai — Kurosawa  · IINA',
+        'log: a new item is named, with its app'
+    );
+    same(
+        plain(core.paintChange({ icon: '⏸', words: 'paused', label: 'paused' }, '12:30:05', state, 'IINA')),
+        '12:30:05  ⏸ paused   1:06:01 / 3:27:00  ━━━━━───────────',
+        'log: a pause says where it happened, so the line stands alone'
+    );
+    same(
+        plain(core.paintChange({ icon: '⇥', words: 'seeked to 1:06:01', label: 'seeked' }, '12:30:05', state, 'IINA')),
+        '12:30:05  ⇥ seeked   1:06:01 / 3:27:00  ━━━━━───────────',
+        'log: a seek lines up under it'
+    );
+    same(
+        plain(core.paintChange({ icon: '▶', label: 'playing' }, '12:30:05', { ...state, duration: 0 }, 'Safari')),
+        '12:30:05  ▶ playing  1:06:01',
+        'log: a live stream has no length and no bar'
     );
 }
 function testPaintText(core) {

@@ -29,6 +29,11 @@ function testDescribeChange(core) {
     );
     same(words(core.describeChange(playing, null)), '× nothing is playing', 'watch: it went away');
     same(words(core.describeChange(null, null)), null, 'watch: still nothing');
+    const labels = changes => changes.map(change => change.label || change.words).join(', ');
+    same(labels(core.logOf({ icon: '⏸', words: 'paused', label: 'paused' }, paused)), 'paused', 'log: a pause is one line');
+    same(labels(core.logOf({ icon: '♪', words: 'Ran' }, paused)), 'Ran, paused', 'log: a new item is named, then what it is doing');
+    same(labels(core.logOf({ icon: '♪', words: 'Ran' }, playing)), 'Ran, playing', 'log: or playing');
+    same(labels(core.logOf({ icon: '×', words: 'nothing is playing' }, null)), 'nothing is playing', 'log: gone is one line');
     same(words(core.describeChange(null, playing, true)), '♪ Seven Samurai — Kurosawa', 'watch: something after nothing is a new item');
 }
 

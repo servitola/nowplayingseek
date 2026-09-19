@@ -26,7 +26,7 @@ function run(argv) {
     const source = argv.map(path => $.NSString.stringWithContentsOfFileEncodingError(path, $.NSUTF8StringEncoding, null).js).join('\n');
     const core = eval(`${source};({ livePosition, clampTarget, seekBase, seekLanded, expectedPlaying,
         parseTime, formatTime, formatStatus, Failure, EXIT, streakStart, multiplierAt,
-        parseIni, resolveSettings, formatSettings, settingsTemplate, holdContinues, releasedSince, nextHoldTarget, knobRate, knobMultiplier, effectiveRate, seekOvertaken, alreadyThere, formatChapter, orderRaw, humanNotes, withHuman, streamChange, playerctlPosition, mpcSeek, playerctlFormat, clock, paintStatus, describeChange, fitToWidth, parseColumns, visibleLength, paintUsage, paintIni, paintJson, paintError, paintChange })`);
+        parseIni, resolveSettings, formatSettings, settingsTemplate, holdContinues, releasedSince, nextHoldTarget, knobRate, knobMultiplier, effectiveRate, seekOvertaken, alreadyThere, formatChapter, orderRaw, humanNotes, withHuman, streamChange, playerctlPosition, mpcSeek, playerctlFormat, clock, paintStatus, describeChange, fitToWidth, parseColumns, visibleLength, paintUsage, paintIni, paintJson, paintError, paintChange, logOf, describeState })`);
 
     for (const group of GROUPS) {
         try {

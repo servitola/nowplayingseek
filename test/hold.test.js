@@ -36,4 +36,42 @@ function testHold(core) {
     same(core.nextHoldTarget(0, -10, 3, 600), null, 'hold: nothing further at the start');
     same(core.nextHoldTarget(100, 10, 1, 0), 110, 'hold: a live stream has no end');
 }
-GROUPS.push(testKnob, testHold);
+function testStream(core) {
+    const song = { processIdentifier: 7, bundleIdentifier: 'a', title: 'One', artist: 'X', playing: true, elapsedTime: 10 };
+    const json = value => JSON.stringify(value);
+    same(json(core.streamChange(null, song, true)), json({ diff: false, payload: song }), 'stream: the first item is sent whole');
+    same(core.streamChange(song, { ...song }, true), null, 'stream: nothing changed, nothing sent');
+    same(
+        json(core.streamChange(song, { ...song, playing: false, elapsedTime: 12 }, true)),
+        json({ diff: true, payload: { playing: false, elapsedTime: 12 } }),
+        'stream: the same item sends only what changed'
+    );
+    const { artist: _artist, ...gone } = song;
+    same(
+        json(core.streamChange(song, gone, true)),
+        json({ diff: false, payload: gone }),
+        'stream: an artist that vanished makes it another item'
+    );
+    same(
+        json(core.streamChange(song, { ...song, title: 'Two' }, true)),
+        json({ diff: false, payload: { ...song, title: 'Two' } }),
+        'stream: another title is another item, sent whole'
+    );
+    same(
+        json(core.streamChange({ ...song, genre: 'g' }, song, true)),
+        json({ diff: true, payload: { genre: null } }),
+        'stream: a key that went away is null in the diff'
+    );
+    same(
+        json(core.streamChange(song, { ...song, playing: false }, false)),
+        json({ diff: false, payload: { ...song, playing: false } }),
+        'stream: --no-diff always sends it whole'
+    );
+    same(
+        json(core.streamChange(song, null, true)),
+        json({ diff: false, payload: {} }),
+        'stream: nothing playing any more is an empty payload'
+    );
+    same(core.streamChange(null, null, true), null, 'stream: still nothing');
+}
+GROUPS.push(testKnob, testHold, testStream);

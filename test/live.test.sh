@@ -210,6 +210,35 @@ if command -v nowplaying-cli >/dev/null; then
 	[ "$(nowplaying-cli bogus)" = "$("$bin" nowplaying-cli bogus)" ] || fail 'the help text differs from nowplaying-cli'
 fi
 
+# The dialect of media-control.
+at 2:00
+expect_exit 'as media-control: seek in seconds' 0 media-control seek 22.4
+cases=$((cases + 1))
+[ -s "$work/out" ] && fail "as media-control: a seek prints something: $(cat "$work/out")"
+expect_move 'as media-control: seek 22.4' 0 22.3 22.5
+expect_exit 'as media-control: seek in microseconds' 0 seek 30000000 --micros
+expect_move 'as media-control: seek 30000000 --micros' 0 29.9 30.1
+expect_exit 'as media-control: get' 0 get --now
+for wanted in '"bundleIdentifier":"org.videolan.vlc"' '"playing":false' '"title":"silence.wav"' '"elapsedTimeNow":30' '"duration":300'; do
+	cases=$((cases + 1))
+	grep -qF "$wanted" "$work/out" || fail "as media-control: get lacks $wanted: $(cat "$work/out")"
+done
+"$bin" stream --no-artwork >"$work/stream" 2>&1 &
+stream=$!
+sleep 1
+guard
+"$bin" toggle-play-pause
+sleep 1
+"$bin" media-control pause
+sleep 1
+kill "$stream" 2>/dev/null
+cases=$((cases + 1))
+[ "$(sed -n 1p "$work/stream")" = '{"type":"data","diff":false,"payload":{}}' ] || fail "stream does not open with an empty payload: $(sed -n 1p "$work/stream")"
+cases=$((cases + 1))
+grep -q '"diff":true,"payload":{[^}]*"playing":true' "$work/stream" || fail "stream did not report play as a diff: $(cat "$work/stream")"
+cases=$((cases + 1))
+grep -q '"diff":true,"payload":{[^}]*"playing":false' "$work/stream" || fail "stream did not report pause as a diff: $(cat "$work/stream")"
+
 if [ "$failures" -gt 0 ]; then
 	echo "$failures of $cases live cases failed" >&2
 	exit 1

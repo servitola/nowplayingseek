@@ -13,6 +13,8 @@ What is left, most pressing first. State as of 2026-09-19; delete a line when it
 - `[hold] interval`, `max_multiplier` and the rest accept any number above zero: `interval = 1000` is taken.
 
 ## Code
+- `get` and `get-raw` cannot be run against the fake player: `test/fake-mediaremote.js` answers
+  `info()` with null and the nowplaying-cli dialect needs a dictionary. They are tested live only.
 - Biome is pinned to 2.5.13 because npm on the owner's machine refuses releases younger than
   7 days; 2.5.14 was 2 days old. Bump `rev`, `additional_dependencies` and `$schema` together.
 

@@ -3,6 +3,7 @@ const USAGE = `nowplayingseek ${VERSION} — seek whatever is playing on the Mac
 Look
   status                         what plays, where, in which app
   watch                          stay, and show where it is and what happens to it
+  stream                         stay, and log what happens; in a pipe, the JSON of media-control
   position                       seconds from the start
   duration                       seconds in all
 

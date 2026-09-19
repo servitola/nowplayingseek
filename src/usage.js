@@ -2,6 +2,7 @@ const USAGE = `nowplayingseek ${VERSION} — seek whatever is playing on the Mac
 
 Look
   status [--json | --raw]        what plays, where, in which app; --raw is all macOS knows
+  watch                          stay, and show where it is and what happens to it
   position                       seconds from the start
   duration                       seconds in all
 

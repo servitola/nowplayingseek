@@ -55,6 +55,7 @@ See [the Karabiner-Elements rule](docs/hotkeys.md#a-knob-in-karabiner-elements).
 | Command | |
 | --- | --- |
 | `status [--json]` | title, app, position / duration |
+| `watch` | stays: where it is, second by second, and what happens to it |
 | `status --raw` | everything macOS knows about the item, as JSON: chapters, media type, artwork, the file |
 | `position`, `duration` | seconds |
 | `seek <time>` | to `754`, `12:34` or `1:02:03` |

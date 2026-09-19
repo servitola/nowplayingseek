@@ -11,7 +11,7 @@ function paintedBar(position, duration) {
 }
 
 // For a terminal only. A pipe gets formatStatus, the line scripts already parse.
-function paintStatus(state, { app, multiplier, chapter }) {
+function paintStatusParts(state, { app, multiplier, chapter }) {
     const timed = state.duration > 0;
     const length = timed ? ink('dim', ` / ${formatTime(state.duration)}`) : '';
     const who = [state.title, state.artist].filter(Boolean);
@@ -25,6 +25,19 @@ function paintStatus(state, { app, multiplier, chapter }) {
     ];
     return parts.filter(Boolean).join('  ');
 }
+
+// A title too long for the terminal is cut, so that a line redrawn in place never wraps.
+function paintStatus(state, options) {
+    const line = paintStatusParts(state, options);
+    const over = options.columns ? visibleLength(line) - options.columns : 0;
+    if (over <= 0 || !state.title) {
+        return line;
+    }
+    const room = Math.max(1, Array.from(state.title).length - over);
+    return paintStatusParts({ ...state, title: fitToWidth(state.title, room) }, options);
+}
+
+const paintChange = (change, clock) => `${ink('dim', clock)}  ${ink('bold', `${change.icon} ${change.words}`)}`;
 
 const NOTE_INDENT = '    ';
 const USAGE_ENTRY = /^( {2})(\S.*?)( {2,}.*)?$/;

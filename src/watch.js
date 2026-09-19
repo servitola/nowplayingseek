@@ -24,7 +24,7 @@ const watching = {
         let previous = this.read();
         let started = false;
         this.write(live ? this.status(previous, terminal.columns()) : `${this.status(previous)}\n`);
-        for (;;) {
+        while (!terminal.readerGone()) {
             delay(player.settings.watch.interval);
             const current = this.read();
             const change = describeChange(previous, current, started);
@@ -44,7 +44,7 @@ const watching = {
         let previous = this.read();
         let started = false;
         print(previous ? formatStatus(previous) : 'nothing is playing');
-        for (;;) {
+        while (!terminal.readerGone()) {
             delay(player.settings.watch.interval);
             const current = this.read();
             const change = describeChange(previous, current, started);

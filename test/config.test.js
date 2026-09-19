@@ -54,6 +54,16 @@ function testSettings(core) {
         'settings: bad value'
     );
     same(
+        failureOf(core, () => core.resolveSettings(core.parseIni('[progressive]\nmax_multiplier = 1:30'))),
+        '78: line 2: [progressive] max_multiplier = "1:30" — expected a number above zero',
+        'settings: a clock is not a multiplier'
+    );
+    same(
+        failureOf(core, () => core.resolveSettings(core.parseIni('[hold]\ninterval = 1:30'))),
+        '78: line 2: [hold] interval = "1:30" — expected seconds above zero',
+        'settings: nor a pause between steps'
+    );
+    same(
         failureOf(core, () => core.resolveSettings(core.parseIni('[seek]\nstpe = 5'))),
         '78: line 2: unknown setting [seek] stpe',
         'settings: unknown key'

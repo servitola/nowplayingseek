@@ -21,6 +21,6 @@ What is left, most pressing first. State as of 2026-09-19; delete a line when it
 ## Questions for the owner
 - The knob is not remapped on the owner's keyboard: `--knob` has met simulated clicks only.
 - The Hammerspoon and skhd recipes have been checked for syntax, never pressed.
-- The Shortcuts walkthrough in the README was written from Apple's documentation and never clicked
+- The Shortcuts walkthrough in docs/hotkeys.md was written from Apple's documentation and never clicked
   through: the names of the buttons and the prompt for "Allow Running Scripts" want one real run.
 - The friend who got the old `audioctl.zip` could use `brew install servitola/tap/nowplayingseek`.

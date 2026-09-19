@@ -40,16 +40,10 @@ Give `forward` and `backward` a key each. The key goes through an app that binds
 
 | <img src="docs/images/with-shortcuts.webp" alt="The panda presses a key; a thread of light runs from it through the icon of the Shortcuts app into a player, where the film winds forward" width="100%"> | <img src="docs/images/with-karabiner.webp" alt="The same, and the thread runs through the icon of Karabiner-Elements" width="100%"> |
 | --- | --- |
-| **Shortcuts** — the app every Mac already has. Nothing else to install. A press moves by the step you wrote. | **[Karabiner-Elements](https://karabiner-elements.pqrs.org/)** — free, for those who remap keys. Hold the key: it moves off in small steps, gathers pace, settles. Release, and it stops. |
+| **Shortcuts** — the app every Mac already has, nothing else to install. A press moves by the step you wrote. | **Karabiner-Elements** — free, for those who remap keys. Hold the key: it moves off in small steps, gathers pace, settles. Release, and it stops. |
+| [Step by step →](docs/hotkeys.md#a-key-in-shortcuts) | [The rule to import →](docs/hotkeys.md#a-key-in-karabiner-elements) |
 
-In Shortcuts:
-
-1. **+** → find the action **Run Shell Script**.
-2. In its box: `/opt/homebrew/bin/nowplayingseek forward 30` (on an Intel Mac, `/usr/local/bin/…`).
-3. The first run asks for Shortcuts → Settings → Advanced → **Allow Running Scripts**.
-4. **ⓘ** → **Add Keyboard Shortcut**, press the keys you want. Make a second one with `backward 30`.
-
-In Karabiner-Elements, Hammerspoon, skhd and the rest: [docs/hotkeys.md](docs/hotkeys.md).
+Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](docs/hotkeys.md#other-tools).
 
 ## A knob
 

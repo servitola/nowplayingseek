@@ -15,6 +15,11 @@ function testPaint(core) {
     same(line.includes(inked(2, ' / 3:27:00')), true, 'painted: the length is dim');
     same(line.includes(inked(1, 'Seven Samurai')), true, 'painted: the title is bold');
     same(line.includes(inked(2, '· IINA')), true, 'painted: the app is dim');
+    same(
+        plain(core.paintStatus(state, { app: 'IINA', multiplier: 1, chapter: '6/13' })),
+        '▶ 1:06:01 / 3:27:00  ━━━━━───────────  Seven Samurai — Kurosawa  ch 6/13  · IINA',
+        'painted: the chapter, when the player tells it'
+    );
     const paused = { ...state, playing: false };
     same(
         plain(core.paintStatus(paused, { app: 'IINA', multiplier: 1.6 })).endsWith('· IINA  ×1.6'),

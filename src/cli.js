@@ -28,7 +28,8 @@ function showJson(value, indent) {
 
 function showStatus(state, multiplier) {
     if (terminal.colours()) {
-        return print(paintStatus(state, { app: terminal.appName(state), multiplier }));
+        const chapter = formatChapter(mediaRemote.raw(state) || {});
+        return print(paintStatus(state, { app: terminal.appName(state), multiplier, chapter }));
     }
     print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
 }
@@ -99,7 +100,7 @@ const COMMANDS = {
     status(args) {
         const state = player.requireState();
         if (args.includes('--raw')) {
-            return showJson(mediaRemote.raw(), RAW_INDENT);
+            return showJson(orderRaw(mediaRemote.raw()), RAW_INDENT);
         }
         return args.includes('--json') ? showJson(state, 0) : showStatus(state, 1);
     },

@@ -31,7 +31,7 @@ consulted when you open the code, not before: `docs/development.md#layout`.
 every tracked file; needs `pre-commit`), `make install PREFIX=~/.local`. `build` and `test` also
 compile `native/artwork.m`, so they need `clang` (Xcode Command Line Tools; every Homebrew machine
 already has it). `pre-commit install` once after cloning; commits go through the hook, `--no-verify`
-and `SKIP=` are not used here. Run one `pre-commit` at a time: it stashes unstaged changes while it
+and `SKIP=` are not used here. A commit message carries no `Co-Authored-By` and no tool footer: GitHub counts a co-author as a contributor, and this repository has one. Run one `pre-commit` at a time: it stashes unstaged changes while it
 works, and a second run in the same tree fails with "files were modified by this hook".
 
 - Biome with every stable rule as an error, plus its formatter; actionlint; shellcheck and shfmt.

@@ -13,7 +13,13 @@ const ENTRY_POINTS = ['run'];
 const DECLARATION = /^(?:async\s+)?(const|let|function|class)\s+([A-Za-z_$][\w$]*)/gm;
 const KIND = { const: 'variable', let: 'variable', function: 'function', class: 'class' };
 
-const listed = name => execFileSync('make', [`print-${name}`], { encoding: 'utf8' }).trim().split(/\s+/).filter(Boolean);
+// GNU make announces itself into stdout ('make[1]: Entering directory …') where BSD make does
+// not, so CI read those lines as file names; --no-print-directory silences it on both.
+const listed = name =>
+    execFileSync('make', ['--no-print-directory', `print-${name}`], { encoding: 'utf8' })
+        .trim()
+        .split(/\s+/)
+        .filter(word => word && !word.startsWith('make['));
 const pure = listed('PURE');
 const sourcesAll = listed('SOURCES');
 const rest = sourcesAll.filter(file => !pure.includes(file));

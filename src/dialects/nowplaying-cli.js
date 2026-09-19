@@ -41,11 +41,18 @@ const asNowplayingCli = {
         const safe = $.NSMutableDictionary.dictionary;
         for (const key of ObjC.deepUnwrap(dictionary.allKeys)) {
             const value = dictionary.objectForKey(key);
-            const isDate = value.isKindOfClass($.NSDate);
-            safe.setObjectForKey(isDate ? $(value.timeIntervalSince1970) : this.text(value, value), key);
+            safe.setObjectForKey(this.jsonValue(value), key);
         }
         const data = $.NSJSONSerialization.dataWithJSONObjectOptionsError(safe, JSON_PRETTY, null);
         return $.NSString.alloc.initWithDataEncoding(data, $.NSUTF8StringEncoding).js;
+    },
+
+    jsonValue(value) {
+        if (value.isKindOfClass($.NSDate)) {
+            return $(value.timeIntervalSince1970);
+        }
+        const plain = [$.NSString, $.NSNumber, $.NSNull].some(kind => value.isKindOfClass(kind));
+        return plain ? value : this.text(value, value.description);
     },
 
     text(value, otherwise) {

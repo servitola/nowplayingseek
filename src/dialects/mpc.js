@@ -15,18 +15,22 @@ const asMpc = {
         if (Object.hasOwn(sent, command)) {
             return player.send(sent[command]);
         }
-        const state = player.requireState();
-        if (command === 'seek') {
-            const place = mpcSeek(args[0] || '', state.duration || 0);
-            return place ? move(place) : unknown('mpc', [command, ...args]);
+        if (command === 'volume') {
+            refuse('mpc', 'volume');
         }
         const words = {
-            undefined: () => this.status(state),
-            status: () => this.status(state),
-            current: () => print(this.current(state)),
+            undefined: state => this.status(state),
+            status: state => this.status(state),
+            current: state => print(this.current(state)),
             stop: () => asMediaControl.send(MC_COMMANDS.indexOf('stop')),
-            volume: () => refuse('mpc', 'volume'),
+            seek: state => {
+                const place = mpcSeek(args[0] || '', state.duration || 0);
+                return place ? move(place) : unknown('mpc', [command, ...args]);
+            },
         };
-        return Object.hasOwn(words, String(command)) ? words[String(command)]() : unknown('mpc', [command, ...args]);
+        if (!Object.hasOwn(words, String(command))) {
+            unknown('mpc', [command, ...args]);
+        }
+        return words[String(command)](player.requireState());
     },
 };

@@ -117,7 +117,9 @@
                                         "paintJson",
                                         "orderRaw",
                                         "formatChapter",
-                                        "humanNotes"
+                                        "humanNotes",
+                                        "withHuman",
+                                        "settingsTemplate"
                                     ],
                                     "variable": [
                                         "EXIT",
@@ -235,7 +237,9 @@
                     "orderRaw",
                     "formatChapter",
                     "humanNotes",
-                    "setOrToggle"
+                    "setOrToggle",
+                    "withHuman",
+                    "settingsTemplate"
                 ]
             },
             "linter": {

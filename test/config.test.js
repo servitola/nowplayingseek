@@ -68,4 +68,12 @@ function testSettings(core) {
         'settings: the printed config reads back the same'
     );
 }
-GROUPS.push(testMultiplier, testIni, testSettings);
+function testTemplate(core) {
+    const template = core.settingsTemplate();
+    same(core.parseIni(template).length, 0, 'template: nothing in it is in force, so a later default still reaches its owner');
+    same(template.includes('; step = 10'), true, 'template: every key is there, commented, with its default');
+    same(template.includes('[hold]'), true, 'template: the sections are real');
+    const uncommented = template.replace('; step = 10', 'step = 7');
+    same(core.resolveSettings(core.parseIni(uncommented)).values.seek.step, 7, 'template: uncomment a line and it is in force');
+}
+GROUPS.push(testMultiplier, testIni, testSettings, testTemplate);

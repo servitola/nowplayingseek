@@ -23,10 +23,8 @@ function showError(message) {
 }
 
 function showJson(value, indent, state) {
-    if (!terminal.colours()) {
-        return print(JSON.stringify(value, null, indent));
-    }
-    print(paintJson(value, humanNotes(value, { appName: terminal.appName(state), localTime: terminal.localTime })));
+    const shown = withHuman(value, humanNotes(value, { appName: terminal.appName(state), localTime: terminal.localTime }));
+    print(terminal.colours() ? paintJson(shown) : JSON.stringify(shown, null, indent));
 }
 
 function showStatus(state, multiplier) {

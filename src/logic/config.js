@@ -93,7 +93,7 @@ function resolveSettings(entries) {
     return { values, texts };
 }
 
-function formatSettings(texts) {
+function formatSettings(texts, keyPrefix = '') {
     return Object.entries(SETTINGS)
         .map(([section, specs]) => {
             const keys = Object.entries(specs).map(
@@ -101,9 +101,15 @@ function formatSettings(texts) {
                     `${spec.about
                         .split('\n')
                         .map(line => `; ${line}\n`)
-                        .join('')}${key} = ${texts[section][key]}`
+                        .join('')}${keyPrefix}${key} = ${texts[section][key]}`
             );
             return `[${section}]\n${keys.join('\n\n')}`;
         })
         .join('\n\n');
+}
+
+// Every key commented: a file of live defaults would keep its owner on yesterday's numbers for ever.
+function settingsTemplate() {
+    const intro = '; Remove the "; " in front of a line to put it in force. What stays commented follows the defaults.';
+    return `${intro}\n\n${formatSettings(resolveSettings([]).texts, '; ')}`;
 }

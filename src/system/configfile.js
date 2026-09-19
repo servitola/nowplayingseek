@@ -35,12 +35,7 @@ const configFile = {
         const directory = $(path).stringByDeletingLastPathComponent;
         const written =
             $.NSFileManager.defaultManager.createDirectoryAtPathWithIntermediateDirectoriesAttributesError(directory, true, $(), null)
-            && $(`${formatSettings(resolveSettings([]).texts)}\n`).writeToFileAtomicallyEncodingError(
-                path,
-                true,
-                $.NSUTF8StringEncoding,
-                null
-            );
+            && $(`${settingsTemplate()}\n`).writeToFileAtomicallyEncodingError(path, true, $.NSUTF8StringEncoding, null);
         if (!written) {
             throw new Failure(EXIT.config, `cannot write ${path}`);
         }

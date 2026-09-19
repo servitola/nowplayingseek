@@ -43,4 +43,27 @@ function testNotes(core) {
         'notes: the same for status --json'
     );
 }
-GROUPS.push(testChapters, testRaw, testNotes);
+function testValidJson(core) {
+    const esc = String.fromCharCode(27);
+    const plain = text =>
+        text
+            .split(esc)
+            .join('')
+            .replace(/\[[0-9;]*m/g, '');
+    const state = { title: 'A "quoted" title', app: 'org.videolan.vlc', duration: 300, position: 95.5, playing: true };
+    const shown = core.withHuman(state, core.humanNotes(state, { appName: 'VLC', localTime: () => 'then' }));
+    same(
+        JSON.stringify(shown.human),
+        '{"duration":"05:00","position":"01:35","app":"VLC"}',
+        'human: what a person reads is one object of its own'
+    );
+    same(shown.position, 95.5, 'human: what a program reads is untouched');
+    same(JSON.stringify(Object.keys(shown)), JSON.stringify([...Object.keys(state), 'human']), 'human: it comes last');
+    same(
+        JSON.stringify(JSON.parse(plain(core.paintJson(shown)))),
+        JSON.stringify(shown),
+        'copied from a terminal, the painted JSON is the same valid JSON'
+    );
+    same(Object.hasOwn(core.withHuman({ rate: 1 }, {}), 'human'), false, 'human: nothing to say, no empty object');
+}
+GROUPS.push(testChapters, testRaw, testNotes, testValidJson);

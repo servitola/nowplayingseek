@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 0.6.1 — 2026-09-19
+
 ### Changed
 - `stream` and `watch` in a terminal write a log, one line for one event: the time, what happened,
   and where — `13:06:54  ⏸ paused   05:19 / 08:47  ━━━━━━━━━───────`. The name of the item is a

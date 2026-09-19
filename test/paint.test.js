@@ -57,8 +57,8 @@ function testPaintChange(core) {
     const state = { title: 'Seven Samurai', artist: 'Kurosawa', position: 3961, duration: 12_420, playing: false };
     same(
         core.paintChange({ icon: '×', words: 'nothing is playing' }, '12:30:05', null, null),
-        `${inked(2, '12:30:05')}  ${inked(1, '× nothing is playing')}`,
-        'log: the clock dim, what happened bold'
+        `${inked(2, '12:30:05')}  ${inked(31, '×')} ${inked(1, 'nothing is playing')}`,
+        'log: the clock dim, the sign in its colour, what happened bold'
     );
     same(
         plain(core.paintChange({ icon: '♪', words: 'Seven Samurai — Kurosawa' }, '12:30:05', state, 'IINA')),
@@ -102,7 +102,7 @@ function testPaintText(core) {
     ].join('\n');
     const painted = core.paintUsage(usage);
     same(plain(painted), usage, 'usage: paint adds no character and takes none away');
-    same(painted.includes(inked(1, 'Move')), true, 'usage: a heading is bold');
+    same(painted.includes(inked(33, 'Move')), true, 'usage: a heading is yellow');
     same(painted.includes(`${inked(36, 'seek')} ${inked(2, '<time>')}`), true, 'usage: the word is in the accent, its argument dim');
     same(painted.includes('to a place: seek 754'), true, 'usage: what it does is left alone');
     same(painted.startsWith(inked(1, 'tool 1.0')), true, 'usage: the name and version are bold');
@@ -117,7 +117,7 @@ function testPaintText(core) {
     const paintedIni = core.paintIni(ini);
     same(plain(paintedIni), ini, 'ini: paint adds no character and takes none away');
     same(paintedIni.includes(inked(2, '; forward without a time')), true, 'ini: a comment is dim');
-    same(paintedIni.includes(inked(1, '[seek]')), true, 'ini: a section is bold');
+    same(paintedIni.includes(inked(33, '[seek]')), true, 'ini: a section is yellow, as a heading is');
     same(paintedIni.includes(`${inked(36, 'step')} = 10`), true, 'ini: a key is in the accent');
 }
 function testPaintJson(core) {
@@ -132,8 +132,13 @@ function testPaintJson(core) {
     const painted = core.paintJson(value);
     same(plain(painted), JSON.stringify(value, null, 2), 'json: the same text as a pretty print, colours aside');
     same(JSON.stringify(JSON.parse(plain(painted))), JSON.stringify(value), 'json: and it still parses');
-    same(painted.includes(`${inked(36, '"title"')}: "Seven \\"Samurai\\""`), true, 'json: a key is in the accent, a string is left alone');
-    same(painted.includes(`${inked(36, '"artist"')}: ${inked(2, 'null')}`), true, 'json: null is dim');
-    same(painted.includes(`${inked(36, '"position"')}: ${inked(1, '3961.5')}`), true, 'json: a number is bold');
+    same(
+        painted.includes(`${inked(34, '"title"')}: ${inked(32, '"Seven \\"Samurai\\""')}`),
+        true,
+        'json: a key is blue, a string is green'
+    );
+    same(painted.includes(`${inked(34, '"artist"')}: ${inked(2, 'null')}`), true, 'json: null is dim');
+    same(painted.includes(`${inked(34, '"position"')}: ${inked(33, '3961.5')}`), true, 'json: a number is yellow');
+    same(painted.includes(`${inked(34, '"playing"')}: ${inked(35, 'true')}`), true, 'json: a flag is magenta');
 }
 GROUPS.push(testPaint, testPaintChange, testPaintText, testPaintJson);

@@ -54,11 +54,13 @@ function testSkepticPaint(core) {
     const inked = (code, text) => `${esc}[${code}m${text}${esc}[0m`;
     const state = { title: 'Seven Samurai', artist: 'Kurosawa', position: 3961, duration: 12_420, playing: true };
     const line = core.paintStatus(state, { app: 'IINA', multiplier: 1.6, chapter: '6/13' });
-    same(line.includes(inked(36, '▶')), true, 'painted: the icon is in the accent');
-    same(line.includes(inked(36, '━━━━━') + inked(2, '───────────')), true, 'painted: the bar is accent, then dim');
+    same(line.includes(inked(32, '▶')), true, 'painted: playing is green');
+    same(line.includes(inked(32, '━━━━━') + inked(2, '───────────')), true, 'painted: the bar is green as well, then dim');
+    const pausedLine = core.paintStatus({ ...state, playing: false }, { app: 'IINA', multiplier: 1 });
+    same(pausedLine.includes(inked(33, '⏸')) && pausedLine.includes(inked(33, '━━━━━')), true, 'painted: paused is yellow, icon and bar');
     same(line.includes(`${inked(1, 'Seven Samurai')} — Kurosawa`), true, 'painted: the artist is plain');
-    same(line.includes(inked(2, 'ch 6/13')), true, 'painted: the chapter is dim');
-    same(line.includes(inked(36, '×1.6')), true, 'painted: the multiplier is in the accent');
+    same(line.includes(inked(36, 'ch 6/13')), true, 'painted: the chapter is in the accent');
+    same(line.includes(inked(33, '×1.6')), true, 'painted: the multiplier is a number, yellow');
     same(
         plain(core.paintStatus({ ...state, position: 15, duration: 160 }, { app: null, multiplier: 1 })).includes('  ━━──────────────  '),
         true,
@@ -88,9 +90,9 @@ function testSkepticPaint(core) {
 
     const json = core.paintJson({ off: false, on: true, below: -1 });
     same(
-        json.includes(inked(1, 'false')) && json.includes(inked(1, 'true')) && json.includes(inked(1, '-1')),
+        json.includes(inked(35, 'false')) && json.includes(inked(35, 'true')) && json.includes(inked(33, '-1')),
         true,
-        'json: false, true and a negative number are bold'
+        'json: false and true are magenta, a negative number is yellow like any number'
     );
     same(plain(core.paintJson({ nested: { a: 1 } }, { a: 'no' })).includes('no'), false, 'json: a note is for the top level only');
     same(plain(core.paintJson({ toString: 1 }, {})), '{\n  "toString": 1\n}', 'json: a key every object has gets no note');

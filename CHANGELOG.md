@@ -6,6 +6,10 @@ version, so keep that heading as it is.
 ## Unreleased
 
 ### Changed
+- A hold goes on for a minute before it ends by itself, not ten seconds (`[hold] max_time`). Ten
+  seconds cut a long seek short and made the hand start over from a slow step. The fuse is for a
+  release that never arrives, and that can no longer be lost on the way — it has a file of its own
+  — so the worst a stuck key does is reach the end of the item, where a step stops 5 s short.
 - `status --raw` puts first what one looks for first — title, length, position, chapter — and folds
   the four artwork keys into one `Artwork` object at the end.
 

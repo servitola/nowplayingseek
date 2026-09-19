@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 0.5.0 — 2026-09-19
+
 ### Added
 - The command lines of the tools people used before are understood, so that moving over is a change
   of one word: nowplaying-cli (`get`, `get --json`, `get-raw`, `togglePlayPause`) and media-control

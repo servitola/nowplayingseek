@@ -275,6 +275,22 @@ cases=$((cases + 1))
 expect_exit 'as shpotify: replay' 0 spotify replay
 expect_move 'as shpotify: replay' 0 0 0.5
 
+# Last, because it hands Now Playing to another player: a hold on VLC must leave that player alone.
+at 2:00
+guard
+"$bin" forward --hold --progressive >/dev/null 2>&1 &
+sleep 0.6
+pgrep -x 'QuickTime Player' >/dev/null || quicktime=launched
+osascript -e 'tell application "QuickTime Player" to play (open POSIX file "'"$work/silence.wav"'")' >/dev/null 2>&1
+sleep 2.5
+"$bin" release forward
+wait
+cases=$((cases + 1))
+theirs=$(osascript -e 'tell application "QuickTime Player" to return current time of document 1' 2>/dev/null)
+[ "$(echo "${theirs:-99} < 6" | bc)" = 1 ] || fail "a hold on VLC moved the player elected meanwhile: QuickTime is at ${theirs:-?} s after 2.5 s of playing"
+osascript -e 'tell application "QuickTime Player" to close every document saving no' >/dev/null 2>&1
+[ "${quicktime:-}" = launched ] && osascript -e 'tell application "QuickTime Player" to quit' >/dev/null 2>&1
+
 if [ "$failures" -gt 0 ]; then
 	echo "$failures of $cases live cases failed" >&2
 	exit 1

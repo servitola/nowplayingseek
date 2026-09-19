@@ -42,7 +42,7 @@ src/usage.js    the help page; after cli.js, because it names the version
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js` and run
 over `src/logic/`; `test/cli.test.sh` drives the built tool without a player; `test/live.test.sh`
 drives VLC. The lists are spelled out in the `Makefile`: a new file is not built or run until it is
-added there, and its globals are listed in `biome.json`.
+added there; `make globals` then writes its names into `biome.json`.
 
 ## Commands and gates
 
@@ -55,9 +55,16 @@ tree fails with "files were modified by this hook".
 - Biome with every stable rule as an error, plus its formatter; actionlint; shellcheck and shfmt.
   Versions are pinned in `.pre-commit-config.yaml`.
 - What is switched off, and why a symbol from another file is not "undeclared", is in `biome.json`
-  → `overrides`: a symbol used across files goes into the group's `globals`, one a file only
-  exports into `noUnusedVariables.ignore`. `src/logic/` gets no `$` and no `ObjC`. A rule goes off
+  → `overrides`: a symbol used across files goes into the group's `globals`, one a file
+  declares for others into `noUnusedVariables.ignore`. Both lists are written by `make globals`
+  (`scripts/globals.js`, from the `Makefile` lists and the top-level declarations); `make lint`
+  refuses when they are behind the sources. `src/logic/` gets no `$` and no `ObjC`. A rule goes off
   only when it cannot hold for JXA — say why in the commit.
+- `make coverage`: which lines of `src/logic/` the unit tests never reach, counted by V8 under
+  node, no dependency. It is 100 %, and that says little: a mutation run caught 73.6 % of breakages
+  in the same code. A reached line is not a protected one. `make typecheck`: TypeScript's checker
+  over the built file, not strict — a wrong name, a wrong count of arguments, a property nothing
+  has. Both are for development; CI runs neither.
 - No `*.js` in `src/` or `test/` over 200 physical lines (Biome's own rule skips the lines of a
   template literal, the hook does not). Functions: 50 lines, 4 parameters, complexity 15.
 

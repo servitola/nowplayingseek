@@ -106,10 +106,10 @@ const player = {
 
     stillHeld(direction, app, steppedAt) {
         const { interval, max_time } = this.settings.hold;
+        delay(Math.max(SHORTEST_INTERVAL, interval - (now() - steppedAt)));
         if (mediaRemote.read()?.app !== app) {
             return false;
         }
-        delay(Math.max(SHORTEST_INTERVAL, interval - (now() - steppedAt)));
         const held = holdContinues(holdFile.read(), HOLD_TOKEN, releaseFiles[direction].read(), PROCESS_STARTED);
         return held && now() - PROCESS_STARTED < max_time;
     },
@@ -124,11 +124,13 @@ const player = {
         const { timing } = this.settings;
         let after = null;
         let sentAt = calledAt;
+        let resent = 0;
         const landed = waitUntil(() => {
             after = mediaRemote.read();
             const superseded = lastSeekFile.read()?.target !== target;
-            if (seekOvertaken(after, target, { sentAt, superseded, verifyTimeout: timing.verify_timeout })) {
+            if (seekOvertaken(after, target, { sentAt, superseded, resent, verifyTimeout: timing.verify_timeout })) {
                 sentAt = now();
+                resent += 1;
                 mediaRemote.setElapsedTime(target);
             }
             return seekLanded(after, target, { calledAt, superseded, verifyTimeout: timing.verify_timeout });

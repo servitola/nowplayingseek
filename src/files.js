@@ -29,9 +29,12 @@ const releaseFiles = { 1: jsonFile('release-forward'), [-1]: jsonFile('release-b
 // one press is lost. A lock left by a process that died is broken after LOCK_PATIENCE.
 function locked(action) {
     const lock = $.NSDistributedLock.lockWithPath(`${TEMPORARY}nowplayingseek.lock`);
-    const giveUp = now() + LOCK_PATIENCE;
+    const started = now();
     while (!lock.tryLock) {
-        if (now() > giveUp) {
+        if (now() - started > LOCK_PATIENCE * 2) {
+            return action();
+        }
+        if (now() - started > LOCK_PATIENCE) {
             // biome-ignore lint/suspicious/noUnusedExpressions: JXA calls a no-argument ObjC method by reading the property
             lock.breakLock;
         }

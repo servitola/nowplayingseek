@@ -24,6 +24,9 @@ version, so keep that heading as it is.
   lists in `biome.json` that were kept by hand.
 
 ### Fixed
+- `watch` left its first line on the screen in terminals that draw ▶ two cells wide: a line that
+  reaches the edge wraps, and the redraw clears only its last row. The line now stops four cells
+  short of the edge.
 - `watch` and `stream` end when their reader does. They used to learn of a closed pipe from their
   next write, and with nothing changing in the player there was none: `stream | head -2` left a
   process behind until the next play or pause.

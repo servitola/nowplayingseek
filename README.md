@@ -45,6 +45,8 @@ Shortcuts.app, [Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hamme
 
 ## A knob
 
+<p align="center"><img src="docs/images/banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along" width="100%"></p>
+
 If you have a mechanical keyboard with a knob, it is a jog wheel.
 Turned slowly, it moves by seconds. Flicked, by minutes.
 

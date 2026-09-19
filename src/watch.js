@@ -1,4 +1,7 @@
 const REDRAW = `\r${ESCAPE}[K`;
+// Some terminals draw ▶ and ⏸ two cells wide, and nothing tells us which. A line that reaches the
+// edge wraps, the carriage return then clears only its last row, and the rest stays on the screen.
+const EDGE_MARGIN = 4;
 
 // The last line is redrawn in place with a carriage return and nothing else: osascript cannot
 // catch Ctrl-C, so the terminal must never be left in a state that needs undoing.
@@ -34,7 +37,7 @@ const watching = {
     painted({ live }) {
         let previous = this.read();
         let started = false;
-        this.write(live ? this.status(previous, terminal.columns()) : this.opening(previous));
+        this.write(live ? this.status(previous, terminal.columns() - EDGE_MARGIN) : this.opening(previous));
         while (!terminal.readerGone()) {
             delay(player.settings.watch.interval);
             const current = this.read();
@@ -43,7 +46,7 @@ const watching = {
                 this.write((live ? REDRAW : '') + this.log(logOf(change, current), current));
             }
             if (live) {
-                this.write(REDRAW + this.status(current, terminal.columns()));
+                this.write(REDRAW + this.status(current, terminal.columns() - EDGE_MARGIN));
             }
             started = true;
             previous = current;

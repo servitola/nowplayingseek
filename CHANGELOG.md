@@ -6,6 +6,9 @@ version, so keep that heading as it is.
 ## Unreleased
 
 ### Added
+- In a terminal the status line is painted: the position bold, the length dim, a bar of where you
+  are, the title bold, the app by its name — `· IINA`, not `(com.colliderli.iina)`. A pipe gets the
+  line it always got, and `NO_COLOR` or `TERM=dumb` switch the paint off.
 - `nps`, a short name for the same tool: `nps forward`, `nps status`. Free in Homebrew; an npm
   package of that name exists, and whichever comes first in `PATH` wins.
 

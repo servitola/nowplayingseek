@@ -36,6 +36,13 @@ function print(text, toStderr) {
     handle.writeData($(`${text}\n`).dataUsingEncoding($.NSUTF8StringEncoding));
 }
 
+function showStatus(state, multiplier) {
+    if (terminal.colours()) {
+        return print(paintStatus(state, { app: terminal.appName(state), multiplier }));
+    }
+    print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
+}
+
 function timeArgument(command, text, fallback) {
     if (text === undefined && fallback !== undefined) {
         return fallback;
@@ -95,8 +102,7 @@ const seekCommand = direction => (args, name) => {
         throw new Failure(EXIT.usage, `${name} needs a step above zero`);
     }
     const { state, multiplier } = player.seekBy(direction * step, { progressive, hold, knob });
-    const shown = Number(multiplier.toFixed(1));
-    print(formatStatus(state) + (shown === 1 ? '' : `  ×${shown}`));
+    showStatus(state, Number(multiplier.toFixed(1)));
 };
 
 const COMMANDS = {
@@ -105,7 +111,7 @@ const COMMANDS = {
         if (args.includes('--raw')) {
             return print(JSON.stringify(mediaRemote.raw(), null, RAW_INDENT));
         }
-        print(args.includes('--json') ? JSON.stringify(state) : formatStatus(state));
+        return args.includes('--json') ? print(JSON.stringify(state)) : showStatus(state, 1);
     },
     position() {
         printSeconds(player.requireState(), 'position');
@@ -122,7 +128,7 @@ const COMMANDS = {
         if (args.length > 1) {
             throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
         }
-        print(formatStatus(player.seekTo(timeArgument('seek', args[0]))));
+        showStatus(player.seekTo(timeArgument('seek', args[0])), 1);
     },
     doctor() {
         if (!mediaRemote.read()) {

@@ -29,6 +29,7 @@ So I made this. [The longer story](docs/how-it-works.md#why-it-exists).
 brew install servitola/tap/nowplayingseek
 ```
 
+It comes through [Homebrew](https://brew.sh); if `brew` is not on this Mac yet, the one line on its front page puts it there.
 One script, also installed as `nps`. No dependencies. It runs on `osascript`, which is already there.
 
 Homebrew 7 wants third-party taps trusted: the full name above trusts this one formula, no more.
@@ -40,8 +41,15 @@ Give `forward` and `backward` a key each. A press is ten seconds.
 Hold the key and it moves off in small steps, gathers pace, then settles. Release, and it stops.
 A short hold stays short. A long one crosses the film.
 
-Shortcuts.app, [Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd:
-[docs/hotkeys.md](docs/hotkeys.md).
+With nothing but what the Mac came with — the Shortcuts app:
+
+1. Shortcuts → **+** → find the action **Run Shell Script**.
+2. In its box: `/opt/homebrew/bin/nowplayingseek forward 30` (on an Intel Mac, `/usr/local/bin/…`).
+3. The first run asks for Shortcuts → Settings → Advanced → **Allow Running Scripts**.
+4. **ⓘ** → **Add Keyboard Shortcut**, press the keys you want. Make a second one with `backward 30`.
+
+A key from Shortcuts is a press, never a hold. For the hold, and for a knob:
+[Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd — [docs/hotkeys.md](docs/hotkeys.md).
 
 ## A knob
 

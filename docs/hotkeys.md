@@ -61,8 +61,11 @@ longer. The step, the limit and what counts as fast are `[knob]` in the
 
 ## Other tools
 
-Without third-party software: Shortcuts.app → new shortcut → "Run Shell Script" →
-`/opt/homebrew/bin/nowplayingseek forward 10` → ⓘ → "Add Keyboard Shortcut".
+Without third-party software, the Shortcuts app: **+** → the action **Run Shell Script** →
+`/opt/homebrew/bin/nowplayingseek forward 30` → **ⓘ** → **Add Keyboard Shortcut**. The first run
+asks for Settings → Advanced → **Allow Running Scripts**. The full path matters: Shortcuts runs a
+script with a bare `PATH`. It tells a press, not a release, so `--hold` is not for it; give the
+step you want in the command. The same shortcut can sit in the menu bar or answer to Siri.
 
 Hammerspoon, in `~/.hammerspoon/init.lua`:
 

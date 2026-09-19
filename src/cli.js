@@ -5,8 +5,6 @@ const PROGRESSIVE_FLAG = '--progressive';
 const HOLD_FLAG = '--hold';
 const KNOB_FLAG = '--knob';
 const SEEK_FLAGS = [PROGRESSIVE_FLAG, HOLD_FLAG, KNOB_FLAG];
-const PRINTED_DECIMALS = 3;
-const RAW_INDENT = 2;
 const STDERR = 2;
 
 function print(text, toStderr) {
@@ -22,19 +20,6 @@ function showError(message) {
     print(`${painted ? paintError('nowplayingseek:') : 'nowplayingseek:'} ${first}${tail}`, true);
 }
 
-function showJson(value, indent, state) {
-    const shown = withHuman(value, humanNotes(value, { appName: terminal.appName(state), localTime: terminal.localTime }));
-    print(terminal.colours() ? paintJson(shown) : JSON.stringify(shown, null, indent));
-}
-
-function showStatus(state, multiplier) {
-    if (terminal.colours()) {
-        const chapter = formatChapter(mediaRemote.raw(state) || {});
-        return print(paintStatus(state, { app: terminal.appName(state), multiplier, chapter }));
-    }
-    print(formatStatus(state) + (multiplier === 1 ? '' : `  ×${multiplier}`));
-}
-
 function timeArgument(command, text, fallback) {
     if (text === undefined && fallback !== undefined) {
         return fallback;
@@ -46,19 +31,30 @@ function timeArgument(command, text, fallback) {
     return seconds;
 }
 
-function printSeconds(state, field) {
-    if (isMissing(state[field])) {
-        throw new Failure(EXIT.ignored, `${state.app || 'player'} does not report its ${field}`);
-    }
-    print(state[field].toFixed(PRINTED_DECIMALS));
+function sendCommand(_args, name, output) {
+    player.send(name);
+    show(player.requireState(), output);
 }
 
-const sendCommand = (_args, name) => player.send(name);
+const SPEAKING = [
+    'status',
+    'position',
+    'duration',
+    'forward',
+    'backward',
+    'seek',
+    'toggle',
+    'play',
+    'pause',
+    'next',
+    'previous',
+    'doctor',
+    'config',
+];
 
 const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
 const FLAGS = {
-    status: ['--json', '--raw'],
     get: null,
     stream: null,
     release: Object.keys(DIRECTIONS),
@@ -72,12 +68,13 @@ function rejectUnknownArguments(name, args) {
     const allowed = Object.hasOwn(FLAGS, name) ? FLAGS[name] : [];
     const unknown = allowed === null ? [] : args.filter(arg => !allowed.includes(arg));
     if (unknown.length > 0) {
-        const takes = allowed.length > 0 ? `only ${allowed.join(', ')}` : 'no arguments';
+        const known = SPEAKING.includes(name) ? [...allowed, '--json', '--raw', '--minify'] : allowed;
+        const takes = known.length > 0 ? `only ${known.join(', ')}` : 'no arguments';
         throw new Failure(EXIT.usage, `${name} takes ${takes}, got "${unknown.join(' ')}"`);
     }
 }
 
-const seekCommand = direction => (args, name) => {
+const seekCommand = direction => (args, name, output) => {
     const [time, ...extra] = args.filter(arg => !SEEK_FLAGS.includes(arg));
     if (extra.length > 0) {
         throw new Failure(
@@ -94,44 +91,47 @@ const seekCommand = direction => (args, name) => {
         throw new Failure(EXIT.usage, `${name} needs a step above zero`);
     }
     const { state, multiplier } = player.seekBy(direction * step, { progressive, hold, knob });
-    showStatus(state, Number(multiplier.toFixed(1)));
+    show(state, output, Number(multiplier.toFixed(1)));
 };
 
 const COMMANDS = {
-    status(args) {
-        const state = player.requireState();
-        if (args.includes('--raw')) {
-            return showJson(orderRaw(mediaRemote.raw(state)), RAW_INDENT, state);
-        }
-        return args.includes('--json') ? showJson(state, 0, state) : showStatus(state, 1);
+    status(_args, _name, output) {
+        show(player.requireState(), output);
     },
-    position() {
-        printSeconds(player.requireState(), 'position');
+    position(_args, _name, output) {
+        showSeconds(player.requireState(), 'position', output);
     },
-    duration() {
-        printSeconds(player.requireState(), 'duration');
+    duration(_args, _name, output) {
+        showSeconds(player.requireState(), 'duration', output);
     },
     forward: seekCommand(1),
     backward: seekCommand(-1),
-    seek(args) {
+    seek(args, _name, output) {
         if (args.includes('--micros')) {
             return asMediaControl.seek(args);
         }
         if (args.length > 1) {
             throw new Failure(EXIT.usage, `seek takes one time, got "${args.slice(1).join(' ')}" on top`);
         }
-        showStatus(player.seekTo(timeArgument('seek', args[0])), 1);
+        show(player.seekTo(timeArgument('seek', args[0])), output);
     },
-    doctor() {
-        if (!mediaRemote.read()) {
+    doctor(_args, _name, output) {
+        const state = mediaRemote.read();
+        if (!state) {
             throw new Failure(
                 EXIT.nothingPlaying,
                 'nothing readable — either nothing has played since login, or this macOS no longer lets osascript read Now Playing'
             );
         }
+        if (output.shape !== 'line') {
+            return showJson({ ok: true, app: state.app }, output, state);
+        }
         print('ok: Now Playing is readable');
     },
-    config(args) {
+    config(args, _name, output) {
+        if (output.shape !== 'line') {
+            return showJson({ path: configFile.path(), found: configFile.exists(), settings: configFile.load().values }, output, null);
+        }
         if (args.length === 1 && args[0] === 'init') {
             return print(`wrote ${configFile.init()}`);
         }
@@ -180,11 +180,13 @@ function run(argv) {
             throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);
         }
         player.settings = configFile.load().values;
-        rejectUnknownArguments(name, args);
+        const output = takeOutput(SPEAKING.includes(name) && !args.includes('--micros') ? args : []);
+        const asked = SPEAKING.includes(name) && !args.includes('--micros') ? output.rest : args;
+        rejectUnknownArguments(name, asked);
         if (!OFFLINE.includes(name)) {
             mediaRemote.load();
         }
-        COMMANDS[name](args, name);
+        COMMANDS[name](asked, name, output);
     } catch (error) {
         if (!(error instanceof Failure)) {
             throw error;

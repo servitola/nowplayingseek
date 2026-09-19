@@ -23,7 +23,7 @@ fail() {
 	echo "FAIL $1" >&2
 }
 
-field() { "$bin" status --json 2>/dev/null | sed -n "s/,\"human\":.*//;s/.*\"$1\":\([^,}]*\).*/\1/p" | tr -d '"'; }
+field() { "$bin" status --minify 2>/dev/null | sed -n "s/,\"human\":.*//;s/.*\"$1\":\([^,}]*\).*/\1/p" | tr -d '"'; }
 
 # The owner may press play elsewhere at any moment; never send a command to another app.
 guard() {

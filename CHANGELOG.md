@@ -6,6 +6,11 @@ version, so keep that heading as it is.
 ## Unreleased
 
 ### Added
+- The command lines of the tools people used before are understood, so that moving over is a change
+  of one word: nowplaying-cli (`get`, `get --json`, `get-raw`, `togglePlayPause`) and media-control
+  (`get`, `stream`, its fourteen commands, `send`, `shuffle`, `repeat`, `speed`) directly; playerctl,
+  mpc and shpotify behind their names — `nowplayingseek playerctl position 30+`. What is and is
+  not supported: docs/migrating.md.
 - `make test-live`: the live checklist as a script — VLC on generated silence, paused, 29 cases.
 - `status --raw`: every key macOS holds for the item, as JSON — chapters, media type, the size of
   the artwork, the file's URL where the player gives one.

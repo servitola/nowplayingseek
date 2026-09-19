@@ -2,6 +2,8 @@
 
 [← README](../README.md)
 
+<p align="center"><img src="banner-how-it-works.webp" alt="The panda shines a flashlight into an opened glass player full of gears and wires" width="100%"></p>
+
 ## Why it exists
 
 I like a computer that obeys keys. My [dotfiles](https://github.com/servitola/dotfiles) are mostly

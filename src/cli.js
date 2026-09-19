@@ -22,8 +22,11 @@ function showError(message) {
     print(`${painted ? paintError('nowplayingseek:') : 'nowplayingseek:'} ${first}${tail}`, true);
 }
 
-function showJson(value, indent) {
-    print(terminal.colours() ? paintJson(value) : JSON.stringify(value, null, indent));
+function showJson(value, indent, state) {
+    if (!terminal.colours()) {
+        return print(JSON.stringify(value, null, indent));
+    }
+    print(paintJson(value, humanNotes(value, { appName: terminal.appName(state), localTime: terminal.localTime })));
 }
 
 function showStatus(state, multiplier) {
@@ -100,9 +103,9 @@ const COMMANDS = {
     status(args) {
         const state = player.requireState();
         if (args.includes('--raw')) {
-            return showJson(orderRaw(mediaRemote.raw()), RAW_INDENT);
+            return showJson(orderRaw(mediaRemote.raw(state)), RAW_INDENT, state);
         }
-        return args.includes('--json') ? showJson(state, 0) : showStatus(state, 1);
+        return args.includes('--json') ? showJson(state, 0, state) : showStatus(state, 1);
     },
     position() {
         printSeconds(player.requireState(), 'position');

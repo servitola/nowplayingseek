@@ -34,6 +34,7 @@ const USAGE_ARGUMENT = /(<[^>]*>|\[[^\]]*\]|\|)/;
 const TITLE = /^(\S+ \S+)(.*)$/;
 const INI_KEY = /^([^=;[\s][^=]*?)( *=.*)$/;
 const JSON_LINE = /^(\s*)("(?:[^"\\]|\\.)*")?(: )?(.*?)(,?)$/;
+const TOP_LEVEL = 2;
 const JSON_NUMBER = /^-?\d/;
 
 const paintWords = words =>
@@ -77,14 +78,16 @@ function paintJsonValue(text) {
     return JSON_NUMBER.test(text) || text === 'true' || text === 'false' ? ink('bold', text) : text;
 }
 
-function paintJson(value) {
+function paintJson(value, notes = {}) {
     return JSON.stringify(value, null, 2)
         .split('\n')
         .map(line => {
             const [, indent, key, colon, rest, comma] = JSON_LINE.exec(line);
             const isKey = key !== undefined && colon !== undefined;
             const shown = isKey ? ink('accent', key) + colon + paintJsonValue(rest) : paintJsonValue((key || '') + rest);
-            return indent + shown + comma;
+            const name = isKey && indent.length === TOP_LEVEL ? JSON.parse(key) : null;
+            const note = name !== null && Object.hasOwn(notes, name) ? ink('dim', `  ${notes[name]}`) : '';
+            return indent + shown + comma + note;
         })
         .join('\n');
 }

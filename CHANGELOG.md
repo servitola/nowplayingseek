@@ -6,6 +6,11 @@ version, so keep that heading as it is.
 ## Unreleased
 
 ### Changed
+- `config init` writes every key commented out. A file of live defaults kept its owner on the
+  numbers of the day it was written: the fuse stayed at 10 s on the very machine it was raised on.
+- What a person reads next to a value — a clock, the app's name, the local time — is one `human`
+  object at the end of `status --json` and `--raw`, in a pipe as well. Written after the values in a
+  terminal, as it briefly was, it made the copied text invalid JSON.
 - A hold goes on for a minute before it ends by itself, not ten seconds (`[hold] max_time`). Ten
   seconds cut a long seek short and made the hand start over from a slow step. The fuse is for a
   release that never arrives, and that can no longer be lost on the way — it has a file of its own
@@ -28,9 +33,7 @@ version, so keep that heading as it is.
 - In a terminal everything is painted for the eye: the help page in sections with the commands in
   one colour and their arguments dim, `status --json` and `--raw` indented with keys, numbers and
   nulls told apart, `config` with its comments dim, an error with its first word in red. A pipe
-  gets exactly what it got before. Next to a value a program needs, the terminal writes what a
-  person would: a length as a clock, the time as this Mac writes dates, the media type in a word, a
-  file URL as a path, the app by its name.
+  gets exactly what it got before.
 - In a terminal the status line is painted: the position bold, the length dim, a bar of where you
   are, the title bold, the chapter when the player tells it (`ch 6/13`), the app by its name — `· IINA`, not `(com.colliderli.iina)`. A pipe gets the
   line it always got, and `NO_COLOR` or `TERM=dumb` switch the paint off.

@@ -61,3 +61,8 @@ function humanNotes(values, { appName, localTime }) {
     }
     return notes;
 }
+
+// Beside the values, not among them: whatever a person copies from the terminal stays valid JSON.
+function withHuman(values, notes) {
+    return Object.keys(notes).length > 0 ? { ...values, human: notes } : values;
+}

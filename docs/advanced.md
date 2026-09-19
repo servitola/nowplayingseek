@@ -77,7 +77,7 @@ whether the player ended up where the hold left it.
 
 `~/.config/nowplayingseek/config.ini` (`$XDG_CONFIG_HOME/nowplayingseek/config.ini` when
 that is set). The file is optional and so is every key in it; `nowplayingseek config init`
-writes one with the defaults and a comment per key, `nowplayingseek config` prints what
+writes one with every key commented out — remove the `; ` in front of a line to put it in force —, `nowplayingseek config` prints what
 is in effect.
 
 Comments are whole lines starting with `;` or `#`. An unknown section or key, or a value

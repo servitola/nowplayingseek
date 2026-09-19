@@ -4,18 +4,28 @@
 
 ## Why it exists
 
-I wanted two keys on my keyboard: 10 seconds back and 10 seconds forward, for whatever
-is playing, whichever app has the focus. macOS cannot do that. Its media keys cover
-play/pause, next and previous; the `fast_forward` / `rewind` keys give you neither a
-position nor a step of your choice; and a player's own arrow-key shortcuts work only
-while its window is focused — and differ from player to player.
+I like a computer that obeys keys. My [dotfiles](https://github.com/servitola/dotfiles) are mostly
+that: a Hyper key, layers, a shortcut for everything I do twice. Media had its keys too — play,
+pause, next — and one day I added the two that were missing, rewind and fast forward. macOS has
+such signals; a keyboard can send them.
 
-So this is a command that seeks the current item by exactly the step you ask for, and
-any hotkey tool can call it — see [Hotkeys](hotkeys.md).
+They were a disappointment. They give neither a position nor a step of your choosing, and every
+player takes them in its own way. There was no "ten seconds back", the one thing I wanted when I
+missed a line in a film or a punch in a fight. A player's own arrow keys do it — while its window
+is in front, and every player in its own way.
 
-It gets better if your keyboard has a rotary knob, as many mechanical ones do. Bind the
-two directions of the knob to `forward` and `backward` and it becomes a jog wheel: turn it
-to scrub through the video or the podcast, in any app, without reaching for the mouse.
+So I wanted to do the seeking myself: read where the player is, add ten seconds, tell it to go
+there. macOS knows all of that — it is the thing in the Control Center widget — and keeps it
+behind a private door. I tried the tools that open it. One had stood broken since macOS 15.4;
+the other read the position and would not move by a step.
+
+Then a friend bought a keyboard with a knob. Out of the box the knob is volume. He wanted it to
+wind the video he was watching, in whatever app, like the jog wheel of an editing desk — slowly
+to find a word, with a flick to cross a scene. There was nothing to bind it to.
+
+That was reason enough. This tool is the command behind those keys and that knob: it seeks what
+plays by the step you ask for, from anywhere — see [Hotkeys](hotkeys.md). The rest of this page is
+what it took.
 
 ## Why it is a script
 

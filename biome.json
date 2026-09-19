@@ -70,7 +70,14 @@
             }
         },
         {
-            "includes": ["src/logic/core.js", "src/logic/words.js", "src/logic/config.js"],
+            "includes": [
+                "src/logic/time.js",
+                "src/logic/seek.js",
+                "src/logic/hold.js",
+                "src/logic/stream.js",
+                "src/logic/words.js",
+                "src/logic/config.js"
+            ],
             "javascript": {
                 "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS"]
             },

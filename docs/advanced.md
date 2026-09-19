@@ -8,8 +8,8 @@ Nothing here is needed for everyday use.
 
 With `--progressive` the step grows the longer the key is held, a little with every step. A press
 is always one whole step. Keep the key down and it glides off in small steps, so a short hold
-stays short; then it gathers pace and settles at two and a half times the step. A hold ends by
-itself after ten seconds, which is about twelve minutes of film: nobody seeks further by a key.
+stays short; then it gathers pace and settles at two and a half times the step: ten seconds of
+holding are about twelve minutes of film, twenty are half an hour.
 
 | held | each step | in total |
 | --- | --- | --- |
@@ -67,7 +67,7 @@ before it, so switching direction needs no release in between, and a hold ends b
 ```ini
 [hold]
 interval = 0.2
-max_time = 10
+max_time = 60
 ```
 
 It does not wait for a step to land before the next one, only for the last: the exit code tells

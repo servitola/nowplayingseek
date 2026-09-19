@@ -30,7 +30,7 @@ const SETTINGS = {
     },
     hold: {
         interval: setting('0.2', 'forward / backward --hold: pause between steps while the key is down'),
-        max_time: setting('10', 'a --hold stops by itself after this long, in case the release never arrives'),
+        max_time: setting('60', 'a --hold stops by itself after this long, in case the release never arrives'),
     },
     timing: {
         verify_timeout: setting('2.5', 'how long to wait for the player to do what was asked before exit 2'),

@@ -36,6 +36,9 @@ const player = {
     seekTo(wanted) {
         const before = this.requirePosition();
         const target = clampTarget(wanted, before.duration);
+        if (alreadyThere(before.position, target)) {
+            return before;
+        }
         const at = now();
         mediaRemote.setElapsedTime(target);
         lastSeekFile.write({ target, at, app: before.app });

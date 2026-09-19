@@ -120,7 +120,8 @@
                                         "effectiveRate",
                                         "MICROSECONDS",
                                         "PERCENT",
-                                        "SECONDS_PER_MINUTE"
+                                        "SECONDS_PER_MINUTE",
+                                        "alreadyThere"
                                     ]
                                 }
                             }
@@ -210,7 +211,8 @@
                     "appName",
                     "refuse",
                     "unknown",
-                    "move"
+                    "move",
+                    "alreadyThere"
                 ]
             },
             "linter": {

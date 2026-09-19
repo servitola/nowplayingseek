@@ -97,6 +97,37 @@ player false && told 'as media-control: it exits 0 all the same' 0 'setElapsedTi
 player false true && told 'as nowplaying-cli: it exits 0 all the same' 0 'send 1;' nowplaying-cli pause
 player false true && told 'as playerctl: it does not' 2 'send 1;' playerctl pause
 
+# said <name> <expected lines joined by ;> — what `watch` and `stream` said, piped, while the player was told things
+said() {
+	cases=$((cases + 1))
+	got=$(tr '\n' ';' <"$work/said")
+	[ "$got" = "$2" ] || fail "$1: said \"$got\", expected \"$2\""
+	case $got in *"$(printf '\033')"*) fail "$1: paint in a pipe" ;; esac
+}
+
+listen() {
+	player true
+	printf '[watch]\ninterval = 0.1\n' >>"$work/fake/xdg/nowplayingseek/config.ini"
+	NPS_FAKE=$work/fake XDG_CONFIG_HOME=$work/fake/xdg "$bin" "$@" >"$work/said" 2>&1 &
+	listener=$!
+	sleep 1
+	for words in play 'seek 5:00' pause; do
+		# shellcheck disable=SC2086
+		NPS_FAKE=$work/fake XDG_CONFIG_HOME=$work/fake/xdg "$bin" $words >/dev/null 2>&1
+		sleep 0.6
+	done
+	rm "$work/fake/state.json"
+	sleep 0.6
+	kill "$listener" 2>/dev/null
+	wait "$listener" 2>/dev/null
+}
+
+listen watch
+said 'watch, piped: the line, then each event and the line after it' '⏸ 02:00 / 10:00  T — A  (fake.player);▶ played;▶ 02:00 / 10:00  T — A  (fake.player);⇥ seeked to 05:00;▶ 05:00 / 10:00  T — A  (fake.player);⏸ paused;⏸ 05:00 / 10:00  T — A  (fake.player);× nothing is playing;'
+
+listen stream --no-artwork
+sed 's/"timestamp":"2[^"]*"/"timestamp":"now"/' "$work/said" >"$work/said.still" && mv "$work/said.still" "$work/said"
+said 'stream, piped: the item whole, then only what changed, then nothing' '{"type":"data","diff":false,"payload":{}};{"type":"data","diff":false,"payload":{"processIdentifier":1,"bundleIdentifier":"fake.player","playing":false,"title":"T","artist":"A","duration":600,"elapsedTime":120,"timestamp":"1970-01-01T00:00:01Z","playbackRate":0}};{"type":"data","diff":true,"payload":{"playing":true,"playbackRate":1}};{"type":"data","diff":true,"payload":{"elapsedTime":300,"timestamp":"now"}};{"type":"data","diff":true,"payload":{"playing":false,"playbackRate":0}};{"type":"data","diff":false,"payload":{}};'
 player true && rm "$work/fake/state.json"
 told 'nothing is playing' 1 '' status
 told 'nothing is playing: transport' 1 '' pause

@@ -367,6 +367,9 @@
                     "security": {
                         "noSecrets": "off"
                     },
+                    "style": {
+                        "useNamingConvention": "off"
+                    },
                     "correctness": {
                         "noUnusedVariables": "off"
                     }

@@ -8,6 +8,11 @@ version, so keep that heading as it is.
 ## 0.6.1 — 2026-09-19
 
 ### Changed
+- Colour says something now. Playing is green and paused is yellow — the sign, the bar, the line in
+  the log; a seek is blue, a new item magenta, nothing playing red. In JSON a key is blue, a string
+  green, a number yellow, `true` and `false` magenta. Headings of the help and sections of `config`
+  are yellow. Only the terminal's own sixteen colours are used, so the reader's theme decides
+  what green is. A pipe, `NO_COLOR` and `TERM=dumb` get plain text, as before.
 - `stream` and `watch` in a terminal write a log, one line for one event: the time, what happened,
   and where — `13:06:54  ⏸ paused   05:19 / 08:47  ━━━━━━━━━───────`. The name of the item is a
   line of its own, written when it changes. Before, an event and a full status line took turns,

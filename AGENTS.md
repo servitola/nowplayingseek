@@ -22,7 +22,7 @@ src/logic/      knows nothing of macOS — every function here has a unit test
     stream.js       what changed between two reads
     item.js         the order of --raw; the chapter as 6/13; the `human` block
     watch.js        what happened between two reads, in a word; fitting a line to the terminal
-    paint.js        what a terminal gets: the status line, the help page, JSON, ini — bold, dim, one hue
+    paint.js        what a terminal gets: the status line, the help page, JSON, ini — bold, dim and the sixteen colours, each with a meaning
     words.js        the seek words of playerctl and mpc; playerctl's format strings
     config.js       the SETTINGS table; ini
 src/system/     the only place with $ and ObjC
@@ -107,15 +107,15 @@ tree fails with "files were modified by this hook".
 
 ## The demo picture
 
-`docs/demo.svg` in the README is drawn by the real painters over sample data. When the painted
+`docs/images/demo.svg` in the README is drawn by the real painters over sample data. When the painted
 output changes, run the owner's `~/projects/serho_topics/аудио-управлятор/outreach/demo.sh` and
 commit the result; a picture that shows yesterday's output is a false claim.
 
 ## The banners
 
-`docs/banner*.webp`: one panda, one sunset, one scene per page. 1600×800, WebP q85, no text in the
+`docs/images/banner*.webp`: one panda, one sunset, one scene per page. 1600×800, WebP q85, no text in the
 picture — image models misspell it, the heading says it. They are drawn by fal.ai
-`openai/gpt-image-2.5/sunburst/edit` with `docs/banner.webp` as the reference image, which is what
+`openai/gpt-image-2.5/sunburst/edit` with `docs/images/banner.webp` as the reference image, which is what
 keeps the panda the same; FLUX Kontext will not change its pose. The scenes are in the owner's
 `~/projects/serho_topics/аудио-управлятор/banner-series/gen.py`. A scene must show the action: the
 paw on the knob, the finger on the key.

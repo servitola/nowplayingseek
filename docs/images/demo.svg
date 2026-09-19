@@ -1,33 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="617" height="629" viewBox="0 0 617 629" role="img" aria-label="nps status, backward, seek and status --json in a terminal">
-<rect width="617" height="629" rx="10" fill="#16181d"/>
-<g fill="#3a3f4b"><circle cx="20" cy="18" r="5"/><circle cx="38" cy="18" r="5"/><circle cx="56" cy="18" r="5"/></g>
-<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#d7dae0">
-<text x="22" y="50" xml:space="preserve"><tspan fill-opacity="0.45">$ </tspan><tspan font-weight="700">nps status</tspan></text>
-<text x="22" y="71" xml:space="preserve"><tspan fill="#5fd7d7">▶</tspan><tspan> </tspan><tspan font-weight="700">30:57</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#5fd7d7">━━</tspan><tspan fill-opacity="0.5">──────────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill-opacity="0.5">ch 3/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" width="617" height="692" viewBox="0 0 617 692" role="img" aria-label="nps status, backward, seek, pause and status --json in a terminal">
+<rect width="617" height="692" rx="10" fill="#282828"/>
+<g fill="#504945"><circle cx="20" cy="18" r="5"/><circle cx="38" cy="18" r="5"/><circle cx="56" cy="18" r="5"/></g>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#ebdbb2">
+<text x="22" y="50" xml:space="preserve"><tspan fill="#83a598">❯ </tspan><tspan fill="#b8bb26" font-weight="700">nps</tspan><tspan> status</tspan></text>
+<text x="22" y="71" xml:space="preserve"><tspan fill="#b8bb26">▶</tspan><tspan> </tspan><tspan font-weight="700">30:57</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#b8bb26">━━</tspan><tspan fill-opacity="0.5">──────────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill="#8ec07c">ch 3/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
 <text x="22" y="92" xml:space="preserve"></text>
-<text x="22" y="113" xml:space="preserve"><tspan fill-opacity="0.45">$ </tspan><tspan font-weight="700">nps backward</tspan></text>
-<text x="22" y="134" xml:space="preserve"><tspan fill="#5fd7d7">▶</tspan><tspan> </tspan><tspan font-weight="700">30:47</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#5fd7d7">━━</tspan><tspan fill-opacity="0.5">──────────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill-opacity="0.5">ch 3/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
+<text x="22" y="113" xml:space="preserve"><tspan fill="#83a598">❯ </tspan><tspan fill="#b8bb26" font-weight="700">nps</tspan><tspan> backward</tspan></text>
+<text x="22" y="134" xml:space="preserve"><tspan fill="#b8bb26">▶</tspan><tspan> </tspan><tspan font-weight="700">30:47</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#b8bb26">━━</tspan><tspan fill-opacity="0.5">──────────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill="#8ec07c">ch 3/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
 <text x="22" y="155" xml:space="preserve"></text>
-<text x="22" y="176" xml:space="preserve"><tspan fill-opacity="0.45">$ </tspan><tspan font-weight="700">nps seek 1:02:03</tspan></text>
-<text x="22" y="197" xml:space="preserve"><tspan fill="#5fd7d7">▶</tspan><tspan> </tspan><tspan font-weight="700">1:02:03</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#5fd7d7">━━━━━</tspan><tspan fill-opacity="0.5">───────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill-opacity="0.5">ch 5/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
+<text x="22" y="176" xml:space="preserve"><tspan fill="#83a598">❯ </tspan><tspan fill="#b8bb26" font-weight="700">nps</tspan><tspan> seek 1:02:03</tspan></text>
+<text x="22" y="197" xml:space="preserve"><tspan fill="#b8bb26">▶</tspan><tspan> </tspan><tspan font-weight="700">1:02:03</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#b8bb26">━━━━━</tspan><tspan fill-opacity="0.5">───────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill="#8ec07c">ch 5/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
 <text x="22" y="218" xml:space="preserve"></text>
-<text x="22" y="239" xml:space="preserve"><tspan fill-opacity="0.45">$ </tspan><tspan font-weight="700">nps status --json</tspan></text>
-<text x="22" y="260" xml:space="preserve"><tspan>{</tspan></text>
-<text x="22" y="281" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;title&quot;</tspan><tspan>: &quot;Seven Samurai&quot;,</tspan></text>
-<text x="22" y="302" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;artist&quot;</tspan><tspan>: &quot;&quot;,</tspan></text>
-<text x="22" y="323" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;album&quot;</tspan><tspan>: &quot;&quot;,</tspan></text>
-<text x="22" y="344" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;org.videolan.vlc&quot;,</tspan></text>
-<text x="22" y="365" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: </tspan><tspan font-weight="700">12420</tspan><tspan>,</tspan></text>
-<text x="22" y="386" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: </tspan><tspan font-weight="700">3723</tspan><tspan>,</tspan></text>
-<text x="22" y="407" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;playing&quot;</tspan><tspan>: </tspan><tspan font-weight="700">true</tspan><tspan>,</tspan></text>
-<text x="22" y="428" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;rate&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1</tspan><tspan>,</tspan></text>
-<text x="22" y="449" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1789768358.106</tspan><tspan>,</tspan></text>
-<text x="22" y="470" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;human&quot;</tspan><tspan>: {</tspan></text>
-<text x="22" y="491" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: &quot;3:27:00&quot;,</tspan></text>
-<text x="22" y="512" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: &quot;1:02:03&quot;,</tspan></text>
-<text x="22" y="533" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: &quot;19 Sep 2026 at 10:45:37&quot;,</tspan></text>
-<text x="22" y="554" xml:space="preserve"><tspan>    </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;VLC&quot;</tspan></text>
-<text x="22" y="575" xml:space="preserve"><tspan>  }</tspan></text>
-<text x="22" y="596" xml:space="preserve"><tspan>}</tspan></text>
+<text x="22" y="239" xml:space="preserve"><tspan fill="#83a598">❯ </tspan><tspan fill="#b8bb26" font-weight="700">nps</tspan><tspan> pause</tspan></text>
+<text x="22" y="260" xml:space="preserve"><tspan fill="#fabd2f">⏸</tspan><tspan> </tspan><tspan font-weight="700">1:02:03</tspan><tspan fill-opacity="0.5"> / 3:27:00</tspan><tspan>  </tspan><tspan fill="#fabd2f">━━━━━</tspan><tspan fill-opacity="0.5">───────────</tspan><tspan>  </tspan><tspan font-weight="700">Seven Samurai</tspan><tspan>  </tspan><tspan fill="#8ec07c">ch 5/12</tspan><tspan>  </tspan><tspan fill-opacity="0.5">· VLC</tspan></text>
+<text x="22" y="281" xml:space="preserve"></text>
+<text x="22" y="302" xml:space="preserve"><tspan fill="#83a598">❯ </tspan><tspan fill="#b8bb26" font-weight="700">nps</tspan><tspan> status --json</tspan></text>
+<text x="22" y="323" xml:space="preserve"><tspan>{</tspan></text>
+<text x="22" y="344" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;title&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;Seven Samurai&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="365" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;artist&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="386" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;album&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="407" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;app&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;org.videolan.vlc&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="428" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;duration&quot;</tspan><tspan>: </tspan><tspan fill="#fabd2f">12420</tspan><tspan>,</tspan></text>
+<text x="22" y="449" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;position&quot;</tspan><tspan>: </tspan><tspan fill="#fabd2f">3723</tspan><tspan>,</tspan></text>
+<text x="22" y="470" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;playing&quot;</tspan><tspan>: </tspan><tspan fill="#d3869b">false</tspan><tspan>,</tspan></text>
+<text x="22" y="491" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;rate&quot;</tspan><tspan>: </tspan><tspan fill="#fabd2f">0</tspan><tspan>,</tspan></text>
+<text x="22" y="512" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan fill="#fabd2f">1789768358.106</tspan><tspan>,</tspan></text>
+<text x="22" y="533" xml:space="preserve"><tspan>  </tspan><tspan fill="#83a598">&quot;human&quot;</tspan><tspan>: {</tspan></text>
+<text x="22" y="554" xml:space="preserve"><tspan>    </tspan><tspan fill="#83a598">&quot;duration&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;3:27:00&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="575" xml:space="preserve"><tspan>    </tspan><tspan fill="#83a598">&quot;position&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;1:02:03&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="596" xml:space="preserve"><tspan>    </tspan><tspan fill="#83a598">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;19 Sep 2026 at 10:45:37&quot;</tspan><tspan>,</tspan></text>
+<text x="22" y="617" xml:space="preserve"><tspan>    </tspan><tspan fill="#83a598">&quot;app&quot;</tspan><tspan>: </tspan><tspan fill="#b8bb26">&quot;VLC&quot;</tspan></text>
+<text x="22" y="638" xml:space="preserve"><tspan>  }</tspan></text>
+<text x="22" y="659" xml:space="preserve"><tspan>}</tspan></text>
 </g>
 </svg>

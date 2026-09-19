@@ -58,15 +58,18 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 | --- | --- |
 | `status` | title, app, position / duration |
 | `watch` | stays: where it is, second by second, and what happens to it |
+| `stream` | stays: every change as it happens; JSON lines in a pipe, [for scripts](docs/scripting.md#following-changes) |
 | `position`, `duration` | seconds |
 | `seek <time>` | to `754`, `12:34` or `1:02:03` |
 | `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
 | `toggle`, `play`, `pause`, `next`, `previous` | transport |
 | `doctor` | exit 0 when Now Playing is readable |
+| `config`, `config set <setting> <value>` | the settings in effect; [change one](docs/advanced.md#config-file) |
 | `--json`, `--minify`, `--raw` | on any of the above: the answer as JSON, as JSON on one line, as the keys macOS itself holds |
 
 Every command answers with where things stand. A seek returns when the player has moved, not before.
 Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
+Every command and flag, the ones for hotkeys included: `nps --help`.
 
 ## Limits
 

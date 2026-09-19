@@ -11,19 +11,7 @@ From a key, with any app in front: a browser tab, IINA, VLC, Music, Spotify.
 
 macOS has no such key. This is the command behind it.
 
-```console
-$ nowplayingseek status
-▶ 30:57 / 3:27:00  Seven Samurai  (org.videolan.vlc)
-
-$ nowplayingseek backward
-▶ 30:47 / 3:27:00  Seven Samurai  (org.videolan.vlc)
-
-$ nowplayingseek seek 1:02:03
-▶ 1:02:03 / 3:27:00  Seven Samurai  (org.videolan.vlc)
-
-$ nowplayingseek status --json
-{"title":"Seven Samurai","artist":"","album":"","app":"org.videolan.vlc","duration":12420,"position":3723.041,"playing":true,"rate":1,"timestamp":1789768358.106}
-```
+<p align="center"><img src="docs/demo.svg" alt="In a terminal: nps status prints the position in bold, the length, a bar, the title, the chapter and the app; nps backward moves ten seconds; nps seek 1:02:03 jumps; nps status --json prints the same as coloured JSON" width="620"></p>
 
 ## Why
 

@@ -2,7 +2,8 @@
 
 [← README](../README.md)
 
-Every command is one line in, one line out, and the exit code is the truth: `0` it happened,
+Every command of ours is one line in, and the exit code is the truth (behind the names of
+nowplaying-cli and media-control it is 0, as theirs is): `0` it happened,
 `1` nothing is playing, `2` the player ignored it, `64` bad arguments, `78` bad config.
 
 | Asked | Run |

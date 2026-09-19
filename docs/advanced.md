@@ -8,8 +8,8 @@ Nothing here is needed for everyday use.
 
 With `--progressive` the step grows the longer the key is held, a little with every step. A press
 is always one whole step. Keep the key down and it glides off in small steps, so a short hold
-stays short; then it gathers pace and settles at two and a half times the step — fast enough to
-cross a film in a few seconds of holding, and no faster.
+stays short; then it gathers pace and settles at two and a half times the step. A hold ends by
+itself after ten seconds, which is about twelve minutes of film: nobody seeks further by a key.
 
 | held | each step | in total |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ cross a film in a few seconds of holding, and no faster.
 | 10 s | 24 s | 11:38 |
 
 The curve is `start + (max_multiplier − start) · (1 − e^−(held / ramp)²)`: where it begins, where
-it settles, and how long it takes to get two thirds of the way.
+it settles, and how long it takes to get about two thirds of the way.
 
 ```ini
 [progressive]
@@ -44,7 +44,7 @@ step was multiplied, the output line ends with the multiplier: `×1.4`.
 `forward --knob` and `backward --knob` are one click of a keyboard knob. The tool measures the
 pace of the clicks and lengthens the step with it, by the same kind of curve: a slow click is
 `step`, a flick settles at `max_multiplier` times that, and `fast` is the pace, in clicks a
-second, that gets two thirds of the way there.
+second, that gets about two thirds of the way there.
 
 ```ini
 [knob]

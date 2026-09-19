@@ -16,8 +16,8 @@ is in front, and every player in its own way.
 
 So I wanted to do the seeking myself: read where the player is, add ten seconds, tell it to go
 there. macOS knows all of that — it is the thing in the Control Center widget — and keeps it
-behind a private door. I tried the tools that open it. One had stood broken since macOS 15.4;
-the other read the position and would not move by a step.
+behind a private door. I tried the tools that open it. One had been broken by macOS 15.4
+and stayed so for a year; mended, it still would not move by a step. Nor would the other.
 
 Then a friend bought a keyboard with a knob. Out of the box the knob is volume. He wanted it to
 wind the video he was watching, in whatever app, like the jog wheel of an editing desk — slowly
@@ -29,13 +29,15 @@ what it took.
 
 ## Why it is a script
 
-Since macOS 15.4 `mediaremoted` answers Now Playing *reads* only to processes whose
-bundle identifier starts with `com.apple.`. Your own compiled binary gets an empty
-dictionary and no error. `/usr/bin/osascript` qualifies, so the whole tool is JavaScript
+Since macOS 15.4 `mediaremoted` answers Now Playing *reads* only to processes whose code-signing
+identifier starts with `com.apple.` (or that hold Apple's private entitlement). Your own compiled
+binary gets an empty dictionary and no error. `/usr/bin/osascript` qualifies, so the whole tool is JavaScript
 for Automation that loads the private `MediaRemote.framework` inside it. That is the same
 loophole [ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter)
 uses through `/usr/bin/perl`, minus the helper framework and at about half the latency
-(~60 ms per read). Rewriting this in Swift or Go would break it.
+(about 50 ms for a whole run). A compiled binary can read too — but only if it is signed with an
+identifier that begins `com.apple.`, which is posing as Apple: nothing one can ship, and the first
+thing a stricter check would stop. The interpreters Apple ships would survive that check.
 
 Three things the API does not tell you:
 

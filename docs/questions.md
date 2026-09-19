@@ -10,8 +10,8 @@ works whichever app is in front, because it talks to Now Playing and not to a wi
 next and previous; `nowplayingseek backward 10` on a hotkey is the missing one.
 
 **Can the knob on my keyboard scrub a video?** Yes: remap its two directions to spare keys
-in VIA or QMK, bind them to `forward` and `backward`, add `--progressive` so that a fast spin
-goes further.
+in VIA or QMK and bind them to `forward --knob` and `backward --knob`: a slow click is two
+seconds, a flick goes further — see [the rule](hotkeys.md#a-knob-in-karabiner-elements).
 
 **Why does `MRMediaRemoteGetNowPlayingInfo` return nothing in my own program?** Since macOS
 15.4 `mediaremoted` answers only processes whose bundle identifier starts with `com.apple.`.

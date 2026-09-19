@@ -14,5 +14,8 @@ Every command is one line in, one line out, and the exit code is the truth: `0` 
 | pause, resume, next | `nowplayingseek pause`, `play`, `next` |
 | can this Mac be driven at all | `nowplayingseek doctor` |
 
+A terminal gets a painted status line; a pipe, a file or a hotkey daemon gets the plain one,
+`▶ 30:57 / 3:15:50  Title  (bundle.id)`, and that one does not change.
+
 Only the elected app can be addressed. When `status` shows another player than the one the
 person means, tell them to press play there; do not retry.

@@ -75,11 +75,12 @@
                 "src/logic/seek.js",
                 "src/logic/hold.js",
                 "src/logic/stream.js",
+                "src/logic/paint.js",
                 "src/logic/words.js",
                 "src/logic/config.js"
             ],
             "javascript": {
-                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS"]
+                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS", "formatTime"]
             },
             "linter": {
                 "rules": {
@@ -110,7 +111,8 @@
                                         "clock",
                                         "playerctlPosition",
                                         "mpcSeek",
-                                        "playerctlFormat"
+                                        "playerctlFormat",
+                                        "paintStatus"
                                     ],
                                     "variable": [
                                         "EXIT",
@@ -134,6 +136,7 @@
             "includes": [
                 "src/system/mediaremote.js",
                 "src/system/files.js",
+                "src/system/terminal.js",
                 "src/player.js",
                 "src/system/configfile.js",
                 "src/dialects/nowplaying-cli.js",
@@ -212,7 +215,9 @@
                     "refuse",
                     "unknown",
                     "move",
-                    "alreadyThere"
+                    "alreadyThere",
+                    "paintStatus",
+                    "terminal"
                 ]
             },
             "linter": {
@@ -239,7 +244,8 @@
                                         "asPlayerctl",
                                         "asMpc",
                                         "asShpotify",
-                                        "appName"
+                                        "appName",
+                                        "terminal"
                                     ]
                                 }
                             }

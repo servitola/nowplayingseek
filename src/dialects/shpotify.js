@@ -21,7 +21,12 @@ const asShpotify = {
             status: () => this.status(player.requireState(), args[0]),
             pos: () => (parseTime(args[0] || '') === null ? unknown('spotify', ['pos', ...args]) : player.seekTo(parseTime(args[0]))),
             replay: () => player.seekTo(0),
+            stop: () => asMediaControl.send(MC_COMMANDS.indexOf('stop')),
+            toggle: () =>
+                ['shuffle', 'repeat'].includes(args[0]) ? setOrToggle('spotify', args[0]) : unknown('spotify', [command, ...args]),
             vol: () => refuse('spotify', 'volume'),
+            quit: () => refuse('spotify', 'quitting the player'),
+            share: () => refuse('spotify', 'a link to share'),
         };
         return Object.hasOwn(words, command) ? words[command]() : unknown('spotify', [command, ...args]);
     },

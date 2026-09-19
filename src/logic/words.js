@@ -1,6 +1,7 @@
 const PLAYERCTL_POSITION = /^(\d+(?:\.\d+)?)([+-]?)$/;
 const MPC_SEEK = /^([+-]?)(\d+(?::\d+){0,2}(?:\.\d+)?)(%?)$/;
-const PLAYERCTL_FIELD = /\{\{\s*(?:(\w+)\(\s*([\w:]+)\s*\)|([\w:]+))\s*\}\}/g;
+const PLAYERCTL_FIELD = /\{\{\s*(?:(\w+)\(([^)]*)\)|([\w:]+))\s*\}\}/g;
+const PLAYERCTL_LITERAL = /^("[^"]*"|\d+)$/;
 const PERCENT = 100;
 
 function clock(seconds) {
@@ -33,17 +34,42 @@ function mpcSeek(text, duration) {
     return sign ? { by: sign === '+' ? amount : -amount } : { to: amount };
 }
 
+const STATUS_EMOJI = new Map([
+    ['Playing', '▶️'],
+    ['Paused', '⏸️'],
+    ['Stopped', '⏹️'],
+]);
+const PLAYERCTL_HELPERS = {
+    duration: micros => clock(micros / MICROSECONDS),
+    lc: text => String(text).toLowerCase(),
+    uc: text => String(text).toUpperCase(),
+    trunc: (text, length) => (String(text).length > length ? `${String(text).slice(0, length)}…` : String(text)),
+    default: (value, otherwise) => (value === '' ? otherwise : value),
+    emoji: status => STATUS_EMOJI.get(status) || String(status),
+    markup_escape: text => String(text).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+};
+const UNFILLABLE = ['volume', 'shuffle', 'loop'];
+
+function playerctlValue(text, fields) {
+    const word = text.trim();
+    if (PLAYERCTL_LITERAL.test(word)) {
+        return JSON.parse(word);
+    }
+    if (UNFILLABLE.includes(word)) {
+        throw new Failure(EXIT.usage, `playerctl's {{ ${word} }} has nothing behind it here: Now Playing knows no ${word}`);
+    }
+    return isMissing(fields[word]) ? '' : fields[word];
+}
+
 function playerctlFormat(template, fields) {
-    const helpers = {
-        duration: micros => clock(micros / MICROSECONDS),
-        lc: text => String(text).toLowerCase(),
-        uc: text => String(text).toUpperCase(),
-    };
-    return template.replace(PLAYERCTL_FIELD, (_whole, helper, argument, name) => {
-        const value = fields[argument || name];
-        if (isMissing(value)) {
-            return '';
+    return template.replace(PLAYERCTL_FIELD, (_whole, helper, argumentList, name) => {
+        if (!helper) {
+            return String(playerctlValue(name, fields));
         }
-        return helper && Object.hasOwn(helpers, helper) ? helpers[helper](value) : String(value);
+        if (!Object.hasOwn(PLAYERCTL_HELPERS, helper)) {
+            throw new Failure(EXIT.usage, `nowplayingseek does not know the helper ${helper}() of playerctl's format strings`);
+        }
+        const values = argumentList.split(',').map(part => playerctlValue(part, fields));
+        return String(PLAYERCTL_HELPERS[helper](...values));
     });
 }

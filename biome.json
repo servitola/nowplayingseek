@@ -234,7 +234,8 @@
                     "USAGE",
                     "orderRaw",
                     "formatChapter",
-                    "humanNotes"
+                    "humanNotes",
+                    "setOrToggle"
                 ]
             },
             "linter": {
@@ -244,7 +245,7 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "function": ["run", "locked", "jsonFile", "dialectFor", "refuse", "unknown", "move"],
+                                    "function": ["run", "locked", "jsonFile", "dialectFor", "refuse", "unknown", "move", "setOrToggle"],
                                     "variable": [
                                         "mediaRemote",
                                         "player",

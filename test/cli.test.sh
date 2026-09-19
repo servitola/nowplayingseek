@@ -92,6 +92,9 @@ expect 'a knob does not grow either' 64 stderr 'forward: --knob is one click of 
 expect 'every unknown argument is named' 64 stderr 'status takes only --json, --raw, --minify, got "--jsno --rwa"' status --jsno --rwa
 expect 'an error carries the name of the tool' 64 stderr 'nowplayingseek: unknown command' frobnicate
 cases=$((cases + 1))
+awk '/^```/ { code = !code; next } code && length($0) > 84 { print FILENAME ":" FNR; wide = 1 } END { exit wide }' README.md docs/*.md ||
+	fail 'a line of code in the docs is wider than GitHub shows: the reader has to scroll sideways'
+cases=$((cases + 1))
 "$bin" --help | awk 'length($0) > 80 { wide = 1 } END { exit wide }' || fail 'a line of the help is wider than 80 columns and will wrap'
 expect 'help: the exit codes' 0 stdout '  2                              the player did not listen' --help
 expect 'help: seek' 0 stdout '  seek <time>  ' --help

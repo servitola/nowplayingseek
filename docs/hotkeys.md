@@ -3,7 +3,8 @@
 [← README](../README.md)
 
 The tool does not grab keys itself; bind it with whatever you already use. Give the
-full path — hotkey daemons run commands with a bare environment.
+full path — hotkey daemons run commands with a bare environment. `nps` is the same tool under
+its short name; the recipes use it to keep their lines short.
 
 ## A key, in Shortcuts
 
@@ -47,14 +48,32 @@ key up ends it:
 {
   "description": "nowplayingseek ±10 s, hold to keep going",
   "manipulators": [
-    { "type": "basic",
-      "from": { "key_code": "right_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward --hold --progressive" }],
-      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release forward" }] },
-    { "type": "basic",
-      "from": { "key_code": "left_arrow", "modifiers": { "mandatory": ["left_control", "left_option"] } },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward --hold --progressive" }],
-      "to_after_key_up": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek release backward" }] }
+    {
+      "type": "basic",
+      "from": {
+        "key_code": "right_arrow",
+        "modifiers": { "mandatory": ["left_control", "left_option"] }
+      },
+      "to": [{
+        "shell_command": "/opt/homebrew/bin/nps forward --hold --progressive"
+      }],
+      "to_after_key_up": [{
+        "shell_command": "/opt/homebrew/bin/nps release forward"
+      }]
+    },
+    {
+      "type": "basic",
+      "from": {
+        "key_code": "left_arrow",
+        "modifiers": { "mandatory": ["left_control", "left_option"] }
+      },
+      "to": [{
+        "shell_command": "/opt/homebrew/bin/nps backward --hold --progressive"
+      }],
+      "to_after_key_up": [{
+        "shell_command": "/opt/homebrew/bin/nps release backward"
+      }]
+    }
   ]
 }
 ```
@@ -75,10 +94,20 @@ use, such as F13 and F14, and give those to `--knob`:
 {
   "description": "nowplayingseek: the keyboard knob is a jog wheel",
   "manipulators": [
-    { "type": "basic", "from": { "key_code": "f14" },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek forward --knob" }] },
-    { "type": "basic", "from": { "key_code": "f13" },
-      "to": [{ "shell_command": "/opt/homebrew/bin/nowplayingseek backward --knob" }] }
+    {
+      "type": "basic",
+      "from": { "key_code": "f14" },
+      "to": [{
+        "shell_command": "/opt/homebrew/bin/nps forward --knob"
+      }]
+    },
+    {
+      "type": "basic",
+      "from": { "key_code": "f13" },
+      "to": [{
+        "shell_command": "/opt/homebrew/bin/nps backward --knob"
+      }]
+    }
   ]
 }
 ```
@@ -93,12 +122,16 @@ longer. The step, the limit and what counts as fast are `[knob]` in the
 Hammerspoon, in `~/.hammerspoon/init.lua`:
 
 ```lua
+local nps = "/opt/homebrew/bin/nps"
 local function run(...)
   local arguments = { ... }
-  return function() hs.task.new("/opt/homebrew/bin/nowplayingseek", nil, arguments):start() end
+  return function() hs.task.new(nps, nil, arguments):start() end
 end
-hs.hotkey.bind({ "ctrl", "alt" }, "right", run("forward", "--hold", "--progressive"), run("release", "forward"))
-hs.hotkey.bind({ "ctrl", "alt" }, "left", run("backward", "--hold", "--progressive"), run("release", "backward"))
+local keys = { "ctrl", "alt" }
+hs.hotkey.bind(keys, "right",
+  run("forward", "--hold", "--progressive"), run("release", "forward"))
+hs.hotkey.bind(keys, "left",
+  run("backward", "--hold", "--progressive"), run("release", "backward"))
 ```
 
 skhd, in `~/.config/skhd/skhdrc`:

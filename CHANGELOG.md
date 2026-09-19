@@ -5,6 +5,14 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Fixed
+- `watch` and `stream` end when their reader does. They used to learn of a closed pipe from their
+  next write, and with nothing changing in the player there was none: `stream | head -2` left a
+  process behind until the next play or pause.
+- A setting that is a multiplier or a pace no longer takes a clock: `max_multiplier = 1:30` was 90.
+- `watch` with no controlling terminal printed the shell's `/dev/tty: Device not configured` into
+  its line every second.
+
 ## 0.6.0 — 2026-09-19
 
 ### Changed

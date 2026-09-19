@@ -128,6 +128,23 @@ said 'watch, piped: the line, then each event and the line after it' '⏸ 02:00 
 listen stream --no-artwork
 sed 's/"timestamp":"2[^"]*"/"timestamp":"now"/' "$work/said" >"$work/said.still" && mv "$work/said.still" "$work/said"
 said 'stream, piped: the item whole, then only what changed, then nothing' '{"type":"data","diff":false,"payload":{}};{"type":"data","diff":false,"payload":{"processIdentifier":1,"bundleIdentifier":"fake.player","playing":false,"title":"T","artist":"A","duration":600,"elapsedTime":120,"timestamp":"1970-01-01T00:00:01Z","playbackRate":0}};{"type":"data","diff":true,"payload":{"playing":true,"playbackRate":1}};{"type":"data","diff":true,"payload":{"elapsedTime":300,"timestamp":"now"}};{"type":"data","diff":true,"payload":{"playing":false,"playbackRate":0}};{"type":"data","diff":false,"payload":{}};'
+# left <lines it says at once> <arguments...>: the reader takes those and goes; nothing else will ever be written
+left() {
+	said_at_once=$1
+	shift
+	player true
+	cases=$((cases + 1))
+	NPS_FAKE=$work/fake XDG_CONFIG_HOME=$work/fake/xdg "$bin" "$@" | head -"$said_at_once" >/dev/null &
+	sleep 2.5
+	pgrep -f "$bin" >/dev/null && {
+		fail "$1: still there after its reader left, with nothing changing in the player"
+		pkill -f "$bin"
+	}
+}
+
+left 1 watch
+left 2 stream --no-artwork
+
 player true && rm "$work/fake/state.json"
 told 'nothing is playing' 1 '' status
 told 'nothing is playing: transport' 1 '' pause

@@ -26,19 +26,18 @@ $ nowplayingseek status --json
 ## Why
 
 I wanted two keys: ten seconds back, ten seconds forward, in anything that plays.
-I searched. There was no such thing. So I made it.
-
-[The longer story](docs/how-it-works.md#why-it-exists).
+I searched. There was no such thing. So I made it. [The longer story](docs/how-it-works.md#why-it-exists).
 
 ## Install
 
 ```sh
 brew install servitola/tap/nowplayingseek
-brew trust servitola/tap
 ```
 
-The second line is for Homebrew 7 and later: it skips a tap it was not told to trust, so without
-it `brew upgrade` passes this tool by. One script. No dependencies. It runs on `osascript`.
+One script. No dependencies. It runs on `osascript`, which is already there.
+
+Homebrew 7 wants third-party taps trusted. Naming the formula in full, as above, trusts this one
+formula and nothing else in the tap; there is no separate step.
 
 ## A key
 

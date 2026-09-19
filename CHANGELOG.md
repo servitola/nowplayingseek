@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 0.7.1 — 2026-09-19
+
 ### Changed
 - The help page fits 80 columns, and the exit codes are a table of their own, not a line that wraps.
 

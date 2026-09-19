@@ -56,7 +56,6 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
-const DIALECTS = { 'nowplaying-cli': asNowplayingCli, 'media-control': asMediaControl };
 const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
 const FLAGS = {
@@ -166,15 +165,11 @@ function run(argv) {
     }
 
     try {
-        if (Object.hasOwn(DIALECTS, name)) {
+        const dialect = dialectFor(argv, Object.keys(COMMANDS));
+        if (dialect) {
             player.settings = configFile.load().values;
             mediaRemote.load();
-            return DIALECTS[name].run(args);
-        }
-        if (!Object.hasOwn(COMMANDS, name) && asMediaControl.knows(name)) {
-            player.settings = configFile.load().values;
-            mediaRemote.load();
-            return asMediaControl.run(argv);
+            return dialect();
         }
         if (!Object.hasOwn(COMMANDS, name)) {
             throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);

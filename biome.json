@@ -70,9 +70,9 @@
             }
         },
         {
-            "includes": ["src/core.js", "src/config.js"],
+            "includes": ["src/core.js", "src/dialect-words.js", "src/config.js"],
             "javascript": {
-                "globals": ["EXIT", "Failure", "isMissing", "parseTime"]
+                "globals": ["EXIT", "Failure", "isMissing", "parseTime", "SECONDS_PER_MINUTE", "MICROSECONDS"]
             },
             "linter": {
                 "rules": {
@@ -99,9 +99,22 @@
                                         "formatStatus",
                                         "parseIni",
                                         "resolveSettings",
-                                        "formatSettings"
+                                        "formatSettings",
+                                        "clock",
+                                        "playerctlPosition",
+                                        "mpcSeek",
+                                        "playerctlFormat"
                                     ],
-                                    "variable": ["EXIT", "MILLISECONDS_PER_SECOND", "holdContinues", "releasedSince", "effectiveRate"]
+                                    "variable": [
+                                        "EXIT",
+                                        "MILLISECONDS_PER_SECOND",
+                                        "holdContinues",
+                                        "releasedSince",
+                                        "effectiveRate",
+                                        "MICROSECONDS",
+                                        "PERCENT",
+                                        "SECONDS_PER_MINUTE"
+                                    ]
                                 }
                             }
                         }
@@ -119,6 +132,8 @@
                 "src/as-media-control-help.js",
                 "src/as-media-control-read.js",
                 "src/as-media-control.js",
+                "src/as-others.js",
+                "src/dialects.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -169,7 +184,19 @@
                     "lastSeekFile",
                     "holdFile",
                     "releaseFiles",
-                    "print"
+                    "print",
+                    "MICROSECONDS",
+                    "PERCENT",
+                    "playerctlFormat",
+                    "playerctlPosition",
+                    "mpcSeek",
+                    "clock",
+                    "PLAYERCTL_DECIMALS",
+                    "MC_COMMANDS",
+                    "asPlayerctl",
+                    "asMpc",
+                    "asShpotify",
+                    "dialectFor"
                 ]
             },
             "linter": {
@@ -179,7 +206,7 @@
                             "level": "error",
                             "options": {
                                 "ignore": {
-                                    "function": ["run", "locked", "jsonFile"],
+                                    "function": ["run", "locked", "jsonFile", "dialectFor"],
                                     "variable": [
                                         "mediaRemote",
                                         "player",
@@ -192,7 +219,10 @@
                                         "now",
                                         "lastSeekFile",
                                         "holdFile",
-                                        "releaseFiles"
+                                        "releaseFiles",
+                                        "asPlayerctl",
+                                        "asMpc",
+                                        "asShpotify"
                                     ]
                                 }
                             }

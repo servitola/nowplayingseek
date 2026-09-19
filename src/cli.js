@@ -56,12 +56,13 @@ function printSeconds(state, field) {
 
 const sendCommand = (_args, name) => player.send(name);
 
-const DIALECTS = { 'nowplaying-cli': asNowplayingCli };
+const DIALECTS = { 'nowplaying-cli': asNowplayingCli, 'media-control': asMediaControl };
 const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
 const FLAGS = {
     status: ['--json', '--raw'],
     get: null,
+    stream: null,
     release: Object.keys(DIRECTIONS),
     seek: null,
     forward: null,
@@ -144,7 +145,8 @@ const COMMANDS = {
         const asked = args.map(arg => DIRECTIONS[arg]);
         player.release(asked.length > 0 ? asked : Object.values(DIRECTIONS));
     },
-    get: args => asNowplayingCli.get(args),
+    get: args => (args.some(arg => !arg.startsWith('-')) ? asNowplayingCli.get(args) : mediaControlReads.get(args)),
+    stream: args => mediaControlReads.stream(args),
     'get-raw': () => asNowplayingCli.run(['get-raw']),
     togglePlayPause: () => player.send('toggle'),
     toggle: sendCommand,
@@ -168,6 +170,11 @@ function run(argv) {
             player.settings = configFile.load().values;
             mediaRemote.load();
             return DIALECTS[name].run(args);
+        }
+        if (!Object.hasOwn(COMMANDS, name) && asMediaControl.knows(name)) {
+            player.settings = configFile.load().values;
+            mediaRemote.load();
+            return asMediaControl.run(argv);
         }
         if (!Object.hasOwn(COMMANDS, name)) {
             throw new Failure(EXIT.usage, `unknown command "${name}"\n\n${USAGE}`);

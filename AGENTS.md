@@ -22,6 +22,7 @@ is a plain global in the files after it. The order is the dependency order:
 | `src/player.js` | one seek loop for a tap and a hold, transport, polling for the effect |
 | `src/configfile.js` | finds, loads and writes `config.ini` |
 | `src/as-nowplaying-cli.js` | the dialect of nowplaying-cli: its words, texts and exit codes over our reads |
+| `src/as-media-control*.js` | the dialect of media-control: `get` and `stream` in its JSON, its controls, its help page |
 | `src/cli.js` | commands, usage, `run(argv)` — the entry point `osascript` calls |
 
 `test/harness.js` and `test/*.test.js` are concatenated the same way into `build/test.js`;

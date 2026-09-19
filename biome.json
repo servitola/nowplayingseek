@@ -88,6 +88,7 @@
                                         "seekBase",
                                         "seekLanded",
                                         "seekOvertaken",
+                                        "streamChange",
                                         "streakStart",
                                         "multiplierAt",
                                         "nextHoldTarget",
@@ -115,6 +116,9 @@
                 "src/player.js",
                 "src/configfile.js",
                 "src/as-nowplaying-cli.js",
+                "src/as-media-control-help.js",
+                "src/as-media-control-read.js",
+                "src/as-media-control.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -151,6 +155,14 @@
                     "player",
                     "configFile",
                     "asNowplayingCli",
+                    "asMediaControl",
+                    "mediaControlReads",
+                    "streamChange",
+                    "MC_HELP",
+                    "mcFail",
+                    "MICROS",
+                    "COMMANDS",
+                    "VERSION",
                     "KEY_PREFIX",
                     "now",
                     "locked",
@@ -173,6 +185,10 @@
                                         "player",
                                         "configFile",
                                         "asNowplayingCli",
+                                        "asMediaControl",
+                                        "mediaControlReads",
+                                        "MC_HELP",
+                                        "mcFail",
                                         "now",
                                         "lastSeekFile",
                                         "holdFile",
@@ -186,7 +202,7 @@
             }
         },
         {
-            "includes": ["src/mediaremote.js"],
+            "includes": ["src/mediaremote.js", "src/as-media-control-read.js"],
             "linter": {
                 "rules": {
                     "security": {

@@ -91,6 +91,28 @@ XDG_CONFIG_HOME=$xdg "$bin" get --json nosuchprop | grep -qF '"nosuchprop" : nul
 cases=$((cases + 1))
 XDG_CONFIG_HOME=$xdg "$bin" get-raw | head -1 | grep -q '^{' || fail 'get-raw does not print a JSON object'
 
+# The dialect of media-control.
+expect 'as media-control: no arguments is its help' 0 stdout '  media-control toggle-play-pause' media-control
+expect 'as media-control: the command table' 0 stdout '  go-back-fifteen-seconds   Go back 15 seconds              12' media-control help
+expect 'as media-control: version' 0 stdout 'media-control 0.7.7' media-control version
+expect 'as media-control: an unknown command' 1 stderr "Unknown command 'bogus'" media-control bogus
+expect 'as media-control: send without an id' 1 stderr "Missing ID for command 'send'" media-control send
+expect 'as media-control: send with a word' 1 stderr "'abc' is not a valid integer" media-control send abc
+expect 'as media-control: send with an unknown id' 1 stderr 'Unknown command ID: 99' media-control send 99
+expect 'as media-control: seek without a position' 1 stderr "Missing position for command 'seek'" media-control seek
+expect 'as media-control: seek with a word' 1 stderr "'abc' is not a valid number" media-control seek abc
+expect 'as media-control: a negative seek, in its microseconds' 1 stderr 'Negative values are not allowed: -5000000' media-control seek -5
+expect 'as media-control: shuffle with an unknown word' 1 stderr "Invalid mode for command 'shuffle': 'xyz'" media-control shuffle xyz
+expect 'as media-control: shuffle with a number out of range' 1 stderr 'Invalid shuffle mode: 9' media-control shuffle 9
+expect 'as media-control: repeat without a mode' 1 stderr "Missing mode for command 'repeat'" media-control repeat
+expect 'as media-control: a negative speed' 1 stderr 'Negative values are not allowed: -1' media-control speed -1
+expect 'as media-control: a fractional speed' 1 stderr "'1.5' is not a valid integer" media-control speed 1.5
+expect 'as media-control: get with an unknown option' 1 stderr "Unrecognized option 'bogus'" media-control get --bogus
+cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" media-control get --no-artwork | grep -qE '^(null|\{"|\{\})' || fail 'as media-control: get is neither null nor an object'
+cases=$((cases + 1))
+XDG_CONFIG_HOME=$xdg "$bin" get --now | grep -qE '^(null|\{)' || fail 'get with no property, its word taken directly, is not the JSON of media-control'
+
 fresh_home
 expect 'config without a file: says so' 0 stdout "; $xdg/nowplayingseek/config.ini — not found, these are the defaults" config
 expect 'config without a file: defaults' 0 stdout 'max_multiplier = 2.5' config

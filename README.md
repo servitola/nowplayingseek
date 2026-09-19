@@ -37,7 +37,7 @@ could not seek by a step. So I made this. [The longer story](docs/how-it-works.m
 brew install servitola/tap/nowplayingseek
 ```
 
-One script. No dependencies. It runs on `osascript`, which is already there.
+One script, also installed as `nps`. No dependencies. It runs on `osascript`, which is already there.
 
 Homebrew 7 wants third-party taps trusted: the full name above trusts this one formula, no more.
 

@@ -5,6 +5,10 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Added
+- `nps`, a short name for the same tool: `nps forward`, `nps status`. Free in Homebrew; an npm
+  package of that name exists, and whichever comes first in `PATH` wins.
+
 ## 0.5.0 — 2026-09-19
 
 ### Added

@@ -34,9 +34,10 @@ lint:
 install: $(TARGET)
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m 755 $(TARGET) $(DESTDIR)$(PREFIX)/bin/nowplayingseek
+	ln -sf nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/nowplayingseek
+	rm -f $(DESTDIR)$(PREFIX)/bin/nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps
 
 clean:
 	rm -rf build

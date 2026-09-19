@@ -2,7 +2,7 @@
 
 [← README](../README.md)
 
-<p align="center"><img src="banner-how-it-works.webp" alt="The panda shines a flashlight into an opened glass player full of gears and wires" width="100%"></p>
+<p align="center"><img src="images/banner-how-it-works.webp" alt="The panda shines a flashlight into an opened glass player full of gears and wires" width="100%"></p>
 
 ## Why it exists
 

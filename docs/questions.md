@@ -2,7 +2,7 @@
 
 [← README](../README.md)
 
-<p align="center"><img src="banner-questions.webp" alt="The panda listens with a paw on its headphones under a glass question mark" width="100%"></p>
+<p align="center"><img src="images/banner-questions.webp" alt="The panda listens with a paw on its headphones under a glass question mark" width="100%"></p>
 
 **How do I skip forward 10 seconds on a Mac with a keyboard shortcut, in any app?** Install
 the tool and bind `nowplayingseek forward 10` to a key — see [Hotkeys](hotkeys.md). The key

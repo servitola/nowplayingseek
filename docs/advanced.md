@@ -2,7 +2,7 @@
 
 [← README](../README.md)
 
-<p align="center"><img src="banner-advanced.webp" alt="The panda pushes one glass fader up; above, a curve that starts flat, rises and levels off" width="100%"></p>
+<p align="center"><img src="images/banner-advanced.webp" alt="The panda pushes one glass fader up; above, a curve that starts flat, rises and levels off" width="100%"></p>
 
 Nothing here is needed for everyday use.
 

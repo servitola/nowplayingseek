@@ -148,7 +148,7 @@ left 2 stream --no-artwork
 # The picture in the README is drawn outside this repo; it has shown yesterday's output twice.
 player true && told 'status --json for the picture' 0 '' status --json
 cases=$((cases + 1))
-python3 - "$work/stdout" docs/demo.svg <<'PY' || fail 'docs/demo.svg does not show the JSON that status --json writes today: run the demo script (AGENTS.md)'
+python3 - "$work/stdout" docs/images/demo.svg <<'PY' || fail 'docs/images/demo.svg does not show the JSON that status --json writes today: run the demo script (AGENTS.md)'
 import html, json, re, sys
 keys = lambda value: {key: keys(inner) for key, inner in value.items()} if isinstance(value, dict) else None
 lines = [line for line in html.unescape(re.sub(r"<[^>]+>", "\n", open(sys.argv[2], encoding="utf-8").read())).split("\n") if line.strip()]

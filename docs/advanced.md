@@ -46,7 +46,8 @@ step was multiplied, the output line ends with the multiplier: `×1.4`.
 `forward --knob` and `backward --knob` are one click of a keyboard knob. The tool measures the
 pace of the clicks and lengthens the step with it, by the same kind of curve: a slow click is
 `step`, a flick settles at `max_multiplier` times that, and `fast` is the pace, in clicks a
-second, that gets about two thirds of the way there.
+second, that gets about two thirds of the way there. A time in the command itself,
+`forward 3 --knob`, is the slow click for that binding in place of `step`.
 
 ```ini
 [knob]

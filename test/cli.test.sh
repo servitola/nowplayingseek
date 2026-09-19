@@ -132,6 +132,7 @@ expect 'as playerctl: a word that is a property of every object' 64 stderr 'does
 expect 'as playerctl: volume' 1 stderr 'volume is out of its reach' playerctl volume 0.5
 expect 'as playerctl: the sign goes after the number' 64 stderr 'does not know "position +30" in the dialect of playerctl' playerctl position +30
 expect 'as mpc: volume' 1 stderr 'volume is out of its reach' mpc volume +5
+expect 'as mpc: an unknown word, whatever is or is not playing' 64 stderr 'does not know "crossfade 5" in the dialect of mpc' mpc crossfade 5
 expect 'as shpotify: play by name' 1 stderr 'playing by name is out of its reach' spotify play 'Seven Samurai'
 expect 'as shpotify: an unknown word' 64 stderr 'does not know "share url" in the dialect of spotify' spotify share url
 

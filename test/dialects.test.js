@@ -12,6 +12,8 @@ function testDialectWords(core) {
     same(json(core.mpcSeek('50%', 300)), json({ to: 150 }), 'mpc: 50% is the middle');
     same(json(core.mpcSeek('+10%', 300)), json({ by: 30 }), 'mpc: +10% is a tenth forward');
     same(core.mpcSeek('later', 300), null, 'mpc: a word is nothing');
+    same(core.mpcSeek('50%', 0), null, 'mpc: a percentage of an unknown length is nothing, not the start');
+    same(JSON.stringify(core.mpcSeek('+10', 0)), JSON.stringify({ by: 10 }), 'mpc: seconds need no length');
     same(core.mpcSeek('1:75', 300), null, 'mpc: seventy-five seconds is not a clock');
 
     const fields = { artist: 'Hayasaka', title: 'Seven Samurai', album: '', status: 'Playing', position: 65_500_000, playerName: 'vlc' };

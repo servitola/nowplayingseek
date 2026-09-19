@@ -72,7 +72,8 @@ const asMediaControl = {
             mcFail(`Missing mode for command '${command}'`);
         }
         const word = mcStripZeros(text);
-        const mode = MC_INTEGER.test(word) ? Number(word) : MC_MODES[command][word];
+        const named = Object.hasOwn(MC_MODES[command], word) ? MC_MODES[command][word] : undefined;
+        const mode = MC_INTEGER.test(word) ? Number(word) : named;
         if (mode === undefined) {
             mcFail(`Invalid mode for command '${command}': '${text}'`);
         }

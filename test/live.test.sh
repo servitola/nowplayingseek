@@ -110,6 +110,7 @@ wait
 expect_move 'five presses 30 ms apart' 120 50 50
 
 at 2:00
+guard
 "$bin" forward --hold >/dev/null 2>&1 &
 sleep 1.2
 "$bin" release forward
@@ -117,6 +118,7 @@ wait
 expect_move 'hold for 1.2 s' 120 60 70
 
 at 2:00
+guard
 "$bin" forward --hold --progressive >/dev/null 2>&1 &
 sleep 0.08
 "$bin" release forward
@@ -124,8 +126,10 @@ wait
 expect_move 'a tap on a hold key is one step' 120 10 10
 
 at 2:00
+guard
 "$bin" forward --hold >/dev/null 2>&1 &
 sleep 0.6
+guard
 "$bin" backward --hold >/dev/null 2>&1 &
 sleep 0.3
 "$bin" release forward
@@ -135,6 +139,7 @@ wait
 expect_move 'rolling from one key to the other keeps the second going' 120 -60 -20
 
 at 2:00
+guard
 "$bin" forward --hold >/dev/null 2>&1 &
 sleep 1
 "$bin" release
@@ -142,6 +147,7 @@ wait
 expect_move 'a bare release stops it' 120 50 60
 
 at 1:00
+guard
 "$bin" forward --hold --progressive >"$work/hold" 2>&1 &
 sleep 3
 "$bin" release forward

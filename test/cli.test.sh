@@ -99,6 +99,7 @@ expect 'as media-control: an unknown command' 1 stderr "Unknown command 'bogus'"
 expect 'as media-control: send without an id' 1 stderr "Missing ID for command 'send'" media-control send
 expect 'as media-control: send with a word' 1 stderr "'abc' is not a valid integer" media-control send abc
 expect 'as media-control: send with an unknown id' 1 stderr 'Unknown command ID: 99' media-control send 99
+expect 'seek --micros, the word of media-control taken directly' 1 stderr "'abc' is not a valid number" seek abc --micros
 expect 'as media-control: seek without a position' 1 stderr "Missing position for command 'seek'" media-control seek
 expect 'as media-control: seek with a word' 1 stderr "'abc' is not a valid number" media-control seek abc
 expect 'as media-control: a negative seek, in its microseconds' 1 stderr 'Negative values are not allowed: -5000000' media-control seek -5

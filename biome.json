@@ -142,7 +142,9 @@
                                         "parseIni",
                                         "resolveSettings",
                                         "formatSettings",
-                                        "settingsTemplate"
+                                        "settingsTemplate",
+                                        "settingAssignment",
+                                        "withSetting"
                                     ],
                                     "variable": [
                                         "SECONDS_PER_MINUTE",
@@ -245,10 +247,13 @@
                     "playerctlPosition",
                     "mpcSeek",
                     "playerctlFormat",
+                    "setting",
                     "parseIni",
                     "resolveSettings",
                     "formatSettings",
                     "settingsTemplate",
+                    "settingAssignment",
+                    "withSetting",
                     "KEY_PREFIX",
                     "mediaRemote",
                     "now",

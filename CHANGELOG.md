@@ -5,6 +5,11 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Added
+- `config set <setting> <value>` changes one setting without opening the file:
+  `config set knob.fast 24`. A bad name or value is refused before anything is written, a
+  missing file is started from the `config init` template, and a symlinked config stays a symlink.
+
 ## 0.7.1 — 2026-09-19
 
 ### Changed

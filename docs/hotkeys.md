@@ -115,7 +115,7 @@ use, such as F13 and F14, and give those to `--knob`:
 Every click of the knob is one run of the command, and the tool reads the pace of the clicks: a
 slow click is 2 s, fine enough to find a word; a flick makes every click up to four times
 longer. The step, the limit and what counts as fast are `[knob]` in the
-[config file](advanced.md#config-file).
+[config file](advanced.md#config-file), and one command changes each: `nps config set knob.fast 24`.
 
 If the firmware cannot be changed, take the volume keys themselves, but only from that
 keyboard, so the laptop's own volume keys stay volume. Karabiner-EventViewer, the Devices tab,

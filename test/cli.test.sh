@@ -73,8 +73,8 @@ expect 'unknown flag in place of a time' 64 stderr 'backward needs seconds or mm
 expect 'a step of zero' 64 stderr 'forward needs a step above zero' forward 0 --hold
 expect 'watch with an argument' 64 stderr 'watch takes no arguments, got "closely"' watch closely
 expect 'two times' 64 stderr 'got "20" on top' forward 10 20
-expect 'config with an unknown argument' 64 stderr 'config takes "init" or nothing, got "--force"' config --force
-expect 'config init with an argument on top' 64 stderr 'config takes "init" or nothing, got "init --force"' config init --force
+expect 'config with an unknown argument' 64 stderr 'config takes "init", "set <setting> <value>" or nothing, got "--force"' config --force
+expect 'config init with an argument on top' 64 stderr 'config takes "init", "set <setting> <value>" or nothing, got "init --force"' config init --force
 expect 'status with a misspelt flag' 64 stderr 'status takes only --json, --raw, --minify, got "--jsno"' status --jsno
 expect 'position with an argument' 64 stderr 'position takes only --json, --raw, --minify, got "now"' position now
 expect 'transport with an argument' 64 stderr 'pause takes only --json, --raw, --minify, got "10"' pause 10
@@ -195,6 +195,34 @@ grep -q '^; max_time = ' "$xdg/nowplayingseek/config.ini" || fail 'config init d
 printf '[seek]\nstep = 7\n' >"$xdg/nowplayingseek/config.ini"
 expect 'second config init refuses' 78 stderr "$xdg/nowplayingseek/config.ini already exists" config init
 expect 'second config init kept the file' 0 stdout 'step = 7' config
+
+fresh_home
+ini=$xdg/nowplayingseek/config.ini
+expect 'config set without a file writes one' 0 stdout "wrote knob.fast = 24 to $ini" config set knob.fast 24
+expect 'config set is in force' 0 stdout 'fast = 24' config
+grep -q '^; step = 10' "$ini" || fail 'config set left the other defaults out of the file it started'
+expect 'config set again' 0 stdout "wrote knob.fast = 30 to $ini" config set knob.fast 30
+[ "$(grep -c '^fast = ' "$ini")" -eq 1 ] || fail 'config set twice wrote the key twice'
+cp "$ini" "$work/before"
+expect 'config set of an unknown setting' 64 stderr 'config set needs a setting such as knob.fast, got "knob.fats"' config set knob.fats 24
+expect 'config set of a bad value' 64 stderr 'config set knob.fast needs clicks a second above zero, got "0"' config set knob.fast 0
+expect 'config set without a value' 64 stderr 'config set knob.fast needs clicks a second above zero, got ""' config set knob.fast
+expect 'config set with more on top' 64 stderr 'config takes "init", "set <setting> <value>" or nothing, got "set knob.fast 24 25"' config set knob.fast 24 25
+cmp -s "$ini" "$work/before" || fail 'a refused config set changed the file'
+expect 'config set --json answers with the settings' 0 stdout '"fast": 12' config set knob.fast 12 --json
+fresh_home
+expect 'a refused config set writes nothing' 64 stderr 'got "0"' config set knob.fast 0
+[ -e "$xdg/nowplayingseek" ] && fail 'a refused config set created something'
+write_config '[seek]' 'stpe = 5'
+expect 'config set over a broken file' 78 stderr 'line 2: unknown setting [seek] stpe' config set knob.fast 24
+grep -q 'fast' "$xdg/nowplayingseek/config.ini" && fail 'config set wrote over a file that does not read'
+fresh_home
+mkdir -p "$xdg/nowplayingseek" "$xdg/dotfiles"
+printf '[knob]\nfast = 18\n' >"$xdg/dotfiles/config.ini"
+ln -s "$xdg/dotfiles/config.ini" "$xdg/nowplayingseek/config.ini"
+expect 'config set through a symlink' 0 stdout 'wrote knob.fast = 24' config set knob.fast 24
+[ -L "$xdg/nowplayingseek/config.ini" ] || fail 'config set replaced a symlinked config with a file'
+grep -q '^fast = 24' "$xdg/dotfiles/config.ini" || fail 'config set did not reach the file behind the symlink'
 
 fresh_home
 mkdir -p "$xdg/nowplayingseek"

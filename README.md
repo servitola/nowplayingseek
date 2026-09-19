@@ -34,9 +34,11 @@ I searched. There was no such thing. So I made it.
 
 ```sh
 brew install servitola/tap/nowplayingseek
+brew trust servitola/tap
 ```
 
-One script. No dependencies. It runs on `osascript`, which is already there.
+The second line is for Homebrew 7 and later: it skips a tap it was not told to trust, so without
+it `brew upgrade` passes this tool by. One script. No dependencies. It runs on `osascript`.
 
 ## A key
 

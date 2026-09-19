@@ -7,33 +7,23 @@ const KNOB_FLAG = '--knob';
 const SEEK_FLAGS = [PROGRESSIVE_FLAG, HOLD_FLAG, KNOB_FLAG];
 const PRINTED_DECIMALS = 3;
 const RAW_INDENT = 2;
-
-const USAGE = `nowplayingseek ${VERSION} — control whatever macOS considers "now playing"
-
-  status [--json | --raw]           title, app, position / duration; --raw is everything macOS knows, as JSON
-  position                          current position, seconds
-  duration                          total length, seconds
-  forward [time=10]                 seek forward
-  backward [time=10]                seek backward
-  seek <time>                       jump to an exact position (seek 754, seek 12:34)
-  toggle | play | pause | next | previous
-  doctor                            exit 0 when Now Playing is readable, 1 when it is not
-
-<time> is seconds (90, 12.5) or mm:ss / h:mm:ss (1:30, 1:02:03).
-
-exit codes: 0 ok, 1 nothing playing or unreadable, 2 player ignored the command, 64 usage, 78 bad config
-
-advanced (docs/advanced.md):
-  forward | backward --progressive  the step grows the longer the key is held
-  forward | backward --hold         keep seeking until "release" — for a hotkey's key down
-  release [forward | backward]      stop a --hold — for the key up
-  forward | backward --knob         one click of a keyboard knob: the faster it spins, the longer the step
-  config                            print the settings in effect and the config file path
-  config init                       write ~/.config/nowplayingseek/config.ini with the defaults`;
+const STDERR = 2;
 
 function print(text, toStderr) {
     const handle = toStderr ? $.NSFileHandle.fileHandleWithStandardError : $.NSFileHandle.fileHandleWithStandardOutput;
     handle.writeData($(`${text}\n`).dataUsingEncoding($.NSUTF8StringEncoding));
+}
+
+function showError(message) {
+    const painted = terminal.colours(STDERR);
+    const [first, ...usage] = message.split('\n\n');
+    const rest = usage.join('\n\n');
+    const tail = rest ? `\n\n${painted ? paintUsage(rest) : rest}` : '';
+    print(`${painted ? paintError('nowplayingseek:') : 'nowplayingseek:'} ${first}${tail}`, true);
+}
+
+function showJson(value, indent) {
+    print(terminal.colours() ? paintJson(value) : JSON.stringify(value, null, indent));
 }
 
 function showStatus(state, multiplier) {
@@ -109,9 +99,9 @@ const COMMANDS = {
     status(args) {
         const state = player.requireState();
         if (args.includes('--raw')) {
-            return print(JSON.stringify(mediaRemote.raw(), null, RAW_INDENT));
+            return showJson(mediaRemote.raw(), RAW_INDENT);
         }
-        return args.includes('--json') ? print(JSON.stringify(state)) : showStatus(state, 1);
+        return args.includes('--json') ? showJson(state, 0) : showStatus(state, 1);
     },
     position() {
         printSeconds(player.requireState(), 'position');
@@ -147,7 +137,8 @@ const COMMANDS = {
             throw new Failure(EXIT.usage, `config takes "init" or nothing, got "${args.join(' ')}"`);
         }
         const found = configFile.exists() ? '' : ' — not found, these are the defaults';
-        print(`; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`);
+        const listing = `; ${configFile.path()}${found}\n\n${formatSettings(configFile.load().texts)}`;
+        print(terminal.colours() ? paintIni(listing) : listing);
     },
     release(args) {
         const asked = args.map(arg => DIRECTIONS[arg]);
@@ -167,7 +158,7 @@ const COMMANDS = {
 function run(argv) {
     const [name, ...args] = argv;
     if (!name || name === '-h' || name === '--help') {
-        return print(USAGE);
+        return print(terminal.colours() ? paintUsage(USAGE) : USAGE);
     }
     if (name === '--version') {
         return print(VERSION);
@@ -193,7 +184,7 @@ function run(argv) {
         if (!(error instanceof Failure)) {
             throw error;
         }
-        print(`nowplayingseek: ${error.message}`, true);
+        showError(error.message);
         $.exit(error.code);
     }
 }

@@ -56,24 +56,27 @@ const mediaRemote = {
     },
 
     raw(known) {
-        const request = $.NSClassFromString('MRNowPlayingRequest');
-        const item = request?.localNowPlayingItem;
-        if (!item?.js) {
-            return null;
-        }
-        const info = item.nowPlayingInfo;
+        const info = this.info();
         const state = known || this.read();
-        if (!state) {
+        if (!(info && state)) {
             return null;
         }
-        const { app, playing } = state;
-        const everything = { app, playing };
+        const everything = { app: state.app, playing: state.playing };
         for (const key of ObjC.deepUnwrap(info.allKeys).sort()) {
-            const value = info.valueForKey(key);
-            const plain = value.isKindOfClass($.NSData) ? `<${value.length} bytes>` : ObjC.deepUnwrap(value);
-            everything[key.replace(KEY_PREFIX, '')] = plain instanceof Date ? plain.toISOString() : plain;
+            everything[key.replace(KEY_PREFIX, '')] = this.plain(info.valueForKey(key));
         }
         return everything;
+    },
+
+    plain(value) {
+        if (value.isKindOfClass($.NSData)) {
+            return `<${value.length} bytes>`;
+        }
+        if (value.isKindOfClass($.NSURL)) {
+            return value.absoluteString.js;
+        }
+        const unwrapped = ObjC.deepUnwrap(value);
+        return unwrapped instanceof Date ? unwrapped.toISOString() : unwrapped;
     },
 
     setElapsedTime(seconds) {

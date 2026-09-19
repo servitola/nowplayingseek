@@ -112,7 +112,8 @@
                                         "playerctlPosition",
                                         "mpcSeek",
                                         "playerctlFormat",
-                                        "paintStatus"
+                                        "paintStatus",
+                                        "paintJson"
                                     ],
                                     "variable": [
                                         "EXIT",
@@ -123,7 +124,10 @@
                                         "MICROSECONDS",
                                         "PERCENT",
                                         "SECONDS_PER_MINUTE",
-                                        "alreadyThere"
+                                        "alreadyThere",
+                                        "paintUsage",
+                                        "paintIni",
+                                        "paintError"
                                     ]
                                 }
                             }
@@ -148,6 +152,7 @@
                 "src/dialects/mpc.js",
                 "src/dialects/shpotify.js",
                 "src/dialects/index.js",
+                "src/usage.js",
                 "src/cli.js"
             ],
             "javascript": {
@@ -217,7 +222,12 @@
                     "move",
                     "alreadyThere",
                     "paintStatus",
-                    "terminal"
+                    "terminal",
+                    "paintUsage",
+                    "paintIni",
+                    "paintJson",
+                    "paintError",
+                    "USAGE"
                 ]
             },
             "linter": {
@@ -245,7 +255,8 @@
                                         "asMpc",
                                         "asShpotify",
                                         "appName",
-                                        "terminal"
+                                        "terminal",
+                                        "USAGE"
                                     ]
                                 }
                             }

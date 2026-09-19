@@ -1,6 +1,6 @@
 PREFIX ?= /usr/local
 PURE := src/logic/time.js src/logic/seek.js src/logic/hold.js src/logic/stream.js src/logic/paint.js src/logic/words.js src/logic/config.js
-SOURCES := $(PURE) src/system/mediaremote.js src/system/files.js src/system/terminal.js src/player.js src/system/configfile.js src/dialects/nowplaying-cli.js src/dialects/media-control-help.js src/dialects/media-control-read.js src/dialects/media-control.js src/dialects/shared.js src/dialects/playerctl.js src/dialects/mpc.js src/dialects/shpotify.js src/dialects/index.js src/cli.js
+SOURCES := $(PURE) src/system/mediaremote.js src/system/files.js src/system/terminal.js src/player.js src/system/configfile.js src/dialects/nowplaying-cli.js src/dialects/media-control-help.js src/dialects/media-control-read.js src/dialects/media-control.js src/dialects/shared.js src/dialects/playerctl.js src/dialects/mpc.js src/dialects/shpotify.js src/dialects/index.js src/cli.js src/usage.js
 TESTS := test/harness.js test/core.test.js test/hold.test.js test/dialects.test.js test/paint.test.js test/config.test.js
 TARGET := build/nowplayingseek
 TEST_TARGET := build/test.js

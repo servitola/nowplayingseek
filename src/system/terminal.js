@@ -2,10 +2,10 @@ ObjC.import('unistd');
 ObjC.import('AppKit');
 
 const terminal = {
-    colours() {
+    colours(stream = 1) {
         const { environment } = $.NSProcessInfo.processInfo;
         const asked = name => Boolean(environment.objectForKey(name).js);
-        return Boolean($.isatty(1)) && !asked('NO_COLOR') && environment.objectForKey('TERM').js !== 'dumb';
+        return Boolean($.isatty(stream)) && !asked('NO_COLOR') && environment.objectForKey('TERM').js !== 'dumb';
     },
 
     appName(state) {

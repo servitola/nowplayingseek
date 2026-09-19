@@ -16,6 +16,11 @@ version, so keep that heading as it is.
 - `status --raw` wrote a file's URL as `{}`.
 
 ### Added
+- `make test-world`: what the project believes about software it does not own, checked against it —
+  that a binary of our own reads nothing of Now Playing and one signed `com.apple.*` does, that VLC
+  reports a rate of 1 while paused and keeps whole seconds, that QuickTime does neither, that
+  nowplaying-cli reads the position as 0, that Homebrew trusts a formula named in full. When one
+  stops holding it says which workaround or sentence it made obsolete.
 - In a terminal everything is painted for the eye: the help page in sections with the commands in
   one colour and their arguments dim, `status --json` and `--raw` indented with keys, numbers and
   nulls told apart, `config` with its comments dim, an error with its first word in red. A pipe

@@ -73,6 +73,10 @@ tree fails with "files were modified by this hook".
 - `make test-live` opens VLC on five minutes of generated silence, pauses it and walks the playback
   cases; it refuses to start while something is playing and stops the moment Now Playing goes to
   another app. Run it before a release; whatever it does not cover stays in the hand checklist below.
+- `make test-world` checks the beliefs about other software that the code and the docs rest on,
+  against that software: VLC, QuickTime Player, macOS's gate, Homebrew, nowplaying-cli. A belief
+  found on a player belongs there, with the sentence it supports; `CHANGED` names what to revisit.
+  The live suite's last case hands Now Playing to QuickTime during a hold on VLC.
 - `make test` needs nothing playing. `test/cli.test.sh` runs each case under its own
   `XDG_CONFIG_HOME` (`NSHomeDirectory` ignores `HOME`) and covers exit 0, 64 and 78, and exit 1 of
   the refusals; exit 1 for nothing playing and exit 2 depend on the player and are in the live suite.

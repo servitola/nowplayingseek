@@ -1,5 +1,4 @@
 ObjC.import('unistd');
-ObjC.import('AppKit');
 
 const terminal = {
     colours(stream = 1) {
@@ -21,6 +20,7 @@ const terminal = {
         if (!bundle) {
             return null;
         }
+        ObjC.import('AppKit');
         const url = $.NSWorkspace.sharedWorkspace.URLForApplicationWithBundleIdentifier(bundle);
         return url.js ? $.NSFileManager.defaultManager.displayNameAtPath(url.path).js : bundle;
     },

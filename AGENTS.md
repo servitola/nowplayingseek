@@ -91,6 +91,12 @@ tree fails with "files were modified by this hook".
   autoplay loads the next one in its place.
 - A change to the tests is proven by breaking the code once and watching them fail.
 
+## The demo picture
+
+`docs/demo.svg` in the README is drawn by the real painters over sample data. When the painted
+output changes, run the owner's `~/projects/serho_topics/аудио-управлятор/outreach/demo.sh` and
+commit the result; a picture that shows yesterday's output is a false claim.
+
 ## Release
 
 The `release` skill (`.claude/skills/release/SKILL.md`); `scripts/release.sh plan <version>` shows

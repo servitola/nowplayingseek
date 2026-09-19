@@ -7,6 +7,8 @@ full path — hotkey daemons run commands with a bare environment.
 
 ## A key, in Karabiner-Elements
 
+<p align="center"><img src="banner-hotkeys.webp" alt="The panda presses one glowing fast-forward key; a thread of light runs to a glass player where the film blurs forward" width="100%"></p>
+
 [Karabiner-Elements](https://karabiner-elements.pqrs.org/) is a free keyboard customiser for
 macOS. ⌃⌥→ and ⌃⌥←: Karabiner runs a `shell_command` once per press and does not
 repeat it while the key is held, so the key down starts a [`--hold`](advanced.md#hold) and the
@@ -33,6 +35,8 @@ A tap is one step. Held, the key glides off in small steps, five a second, and w
 how it grows are in the [config file](advanced.md#config-file).
 
 ## A knob, in Karabiner-Elements
+
+<p align="center"><img src="banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along" width="100%"></p>
 
 If you have a mechanical keyboard with a knob, it is a jog wheel. A knob is two keys to the system, one per direction — volume up and down out of the
 box. Reassign them in the keyboard's firmware (VIA, QMK, the vendor's app) to keys you do not

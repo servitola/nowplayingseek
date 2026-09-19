@@ -169,7 +169,7 @@ for _ in 1 2 3 4 5; do
 	sleep 0.5
 done
 wait
-expect_move 'knob, slow clicks' 120 15 18
+expect_move 'knob, slow clicks' 120 10 12
 
 at 1:00
 for _ in 1 2 3 4 5 6 7 8 9 10; do
@@ -177,7 +177,7 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
 	sleep 0.05
 done
 wait
-expect_move 'knob, a flick' 60 60 160
+expect_move 'knob, a flick' 60 35 80
 
 at 4:50
 expect_exit 'forward near the end' 0 forward 30

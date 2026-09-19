@@ -2,7 +2,7 @@
 
 # nowplayingseek
 
-[![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![macOS 15.4+](https://img.shields.io/badge/macOS-15.4%2B-black)](docs/how-it-works.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
+[![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![tested on macOS 26](https://img.shields.io/badge/tested%20on-macOS%2026-black)](docs/how-it-works.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
 
 A command-line tool for macOS. It seeks whatever is playing.
 
@@ -38,7 +38,7 @@ Homebrew 7 wants third-party taps trusted: the full name above trusts this one f
 Give `forward` and `backward` a key each. A press is ten seconds.
 
 Hold the key and it moves off in small steps, gathers pace, then settles. Release, and it stops.
-A short hold stays short. A long one crosses the film.
+A short hold stays short. A long one covers ten minutes.
 
 Shortcuts.app, [Karabiner-Elements](https://karabiner-elements.pqrs.org/), Hammerspoon, skhd:
 [docs/hotkeys.md](docs/hotkeys.md).
@@ -62,7 +62,7 @@ See [the Karabiner-Elements rule](docs/hotkeys.md#a-knob-in-karabiner-elements).
 | `toggle`, `play`, `pause`, `next`, `previous` | transport |
 | `doctor` | exit 0 when Now Playing is readable |
 
-A command returns when the player has moved, not before.
+A seek returns when the player has moved, not before.
 Exit `0`: done. `1`: nothing is playing. `2`: the player did not listen.
 
 ## Limits

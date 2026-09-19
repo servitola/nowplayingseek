@@ -3,7 +3,7 @@
 A command-line tool that reads and drives whatever macOS elected as Now Playing; people bind it
 to hotkeys and call it from scripts, the owner holds a key to scrub through long videos.
 `README.md` is the front door and `docs/` is the manual. Read `docs/how-it-works.md` before
-touching `src/mediaremote.js` or `src/player.js` — each bullet there was a bug first. The README
+touching `src/system/mediaremote.js` or `src/player.js` — each bullet there was a bug first. The README
 stays under 100 lines: a new recipe, question or explanation goes into `docs/` and gets at most
 a link. What is unfinished or undecided is in `BACKLOG.md`; this file holds only what stays true.
 
@@ -74,8 +74,8 @@ tree fails with "files were modified by this hook".
   cases; it refuses to start while something is playing and stops the moment Now Playing goes to
   another app. Run it before a release; whatever it does not cover stays in the hand checklist below.
 - `make test` needs nothing playing. `test/cli.test.sh` runs each case under its own
-  `XDG_CONFIG_HOME` (`NSHomeDirectory` ignores `HOME`) and covers exit 0, 64 and 78; exit 1 and 2
-  depend on what is playing and are not tested.
+  `XDG_CONFIG_HOME` (`NSHomeDirectory` ignores `HOME`) and covers exit 0, 64 and 78, and exit 1 of
+  the refusals; exit 1 for nothing playing and exit 2 depend on the player and are in the live suite.
 - Anything touching playback is checked by hand with a player running — look at `playing` first and
   never on something the owner is watching; note the position and put it back: `seek`, a held hotkey
   (five `forward` 30 ms apart must give +50 s), `toggle` twice, `backward` at 0, a hold (`forward 10
@@ -108,6 +108,6 @@ what it would do. Nothing is pushed, tagged or published without the owner's wor
   `TotalChapterCount` can be read; chapter times cannot. Moving by chapter needs a driver for the
   player, which the owner has ruled out.
 - **A helper dylib inside `osascript`.** Refused: "mapping process is a platform binary, but
-  mapped file is not". perl accepts one, but needs an arm64e slice.
+  mapped file is not". perl, ruby and python load a plain arm64 one; it is `osascript` that wants arm64e.
 
 The tool therefore drives the elected app and only that. This is a decision, not a gap.

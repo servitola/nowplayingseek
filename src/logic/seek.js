@@ -1,5 +1,6 @@
 const END_MARGIN = 5;
 const MOST_RESENDS = 2;
+const NEAR = 0.5;
 
 const effectiveRate = (isPlaying, rate) => (isPlaying ? rate || 1 : 0);
 
@@ -31,6 +32,10 @@ function seekBase(state, lastSeek, now, pendingSeekMax) {
     const arrived = drift > -1 && drift < 1 + (now - lastSeek.at) * (state.rate || 0);
     return refreshed && arrived ? state.position : lastSeek.target;
 }
+
+// A paused web page does not refresh Now Playing for a seek that moves nothing, so waiting for it
+// ended in exit 2.
+const alreadyThere = (position, target) => !isMissing(position) && Math.abs(position - target) < NEAR;
 
 function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
     if (!after || isMissing(after.timestamp) || after.timestamp < calledAt) {

@@ -8,8 +8,6 @@ What is left, most pressing first. State as of 2026-09-18; delete a line when it
 - Some pages ignore a seek to exactly 0 (the film site in Vivaldi during the 0.3.0 release; 0.2.0
   behaves the same, `seek 1` lands). `backward` near the start and `seek 0` exit 2 there. Probably
   a MediaSession handler that tests `seekTime` for truthiness.
-- `seek` to the position the player is already at exits 2 ("ignored the seek"): seen on a paused page in
-  Vivaldi, `seek 4145.003` at 4145.003. Probably the poll waits for a change that cannot come.
 - At knob or key-repeat pace a Now Playing refresh caused by an older seek carries a timestamp later
   than the newest `lastSeek.at`, so `seekBase` trusts a stale position and a click is lost. From the
   review of 2026-09-19, plausible, not measured; a fix would also require the position to be near the

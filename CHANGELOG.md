@@ -25,6 +25,7 @@ version, so keep that heading as it is.
   release that never arrives costs that much less.
 
 ### Fixed
+- `seek` to the position the player is already at exited 2 on a paused web page; it exits 0.
 - A hold checked which app was elected before its pause and stepped after it: an app elected in
   between got the old one's target. It looks after the pause now.
 - The three private calls behind `shuffle`, `repeat` and `speed` were looked up at start: one of

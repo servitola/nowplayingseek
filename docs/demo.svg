@@ -16,12 +16,12 @@
 <text x="22" y="281" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;title&quot;</tspan><tspan>: &quot;Seven Samurai&quot;,</tspan></text>
 <text x="22" y="302" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;artist&quot;</tspan><tspan>: &quot;&quot;,</tspan></text>
 <text x="22" y="323" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;album&quot;</tspan><tspan>: &quot;&quot;,</tspan></text>
-<text x="22" y="344" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;org.videolan.vlc&quot;,</tspan></text>
-<text x="22" y="365" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: </tspan><tspan font-weight="700">12420</tspan><tspan>,</tspan></text>
-<text x="22" y="386" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: </tspan><tspan font-weight="700">3723</tspan><tspan>,</tspan></text>
+<text x="22" y="344" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;app&quot;</tspan><tspan>: &quot;org.videolan.vlc&quot;,</tspan><tspan fill-opacity="0.5">  VLC</tspan></text>
+<text x="22" y="365" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;duration&quot;</tspan><tspan>: </tspan><tspan font-weight="700">12420</tspan><tspan>,</tspan><tspan fill-opacity="0.5">  3:27:00</tspan></text>
+<text x="22" y="386" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;position&quot;</tspan><tspan>: </tspan><tspan font-weight="700">3723</tspan><tspan>,</tspan><tspan fill-opacity="0.5">  1:02:03</tspan></text>
 <text x="22" y="407" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;playing&quot;</tspan><tspan>: </tspan><tspan font-weight="700">true</tspan><tspan>,</tspan></text>
 <text x="22" y="428" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;rate&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1</tspan><tspan>,</tspan></text>
-<text x="22" y="449" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1789768358.106</tspan></text>
+<text x="22" y="449" xml:space="preserve"><tspan>  </tspan><tspan fill="#5fd7d7">&quot;timestamp&quot;</tspan><tspan>: </tspan><tspan font-weight="700">1789768358.106</tspan><tspan fill-opacity="0.5">  19 Sep 2026 at 10:45:37</tspan></text>
 <text x="22" y="470" xml:space="preserve"><tspan>}</tspan></text>
 </g>
 </svg>

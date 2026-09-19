@@ -44,7 +44,8 @@ Three things the API does not tell you:
 - `ElapsedTime` is a snapshot taken at `Timestamp`, not the position. The live position
   is `elapsed + rate × (now − timestamp)`.
 - There is no relative seek. `forward` / `backward` read, add, and seek to an absolute time. Now
-  Playing refreshes 50–150 ms after a seek — over a second when a page buffers — so
+  Playing refreshes 50–150 ms after a seek in IINA, about 0.6 s in VLC, over a second when a
+  page buffers — so
   consecutive presses build on the previous target until it catches up.
 - `MRMediaRemoteSendCommand` returns `true` immediately and delivers asynchronously; a
   process that exits right away never sends the command. The tool polls for the effect.

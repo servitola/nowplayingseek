@@ -50,8 +50,8 @@ function seekLanded(after, target, { calledAt, superseded, verifyTimeout }) {
 
 // Seeks sent 30 ms apart by separate processes reach the player in any order. The newest process
 // sees a refresh that is not its own target and sends it again.
-function seekOvertaken(after, target, { sentAt, superseded, verifyTimeout, resent = 0 }) {
-    if (resent >= MOST_RESENDS) {
+function seekOvertaken(after, target, { sentAt, superseded, verifyTimeout, resent = 0, app }) {
+    if (resent >= MOST_RESENDS || (after && after.app !== app)) {
         return false;
     }
     const refreshed = Boolean(after) && !isMissing(after.timestamp) && after.timestamp >= sentAt;

@@ -131,7 +131,10 @@ const player = {
         const landed = waitUntil(() => {
             after = mediaRemote.read();
             const superseded = lastSeekFile.read()?.target !== target;
-            if (seekOvertaken(after, target, { sentAt, superseded, resent, verifyTimeout: timing.verify_timeout })) {
+            if (after && after.app !== before.app) {
+                return true;
+            }
+            if (seekOvertaken(after, target, { sentAt, superseded, resent, app: before.app, verifyTimeout: timing.verify_timeout })) {
                 sentAt = now();
                 resent += 1;
                 mediaRemote.setElapsedTime(target);

@@ -9,14 +9,12 @@ Now Playing gate moved. Only a build marked *tested* was actually run.
 
 | macOS | Build | Status | How we know |
 | :-- | :-- | :-- | :-- |
-| 27.2 beta | 26B5086k | unknown | not run here, and no unbroken chain of diffs leads to it from a tested build ([diff from 26A428](https://github.com/blacktop/ipsw-diffs/tree/main/27_0_26A428_vs_27_2_26B5086k_Mac18%2C5)) |
+| 27.2 beta | 26B5086k | untested | not run here, and no unbroken chain of diffs leads to it from a tested build ([diff from 26A428](https://github.com/blacktop/ipsw-diffs/tree/main/27_0_26A428_vs_27_2_26B5086k_Mac18%2C5)) |
 | 26.7 | 25G227 | expected | not run here; the Now Playing gate in `mediaremoted` did not change on the way from a tested build ([diff from 25G224](https://github.com/blacktop/ipsw-diffs/tree/main/26_7_25G224_vs_26_7_25G227)) |
-| 26.7 | 25G224 | expected | not run here; the Now Playing gate in `mediaremoted` did not change on the way from a tested build ([diff from 25G220](https://github.com/blacktop/ipsw-diffs/tree/main/26_7_25G220_vs_26_7_25G224)) |
-| 26.7 | 25G220 | expected | not run here; the Now Playing gate in `mediaremoted` did not change on the way from a tested build ([diff from 25G83](https://github.com/blacktop/ipsw-diffs/tree/main/26_6_2_25G83_vs_26_7_25G220)) |
 | 26.6.2 | 25G83 | tested | `make test-live` 73/73 and the manual checklist, 2026-09-20 |
 
 - **tested** — `make test-live` passed on this build.
 - **expected** — not run here; the Now Playing gate in `mediaremoted` did not change on the way from a tested build.
 - **at-risk** — the Now Playing gate in `mediaremoted` changed; expect it to break until tested.
 - **broken** — tested and does not work.
-- **unknown** — not run here, and no unbroken chain of diffs leads to it from a tested build.
+- **untested** — not run here, and no unbroken chain of diffs leads to it from a tested build.

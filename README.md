@@ -1,6 +1,6 @@
 # nowplayingseek
 
-[![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![tested on macOS 26](https://img.shields.io/badge/tested%20on-macOS%2026-black)](docs/how-it-works.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
+[![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![macOS](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fservitola%2Fnowplayingseek%2Fmain%2Fdocs%2Fcompat-badge.json)](docs/compatibility.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
 
 <p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="70%"></p>
 
@@ -77,7 +77,7 @@ Every command and flag, the ones for hotkeys included: `nps --help`.
 - It drives the one app macOS elected as Now Playing, the one in Control Center. To choose
   another, press play there.
 - A web page must know how to seek. YouTube does. A page that does not: exit 2.
-- It stands on a private API. Apple may close it in any update. Tested on macOS 26.6.
+- It stands on a private API. Apple may close it in any update. Which builds work: [compatibility](docs/compatibility.md).
 
 ## More
 

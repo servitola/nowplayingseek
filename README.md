@@ -8,6 +8,7 @@ A command-line tool for macOS. It seeks whatever is playing.
 
 Ten seconds back. Ten seconds forward.
 From a key, with any app in front: a browser tab, IINA, VLC, Music, Spotify.
+[A keyboard with a knob](#a-knob) turns into a jog wheel: flick it past the ad in a video, wind back over a line you missed.
 
 macOS has no such key. This is the command behind it.
 

@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
     "label": "macOS",
-    "message": "tested 26.6 · 27 untested",
+    "message": "tested 26.6, 27.0 · 27.2 beta expected",
     "color": "black"
 }

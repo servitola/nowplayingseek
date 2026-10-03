@@ -1,20 +1,20 @@
 // Replays recorded turns of a real keyboard knob (test/knob/*.json) through the knob logic of
 // src/logic and checks that each one feels the way it was turned. `make knob-replay`.
 //
-//   node scripts/knob-replay.js "<pure files>" [--set knob.fast=30]... [--refresh 0.6]
+//   node scripts/knob-replay.js "<pure files>" [--set knob.fast=30]... [--refresh 0.6] [--try draft.js]
 //
 // The player is a model: it plays at rate 1 and Now Playing reports a seek --refresh seconds after
 // it (IINA 0.05-0.15, VLC about 0.6, see docs/how-it-works.md). Each click is one run of
 // `forward|backward --knob` at the moment the knob sent it; startup time is left out.
+// --try loads a file over src/logic, so a draft knobRate or knobMultiplier is judged before it
+// replaces the real one.
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
+const load = file => vm.runInThisContext(fs.readFileSync(file, 'utf8'), { filename: path.resolve(file) });
 const args = process.argv.slice(2);
-const pure = args.shift().split(' ').filter(Boolean);
-for (const file of pure) {
-    vm.runInThisContext(fs.readFileSync(file, 'utf8'), { filename: path.resolve(file) });
-}
+args.shift().split(' ').filter(Boolean).forEach(load);
 
 const overrides = [];
 let refresh = 0.15;
@@ -24,6 +24,8 @@ while (args.length > 0) {
         overrides.push(args.shift());
     } else if (flag === '--refresh') {
         refresh = Number(args.shift());
+    } else if (flag === '--try') {
+        load(args.shift());
     } else {
         throw new Error(`unknown argument ${flag}`);
     }
@@ -40,31 +42,38 @@ const settings = resolveSettings(parseIni(ini.join('\n'))).values;
 
 const FEELINGS = {
     careful: {
-        promise: 'no click moves more than 1.5 steps',
-        holds: steps => Math.max(...steps) <= 1.5,
+        promise: 'moves 20 s at most',
+        holds: ({ moved }) => Math.abs(moved) <= 20,
     },
     far: {
-        promise: 'the clicks average at least 3 steps',
-        holds: steps => average(steps) >= 3,
+        promise: 'moves 2 minutes or more',
+        holds: ({ moved }) => Math.abs(moved) >= 120,
     },
     slowing: {
-        promise: 'the first half averages 2.5 steps or more, the last three clicks 1.5 or less',
-        holds: steps => average(steps.slice(0, steps.length / 2)) >= 2.5 && Math.max(...steps.slice(-3)) <= 1.5,
+        promise: 'moves 90 s or more, the last three clicks 1.3 steps at most',
+        holds: ({ moved, steps }) => Math.abs(moved) >= 90 && Math.max(...steps.slice(-3)) <= 1.3,
+    },
+    searching: {
+        promise: 'no click moves more than 1.5 steps',
+        holds: ({ steps }) => Math.max(...steps) <= 1.5,
     },
 };
 
-const average = list => list.reduce((sum, each) => sum + each, 0) / list.length;
+function clicksOf(scenario) {
+    const turns = scenario.turns || [scenario];
+    return turns.flatMap(turn =>
+        turn.clicks_ms.map(ms => ({ at: ((turn.start_ms || 0) + ms) / 1000, sign: turn.direction === 'forward' ? 1 : -1 })),
+    );
+}
 
-function replay({ direction, clicks_ms }) {
-    const sign = direction === 'forward' ? 1 : -1;
+function replay(clicks) {
     const duration = 3600;
     const startAt = 600;
     let seek = { target: startAt, at: 0 };
     let lastSeek = null;
     const steps = [];
     const positionAt = t => seek.target + (t - seek.at);
-    for (const ms of clicks_ms) {
-        const now = ms / 1000;
+    for (const { at: now, sign } of clicks) {
         const refreshed = now - seek.at >= refresh;
         const state = {
             app: 'player',
@@ -84,7 +93,7 @@ function replay({ direction, clicks_ms }) {
         seek = { target, at: now };
         lastSeek = { target, at: now, app: 'player', direction: sign, streakStart: now, rate };
     }
-    const end = clicks_ms.at(-1) / 1000;
+    const end = clicks.at(-1).at;
     return { steps, moved: positionAt(end) - startAt - end };
 }
 
@@ -94,13 +103,15 @@ console.log(`knob: step ${settings.knob.step} s, fast ${settings.knob.fast}/s, m
 for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.json')).sort()) {
     const scenario = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
     const feeling = FEELINGS[scenario.feeling];
-    const { steps, moved } = replay(scenario);
-    const ok = feeling.holds(steps);
+    const clicks = clicksOf(scenario);
+    const result = replay(clicks);
+    const ok = feeling.holds(result);
     failed += ok ? 0 : 1;
-    const span = (scenario.clicks_ms.at(-1) / 1000).toFixed(2);
-    console.log(`${ok ? 'ok  ' : 'FAIL'} ${file.padEnd(24)} ${String(steps.length).padStart(2)} clicks in ${span} s -> ${moved >= 0 ? '+' : ''}${moved.toFixed(0)} s of video`);
-    console.log(`     steps  ${steps.map(each => each.toFixed(1)).join(' ')}`);
-    console.log(`     wanted ${feeling.promise}\n`);
+    const moved = `${result.moved >= 0 ? '+' : ''}${result.moved.toFixed(0)} s`;
+    const synthetic = scenario.source.startsWith('SYNTHETIC') ? '  (synthetic)' : '';
+    console.log(`${ok ? 'ok  ' : 'FAIL'} ${file.padEnd(26)} ${String(clicks.length).padStart(2)} clicks in ${clicks.at(-1).at.toFixed(2)} s -> ${moved} of video${synthetic}`);
+    console.log(`     steps  ${result.steps.map(each => each.toFixed(1)).join(' ')}`);
+    console.log(`     wanted ${scenario.feeling}: ${feeling.promise}\n`);
 }
 console.log(failed === 0 ? 'every turn feels as it was meant' : `${failed} turns do not feel as they were meant`);
 process.exit(failed === 0 ? 0 : 1);

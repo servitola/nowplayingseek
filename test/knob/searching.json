@@ -1,0 +1,1 @@
+{"feeling": "searching", "turns": [{"direction": "forward", "clicks_ms": [0, 70, 160, 225]}, {"direction": "backward", "start_ms": 600, "clicks_ms": [0, 80, 140]}, {"direction": "forward", "start_ms": 1300, "clicks_ms": [0, 100]}], "source": "SYNTHETIC until a real recording arrives: paces taken from the recorded turns (careful 58-106 ms, a spin 25-35 ms, a regrip 250-470 ms)"}

@@ -84,7 +84,7 @@ typecheck: $(TARGET)
 	npx -y -p typescript@7.0.2 tsc --allowJs --checkJs --noEmit --target es2023 --lib es2023 --strict false build/types/nowplayingseek.js scripts/jxa.d.ts
 
 # Recorded turns of a real knob replayed through the knob logic: does each feel as it was turned?
-# Not part of `make test` — it is for tuning, and fails today. ARGS='--set knob.fast=30'.
+# Not part of `make test`: it is for tuning a curve against the turns. ARGS='--set knob.fast=30'.
 knob-replay:
 	node scripts/knob-replay.js "$(PURE)" $(ARGS)
 

@@ -80,14 +80,20 @@ to keys you do not use, such as F13 and F14, and give those to `--knob`:
   "manipulators": [
     {
       "type": "basic",
-      "from": { "key_code": "f14" },
+      "from": {
+        "key_code": "f14",
+        "modifiers": { "optional": ["any"] }
+      },
       "to": [{
         "shell_command": "/opt/homebrew/bin/nps forward --knob"
       }]
     },
     {
       "type": "basic",
-      "from": { "key_code": "f13" },
+      "from": {
+        "key_code": "f13",
+        "modifiers": { "optional": ["any"] }
+      },
       "to": [{
         "shell_command": "/opt/homebrew/bin/nps backward --knob"
       }]
@@ -109,7 +115,10 @@ manipulators:
 ```json
 {
   "type": "basic",
-  "from": { "consumer_key_code": "volume_increment" },
+  "from": {
+    "consumer_key_code": "volume_increment",
+    "modifiers": { "optional": ["any"] }
+  },
   "to": [{ "shell_command": "/opt/homebrew/bin/nps forward --knob" }],
   "conditions": [{
     "type": "device_if",
@@ -117,6 +126,10 @@ manipulators:
   }]
 }
 ```
+
+Some knobs send a modifier with every click — one we have a recording of sends ⇧⌥ with each
+volume key, the way macOS takes a quarter step — and a rule without `"optional": ["any"]` only
+catches a key pressed alone, so that knob would go on changing the volume.
 
 The second one is the same with `volume_decrement` and `backward`. If the knob still changes the
 volume, check that Karabiner-Elements modifies that keyboard, under Settings → Devices.

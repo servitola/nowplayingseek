@@ -28,7 +28,7 @@ $(TARGET): $(SOURCES)
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(SOURCES); } > $@
 	chmod +x $@
 
-.PHONY: build test test-speed test-live test-world coverage typecheck globals lint install uninstall clean dist
+.PHONY: build test test-speed knob-replay test-live test-world coverage typecheck globals lint install uninstall clean dist
 
 build: $(TARGET) $(ARTWORK_BUNDLE)
 
@@ -82,6 +82,11 @@ typecheck: $(TARGET)
 	@mkdir -p build/types
 	tail -n +2 $(TARGET) > build/types/nowplayingseek.js
 	npx -y -p typescript@7.0.2 tsc --allowJs --checkJs --noEmit --target es2023 --lib es2023 --strict false build/types/nowplayingseek.js scripts/jxa.d.ts
+
+# Recorded turns of a real knob replayed through the knob logic: does each feel as it was turned?
+# Not part of `make test` — it is for tuning, and fails today. ARGS='--set knob.fast=30'.
+knob-replay:
+	node scripts/knob-replay.js "$(PURE)" $(ARGS)
 
 coverage:
 	node scripts/coverage.js "$(PURE)" "$(TESTS)"

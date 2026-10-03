@@ -76,7 +76,7 @@ function testSkepticHold(core) {
         'a direction without a streak start begins a new hold'
     );
     same(core.streakStart(held, 1, 51, 1), 44, 'exactly the gap apart still continues the hold');
-    same(core.knobRate({ target: 110, at: 50, direction: 1, rate: 10 }, 1, 51, 1), 5.5, 'knob: exactly the gap apart is still one spin');
+    same(core.knobRate({ target: 110, at: 50, direction: 1 }, 1, 51, 1), 1, 'knob: exactly the gap apart is still one spin');
     same(
         core.multiplierAt(3, { start: 0.4, max_multiplier: 2.5, ramp: 6 }, true),
         0.4 + 2.1 * (1 - Math.exp(-0.25)),

@@ -40,7 +40,8 @@ function testSettings(core) {
     same(defaults.values.hold.max_time, 60, 'settings: default hold fuse');
     same(defaults.values.watch.interval, 1, 'settings: watch redraws once a second');
     same(defaults.values.knob.step, 2, 'settings: default knob step');
-    same(defaults.values.knob.fast, 18, 'settings: default knob pace');
+    same(defaults.values.knob.slow, 18, 'settings: default careful knob pace');
+    same(defaults.values.knob.fast, 32, 'settings: default spinning knob pace');
     same(defaults.values.progressive.max_multiplier, 2.5, 'settings: default max multiplier');
     same(defaults.values.progressive.ramp, 6, 'settings: default ramp');
     same(defaults.values.progressive.start, 0.4, 'settings: default start');

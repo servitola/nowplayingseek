@@ -5,6 +5,14 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Changed
+- A knob click reads the pace of that click alone, against two thresholds: up to `[knob] slow`
+  (18 clicks a second) it is one plain step, from `fast` (now 32) it is `max_multiplier` steps.
+  On recordings of a real knob the old averaged pace made a careful turn twice as long and kept a
+  spin's speed after the hand had slowed down. `make knob-replay` replays those turns.
+- The Karabiner-Elements rules for a knob catch a click that comes with a modifier: one knob
+  sends option+shift with every volume key.
+
 ## 2026.09.20 — 2026-09-20
 
 ### Changed

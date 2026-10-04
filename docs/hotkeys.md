@@ -3,8 +3,8 @@
 [← README](../README.md)
 
 The tool does not grab keys itself; bind it with whatever you already use. Give the
-full path — hotkey daemons run commands with a bare environment. `nps` is the same tool,
-short name, used below to keep the recipes' lines short.
+full path — hotkey daemons run commands with a bare environment. The Karabiner-Elements rules
+spell out `nowplayingseek`; the other recipes use `nps`, the same tool under its short name.
 
 ## A key, in Shortcuts
 
@@ -40,11 +40,11 @@ key up ends it:
       },
       "to": [{
         "shell_command":
-          "/opt/homebrew/bin/nps forward --hold --progressive >/dev/null 2>&1 &"
+          "/opt/homebrew/bin/nowplayingseek forward --hold --progressive >/dev/null 2>&1 &"
       }],
       "to_after_key_up": [{
         "shell_command":
-          "/opt/homebrew/bin/nps release forward >/dev/null 2>&1 &"
+          "/opt/homebrew/bin/nowplayingseek release forward >/dev/null 2>&1 &"
       }]
     },
     {
@@ -55,11 +55,11 @@ key up ends it:
       },
       "to": [{
         "shell_command":
-          "/opt/homebrew/bin/nps backward --hold --progressive >/dev/null 2>&1 &"
+          "/opt/homebrew/bin/nowplayingseek backward --hold --progressive >/dev/null 2>&1 &"
       }],
       "to_after_key_up": [{
         "shell_command":
-          "/opt/homebrew/bin/nps release backward >/dev/null 2>&1 &"
+          "/opt/homebrew/bin/nowplayingseek release backward >/dev/null 2>&1 &"
       }]
     }
   ]
@@ -95,7 +95,7 @@ to keys you do not use, such as F13 and F14, and give those to `--knob`:
       },
       "to": [{
         "shell_command":
-          "/opt/homebrew/bin/nps forward --knob >/dev/null 2>&1 &"
+          "/opt/homebrew/bin/nowplayingseek forward --knob >/dev/null 2>&1 &"
       }]
     },
     {
@@ -106,7 +106,7 @@ to keys you do not use, such as F13 and F14, and give those to `--knob`:
       },
       "to": [{
         "shell_command":
-          "/opt/homebrew/bin/nps backward --knob >/dev/null 2>&1 &"
+          "/opt/homebrew/bin/nowplayingseek backward --knob >/dev/null 2>&1 &"
       }]
     }
   ]
@@ -136,7 +136,7 @@ manipulators:
   },
   "to": [{
     "shell_command":
-      "/opt/homebrew/bin/nps forward --knob >/dev/null 2>&1 &"
+      "/opt/homebrew/bin/nowplayingseek forward --knob >/dev/null 2>&1 &"
   }],
   "conditions": [{
     "type": "device_if",

@@ -12,6 +12,13 @@ function testPosition(core) {
     same(core.clampTarget(5000, 0), 5000, 'zero duration is treated as unknown');
 }
 
+function testDashes(core) {
+    same(core.withPlainDashes(['forward', '5', '\u2014knob']).join(' '), 'forward 5 --knob', 'an em dash before a flag is two hyphens');
+    same(core.withPlainDashes(['forward', '\u2013hold']).join(' '), 'forward --hold', 'so is an en dash');
+    same(core.withPlainDashes(['--knob']).join(' '), '--knob', 'two hyphens stay two hyphens');
+    same(core.withPlainDashes(['10\u201420']).join(' '), '10\u201420', 'a dash inside an argument is left alone');
+}
+
 function testRate(core) {
     same(core.effectiveRate(true, 1), 1, 'playing at normal speed');
     same(core.effectiveRate(true, 1.5), 1.5, 'playing faster');
@@ -178,6 +185,7 @@ function testStatus(core) {
     same(failure instanceof core.Failure && failure.code === 2, true, 'Failure carries its exit code');
 }
 GROUPS.push(
+    testDashes,
     testPosition,
     testRate,
     testSeekBase,

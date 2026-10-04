@@ -86,7 +86,8 @@ const COMMANDS = {
     previous: sendCommand,
 };
 
-function run(argv) {
+function run(given) {
+    const argv = withPlainDashes(given);
     const [name, ...args] = argv;
     if (!name || name === '-h' || name === '--help') {
         return print(terminal.colours() ? paintUsage(USAGE) : USAGE);

@@ -18,3 +18,8 @@ function parseColumns(sttySize) {
 }
 
 const visibleLength = text => Array.from(text.replace(PAINT, '')).length;
+
+// Phones and smart-quote editors turn a typed "--" into a dash, and a flag that starts with one
+// was meant as "--"; a dash inside or at the end of an argument is left as it is.
+const LEADING_DASH = /^[\u2013\u2014]/u;
+const withPlainDashes = args => args.map(arg => arg.replace(LEADING_DASH, '--'));

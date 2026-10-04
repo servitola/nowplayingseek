@@ -17,6 +17,8 @@ version, so keep that heading as it is.
   sends option+shift with every volume key.
 
 ### Added
+- A flag typed with a dash in place of two hyphens works: `forward 5 —knob` is
+  `forward 5 --knob`. Phones and smart-quote editors make that dash out of a typed `--`.
 - [docs/compatibility.md](docs/compatibility.md) and the macOS badge in the README: which macOS
   builds the live tests passed on (26.6.2 and 27.0), and which ones are expected to work because
   Apple's diff of the Now Playing gate shows no change on the way from a tested build.

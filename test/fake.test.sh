@@ -53,6 +53,7 @@ told() {
 player true && told 'backward goes back' 0 'setElapsedTime 115;' backward 5
 player true && told 'forward by the default step' 0 'setElapsedTime 130;' forward
 player true && told 'a knob click is the knob step' 0 'setElapsedTime 125;' forward --knob
+player true && told 'a dash typed for two hyphens is two hyphens' 0 'setElapsedTime 125;' forward 5 —knob
 player true && printf '[knob]\nstep = 3\n' >>"$work/fake/xdg/nowplayingseek/config.ini" && told 'a knob click is [knob] step from the config' 0 'setElapsedTime 123;' forward --knob
 # slow and fast so low that any spin is flat out: the second click is max_multiplier times the step
 knob_config() { printf '[knob]\nslow = 0.0005\nfast = 0.001\n%s\n' "$1" >>"$work/fake/xdg/nowplayingseek/config.ini"; }

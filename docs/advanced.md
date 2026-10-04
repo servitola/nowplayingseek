@@ -43,13 +43,20 @@ step was multiplied, the output line ends with the multiplier: `×1.4`.
 
 ## Knob
 
-`forward --knob` and `backward --knob` are one click of a keyboard knob. The tool measures the
-pace of each click against the one before it: turned no faster than `slow` clicks a second, a
-click is `step`; spun at `fast` or faster, it is `max_multiplier` times that; in between it eases
-from one to the other. Hands recorded on a real knob turn carefully at 10-16 clicks a second and
-spin at 30-40, and a regrip between spins is a quarter to half a second, shorter than the
-`streak_gap` that ends a spin. A time in the command itself, `forward 3 --knob`, is the slow
-click for that binding in place of `step`.
+`forward --knob` and `backward --knob` are one click of a keyboard knob. Turned carefully, a
+click is one step, 5 s; spun fast, up to four steps. The tool tells the two apart by the time
+since the click before: what a hand does on a real knob, measured on recordings of one —
+
+| a turn | each click | in total |
+| --- | --- | --- |
+| careful: 3-4 clicks, 10-16 a second | 5 s | 0:15-0:20 |
+| three spins with a regrip between them: 17-21 clicks, 30-40 a second | up to 20 s | 4-6 min |
+| a fast spin that slows down near the place | 20 s, then 5 s | about 3 min |
+
+Up to `slow` clicks a second a click is `step`; from `fast` on it is `max_multiplier` steps; in
+between it eases from one to the other. Turning the other way or stopping for longer than
+`streak_gap` (a second) starts again from one step; a regrip, a quarter to half a second, does
+not. A time in the command itself, `forward 3 --knob`, is the careful click for that binding.
 
 ```ini
 [knob]

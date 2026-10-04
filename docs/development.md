@@ -14,6 +14,7 @@ One script for `osascript`, no dependencies at run time. `make` concatenates `sr
 | `make test` | the logic under `osascript`, then every argument and the whole tool against a player that is a file. It cannot reach a real player |
 | `make test-speed` | wall-clock time of each command against the fake player, min/median/max over 21 runs — the hotkey feels the median. Not part of `make test`: see below |
 | `make test-live` | the real thing: VLC on generated silence. It refuses to start while something is playing |
+| `make knob-replay` | recorded turns of a real knob (`test/knob/`) through the knob logic: does each move the film as far as it should. Not part of `make test`: it is for tuning `[knob]` |
 | `make test-world` | what the project believes about VLC, QuickTime, macOS and Homebrew, checked against them |
 | `make lint` | Biome with every stable rule as an error, shellcheck, shfmt, actionlint. Needs `pre-commit` and `node` |
 | `make globals` | rewrites the lists in `biome.json` after a name starts to cross files |

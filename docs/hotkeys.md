@@ -103,9 +103,13 @@ to keys you do not use, such as F13 and F14, and give those to `--knob`:
 ```
 
 Every click of the knob is one run of the command, and the tool reads the pace of the clicks: a
-slow click is 5 s, fine enough to step past an ad without overshooting; a flick makes every click up to four times
-longer. The step, the limit and what counts as fast are `[knob]` in the
-[config file](advanced.md#config-file), and one command changes each: `nps config set knob.fast 24`.
+careful click is 5 s, short enough to step past an ad without overshooting; a fast spin makes
+every click up to four times longer. What a click is, and how fast is fast, are `[knob]` in the
+[config file](advanced.md#knob); one command changes each: `nps config set knob.step 3`.
+
+Karabiner-Elements gives a key to the first rule that takes it, so put this rule above any rule
+that already rewrites the knob's keys — such as one that turns the volume keys into fine volume
+steps — or that rule takes every click and this one never sees it.
 
 If the firmware cannot be changed, take the volume keys themselves, but only from that
 keyboard, so the laptop's own volume keys stay volume. Karabiner-EventViewer, the Devices tab,

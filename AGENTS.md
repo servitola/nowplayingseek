@@ -47,6 +47,8 @@ works, and a second run in the same tree fails with "files were modified by this
 - `make test-speed`: the tool is bound to a hotkey, so startup time is the product; fails when the
   median goes past ~3x a measured baseline (`docs/development.md#response-time`). Not part of
   `make test` — a shared CI runner is noise, signal only on a quiet machine.
+- `make knob-replay`: recorded turns of a real knob replayed through the knob logic; a change to
+  `knobRate`, `knobMultiplier` or `[knob]` defaults passes it before it lands. Not part of `make test`.
 - No `*.js` in `src/` or `test/` over 200 physical lines (Biome's own rule skips the lines of a
   template literal, the hook does not). Functions: 50 lines, 4 parameters, complexity 15.
 

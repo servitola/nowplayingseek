@@ -19,7 +19,8 @@ What is left, most pressing first. State as of 2026-09-19; delete a line when it
   7 days; 2.5.14 was 2 days old. Bump `rev`, `additional_dependencies` and `$schema` together.
 
 ## Questions for the owner
-- The knob is not remapped on the owner's keyboard: `--knob` has met simulated clicks only.
+- `--knob` has met recorded turns of a real knob (`make knob-replay`, and replayed on a film in IINA) and
+  simulated clicks, but no knob bound to it yet: the one person with a knob still binds it to plain `forward 5`.
 - The Hammerspoon and skhd recipes have been checked for syntax, never pressed.
 - The Shortcuts walkthrough in docs/hotkeys.md was written from Apple's documentation and never clicked
   through: the names of the buttons and the prompt for "Allow Running Scripts" want one real run.

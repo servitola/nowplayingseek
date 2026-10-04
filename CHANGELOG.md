@@ -1,7 +1,7 @@
 # Changelog
 
-What changed for someone who uses the tool. `scripts/release.sh bump` turns `Unreleased` into a
-version, so keep that heading as it is.
+What changed for someone who uses the tool. A release turns `Unreleased` into a version, so keep
+that heading as it is.
 
 ## Unreleased
 

@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.10.04 — 2026-10-04
+
 ### Changed
 - A knob click reads the pace of that click alone, against two thresholds: up to `[knob] slow`
   (18 clicks a second) it is one plain step, from `fast` (now 32) it is `max_multiplier` steps.

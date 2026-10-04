@@ -117,9 +117,11 @@ button at the top of the editor window.
 
 The first time, nothing runs: the action itself says *"This action cannot
 be run because scripting actions are disabled"* and offers **Open
-Preferences**. Click it, tick **Allow Running Scripts** (the next
-screenshot), close that window, and press **▶** again. The video or song
-jumps ten seconds ahead.
+Preferences**. Click it, tick **Allow Running Scripts**, close that window,
+and press **▶** again. The video or song jumps ten seconds ahead.
+
+![The Allow Running Scripts toggle turned on in Shortcuts
+Settings](images/shortcuts-05-allow-running-scripts.webp)
 
 If it does not, do not keep clicking — read "What can go wrong" further
 down first.
@@ -176,25 +178,20 @@ Shortcuts blocks every script action until you allow them once. Click
 **Settings…** → **Advanced**, and turn on **Allow Running Scripts**. Run
 the shortcut again.
 
-![The Allow Running Scripts toggle turned on in Shortcuts
-Settings](images/shortcuts-05-allow-running-scripts.webp)
-
 **Nothing happens, and the shortcut finishes instantly with no error.**
 Most likely the path is wrong. Open Terminal, run `which nowplayingseek`
 again (step 1), and make sure the box in **Run Shell Script** starts with
 exactly that path — not `nowplayingseek` on its own, and not a path that
 does not match what `which` printed.
 
-**The shortcut runs but nothing on screen moves, and Terminal-style text
-like "nothing is playing" would explain it.**
-This is exit code 1 from the tool: nothing is playing anywhere on the Mac. Start playing something first, then run the shortcut or press the
-key again.
+**The shortcut runs, nothing moves, and nothing is playing.**
+The tool had nothing to move: that is its exit code 1. Start playing
+something first, then press the key again.
 
-**The video or song does not move, but something is playing.**
-This is exit code 2: the app that is playing does not support seeking by
-command — most commonly a web page that does not implement it. Try it on a
-YouTube tab, which does support it, to confirm the shortcut itself is
-correct.
+**Something is playing, and it still does not move.**
+The player does not take seeking by command — most often a web page that
+never learnt it. That is exit code 2. Try a YouTube tab, which does seek: if
+it moves there, the shortcut is right and the page is not.
 
 **Pressing the key combination does something else, or nothing at all.**
 Another app already uses that combination — macOS gives the older

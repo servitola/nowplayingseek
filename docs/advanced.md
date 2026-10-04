@@ -6,6 +6,26 @@
 
 Nothing here is needed for everyday use.
 
+## Hold
+
+Most hotkey tools run a command once per press, however long the key stays down. With `--hold`
+the command itself keeps going: `nowplayingseek forward --hold` makes a step every
+`interval` seconds until `nowplayingseek release forward` is run — bind the first to the key
+down and the second to the key up. The release names its direction so that, when fingers roll
+from one key to the other, letting go of the first does not stop the second; a bare `release`
+stops both. A tap is still one step. Another `--hold` takes over from the one
+before it, so switching direction needs no release in between, and a hold ends by itself after
+`max_time` in case the release never arrives.
+
+```ini
+[hold]
+interval = 0.2
+max_time = 60
+```
+
+It does not wait for a step to land before the next one, only for the last: the exit code tells
+whether the player ended up where the hold left it.
+
 ## Progressive seek
 
 With `--progressive` the step grows the longer the key is held, a little at a time. A press is
@@ -65,26 +85,6 @@ max_multiplier = 4
 slow = 18
 fast = 32
 ```
-
-## Hold
-
-Most hotkey tools run a command once per press, however long the key stays down. With `--hold`
-the command itself keeps going: `nowplayingseek forward --hold` makes a step every
-`interval` seconds until `nowplayingseek release forward` is run — bind the first to the key
-down and the second to the key up. The release names its direction so that, when fingers roll
-from one key to the other, letting go of the first does not stop the second; a bare `release`
-stops both. A tap is still one step. Another `--hold` takes over from the one
-before it, so switching direction needs no release in between, and a hold ends by itself after
-`max_time` in case the release never arrives.
-
-```ini
-[hold]
-interval = 0.2
-max_time = 60
-```
-
-It does not wait for a step to land before the next one, only for the last: the exit code tells
-whether the player ended up where the hold left it.
 
 ## Config file
 

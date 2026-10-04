@@ -48,16 +48,17 @@ never runs under `osascript`.
 
 ### Build
 
-`test/harness.js` and `test/*.test.js` concatenate the same way `src/` does, into `build/test.js`,
-and run over `PURE` — the union of `CORE_PURE` and `FEATURE_PURE` — under `osascript`: a feature's
-pure logic is unit-tested and coverage-measured exactly like core's, only its reachability from
-core differs. `test/fake-mediaremote.js` and `test/fake-artwork.js` stand in for their
-`src/core/system/` counterparts, so `make test` never touches perl or a real player either.
-`CORE`/`FEATURES`/`CORE_PURE`/`FEATURE_PURE` are spelled out in the `Makefile`, with `PURE :=
-$(CORE_PURE) $(FEATURE_PURE)` and `SOURCES := $(CORE) $(FEATURES)`: a new file is not built or run
-until it is added to the right one. `scripts/globals.js` reads them back with `make print-<VAR>`
-rather than re-parsing the `Makefile` text, since `SOURCES` is itself built from other variables;
-`make globals` then writes what it computes into `biome.json`.
+- **The lists.** `CORE`, `FEATURES`, `CORE_PURE` and `FEATURE_PURE` are spelled out in the
+  `Makefile`; `SOURCES` is the first two together, `PURE` the last two. A new file is not built or
+  run until it is added to the right one.
+- **The unit tests.** `test/harness.js` and `test/*.test.js` concatenate the way `src/` does, into
+  `build/test.js`, and run over `PURE` under `osascript`. A feature's pure logic is tested and
+  coverage-measured exactly like core's.
+- **The fakes.** `test/fake-mediaremote.js` and `test/fake-artwork.js` stand in for their
+  `src/core/system/` counterparts, so `make test` never touches perl or a real player.
+- **The globals.** `scripts/globals.js` reads the lists back with `make print-<VAR>` rather than
+  parsing the `Makefile`, since `SOURCES` is built from other variables; `make globals` writes
+  what it computes into `biome.json`.
 
 ### Testing
 
@@ -112,13 +113,9 @@ What stays true. The reasoning behind each, and the dead ends, are in
 [how-it-works.md](how-it-works.md); read it before touching `src/core/system/mediaremote.js` or
 `src/core/player.js` — each bullet there was a bug first.
 
-**Core and features.** `src/cli.js` and `src/core/` are the core: reading Now Playing and moving
-it. `src/features/{config,dialects,watch}` are optional, everything a reader can decide not to look at.
-A feature is something core never calls — not a folder or a file name: core never names a feature
-file and never uses a symbol declared under `src/features/`, and `scripts/globals.js --check` fails
-`make lint` if it does. The `Makefile`'s `CORE`/`FEATURES` lists decide which file is which; a new
-file is not built or tested until it is in one of them. A file may only use symbols from the
-files before it in its list.
+**Core and features.** Core never names a feature file and never uses a symbol declared under
+`src/features/` — [Layout](#layout) above, enforced by `make lint`. A file may only use symbols
+from the files before it in its list.
 
 **Code.**
 

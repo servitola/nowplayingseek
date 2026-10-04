@@ -64,12 +64,12 @@ and makes its one step.
 
 The one call that carries `ArtworkData`, `MRMediaRemoteGetNowPlayingInfo(queue, block)`, wants a
 real Objective-C block — compiled code, not a script; what was tried from inside `osascript`
-instead, and measured to fail, is in [Limits](#limits) below. `native/artwork.m` is that compiled
+instead, and measured to fail, is in [Dead ends](#dead-ends) below. `native/artwork.m` is that compiled
 code: built by clang — on your Mac when Homebrew installs, in CI for the
 [release tarball](install.md) — and loaded, not run, by
 `/usr/bin/perl` through `DynaLoader::dl_load_file`, the way
 [ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) (BSD-3-Clause) loads
-its own framework the same way. `src/core/system/artwork.js` is the rest: one function, artwork only,
+its own framework. `src/core/system/artwork.js` is the rest: one function, artwork only,
 no argv parsing or XS boilerplate — `nps_get_artwork` is a plain zero-argument C function, which
 works as a Perl XSUB because `dl_install_xsub` calls it with arguments it simply never reads.
 
@@ -96,41 +96,17 @@ not of every image mapped into it. The bundle itself is signed to no one: `codes
 - Private API. Apple can close this door in any update. Which builds were run is on the
   [compatibility page](compatibility.md); `nowplayingseek doctor`, while something is playing,
   answers for this Mac.
-- No artwork bytes from `osascript` alone. `MRNowPlayingRequest.localNowPlayingItem.nowPlayingInfo`
-  — the dictionary `--raw` prints — carries `ArtworkDataHeight`, `ArtworkDataWidth`,
-  `ArtworkIdentifier` and `ArtworkMIMEType`, never `ArtworkData`; the item's own `artwork` accessor
-  reads nil and its `metadata` object has no `artwork` selector to fall back to (checked on a
-  browser tab's Now Playing item, macOS 26.6.2). `ObjC.bindFunction` takes `id` for the block
-  argument of `MRMediaRemoteGetNowPlayingInfo(queue, block)` but builds no block from a plain JS
-  function — passing one behaved exactly like passing an explicit `$()` (nil): the call returns at
-  once, no exception, and the handler never runs even after two seconds spun on
-  `NSRunLoop.currentRunLoop`. Reading a class's full method table to look for another synchronous
-  accessor hits the same wall as the dylib dead end [below](#dead-ends): `class_copyMethodList` returns
-  an opaque array JXA cannot index without pointer arithmetic. [Artwork](#artwork) above is how the
-  bytes are gotten instead: not from `osascript`, but from a real block in compiled code loaded
-  into `/usr/bin/perl`.
-- No hotkeys of our own. A `setup` command that bound a key itself, through a small Swift helper
-  using Carbon's `RegisterEventHotKey` (the one hotkey API that needs no Accessibility or Input
-  Monitoring permission), was built and then dropped: on macOS 26.6 the helper never received a
-  single press. Registration returns `noErr` for every keycode — including combinations other apps
-  already hold, so `eventHotKeyExistsErr` cannot be used to detect a clash either — and the
-  handler installed on `GetEventDispatcherTarget()` is simply never called from a `CFRunLoopRun()`
-  process, whether it is a bare binary, a `TransformProcessType` UIElement, or a signed `.app`
-  bundle launched with `open`. Hammerspoon, bound to the same combination on the same machine at
-  the same moment, fired every time. The likely difference is the event loop — Carbon events reach
-  a process through `NSApplication`, not a plain run loop — but the fix was not worth a helper
-  binary in a tool that has none: people already bind keys with Karabiner-Elements, Raycast,
-  Hammerspoon or Shortcuts, and [docs/hotkeys.md](hotkeys.md) covers those.
-- No Mac App Store. The tool works by loading the private, undocumented `MediaRemote.framework`
-  inside `/usr/bin/osascript`, with no entitlement of any kind — see [Why it is a
-  script](#why-it-is-a-script). App Store review is public-API only; this would not pass it, and
-  even if it somehow did, Apple could still close the read gate in an update and take the listing
-  down with it. Homebrew and the release tarball (`docs/install.md`) don't have that review to
-  pass, so that is where it ships.
+- No artwork bytes from `osascript` alone: the cover comes through `/usr/bin/perl`, as
+  [Artwork](#artwork) tells. What was tried inside `osascript` is in [Dead ends](#dead-ends).
+- No hotkeys of its own. Bind the command with Karabiner-Elements, Raycast, Hammerspoon or
+  Shortcuts — [Hotkeys](hotkeys.md). A helper that caught keys itself was built and dropped; why
+  is in [Dead ends](#dead-ends).
+- No Mac App Store. Its review is public-API only, and this tool loads the private
+  `MediaRemote.framework`. It ships through Homebrew and the [release tarball](install.md).
 
 ## Dead ends
 
-Measured 2026-09-18 on macOS 26.6; do not retry.
+Measured 2026-09-18 on macOS 26.6 unless an entry says otherwise; do not retry.
 
 - **Addressing a non-elected player.** Five routes (`MRNowPlayingRequest initWithPlayerPath:`,
   `MRMediaRemoteSendCommandToPlayer` with a plain and with a resolved `MRPlayerPath`,
@@ -146,6 +122,30 @@ Measured 2026-09-18 on macOS 26.6; do not retry.
   ignores them: it registers no chapter handler with the system. `ChapterNumber` and
   `TotalChapterCount` can be read; chapter times cannot. Moving by chapter needs a driver for the
   player, which this project has ruled out.
+- **Artwork bytes from inside `osascript`.** `MRNowPlayingRequest.localNowPlayingItem.nowPlayingInfo`
+  — the dictionary `--raw` prints — carries `ArtworkDataHeight`, `ArtworkDataWidth`,
+  `ArtworkIdentifier` and `ArtworkMIMEType`, never `ArtworkData`; the item's own `artwork` accessor
+  reads nil and its `metadata` object has no `artwork` selector to fall back to (checked on a
+  browser tab's Now Playing item, macOS 26.6.2). `ObjC.bindFunction` takes `id` for the block
+  argument of `MRMediaRemoteGetNowPlayingInfo(queue, block)` but builds no block from a plain JS
+  function — passing one behaved exactly like passing an explicit `$()` (nil): the call returns at
+  once, no exception, and the handler never runs even after two seconds spun on
+  `NSRunLoop.currentRunLoop`. Reading a class's full method table to look for another synchronous
+  accessor hits the same wall as the dylib dead end below: `class_copyMethodList` returns
+  an opaque array JXA cannot index without pointer arithmetic. [Artwork](#artwork) above is how the
+  bytes are gotten instead.
+- **Hotkeys of our own** (2026-09-20). A `setup` command that bound a key itself, through a small Swift helper
+  using Carbon's `RegisterEventHotKey` (the one hotkey API that needs no Accessibility or Input
+  Monitoring permission), was built and then dropped: on macOS 26.6 the helper never received a
+  single press. Registration returns `noErr` for every keycode — including combinations other apps
+  already hold, so `eventHotKeyExistsErr` cannot be used to detect a clash either — and the
+  handler installed on `GetEventDispatcherTarget()` is simply never called from a `CFRunLoopRun()`
+  process, whether it is a bare binary, a `TransformProcessType` UIElement, or a signed `.app`
+  bundle launched with `open`. Hammerspoon, bound to the same combination on the same machine at
+  the same moment, fired every time. The likely difference is the event loop — Carbon events reach
+  a process through `NSApplication`, not a plain run loop — but the fix was not worth a helper
+  binary in a tool that has none: people already bind keys with Karabiner-Elements, Raycast,
+  Hammerspoon or Shortcuts, and [docs/hotkeys.md](hotkeys.md) covers those.
 - **A helper dylib inside `osascript`.** Refused: "mapping process is a platform binary, but
   mapped file is not". perl, ruby and python load a plain arm64 one; it is `osascript` that wants arm64e.
 

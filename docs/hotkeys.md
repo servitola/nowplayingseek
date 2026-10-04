@@ -68,9 +68,10 @@ key up ends it:
 }
 ```
 
-Every command ends in `>/dev/null 2>&1 &`. Karabiner
+Every command here and [for the knob](#a-knob-in-karabiner-elements) ends in `>/dev/null 2>&1 &`.
+Karabiner
 [stops a `shell_command` that is still running](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/shell-command/)
-when the next one starts, so a knob spun fast killed every click but the last one or two before it
+when the next one starts: a knob spun fast lost every click but the last one or two before they
 could seek. With this ending the shell Karabiner stops has already handed the command over and left.
 
 A tap is one step. Held, the key glides off in small steps, five a second, and with
@@ -147,11 +148,11 @@ manipulators:
 }
 ```
 
-`"optional": ["any"]` lets the rule catch a click that arrives with a modifier key — from the
-keyboard's firmware, or from another rule placed above it.
-
 The second one is the same with `volume_decrement` and `backward`. If the knob still changes the
 volume, check that Karabiner-Elements modifies that keyboard, under Settings → Devices.
+
+`"optional": ["any"]`, in every knob rule here, lets it catch a click that arrives with a
+modifier key — from the keyboard's firmware, or from another rule placed above it.
 
 ## Other tools
 

@@ -1,6 +1,6 @@
 ObjC.import('stdlib');
 
-const VERSION = '2026.10.04.1';
+const VERSION = '2026.10.04.2';
 const STDERR = 2;
 
 function print(text, toStderr) {

@@ -5,6 +5,12 @@ that heading as it is.
 
 ## Unreleased
 
+## 2026.10.04.2 — 2026-10-04
+
+### Changed
+- Nothing in what the tool does. Its source is rearranged — every command is one entry in a table,
+  the core sits in `src/core/` — and this release puts that code on real machines.
+
 ## 2026.10.04.1 — 2026-10-04
 
 ### Fixed

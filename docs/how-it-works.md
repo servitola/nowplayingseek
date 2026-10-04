@@ -65,7 +65,8 @@ and makes its one step.
 The one call that carries `ArtworkData`, `MRMediaRemoteGetNowPlayingInfo(queue, block)`, wants a
 real Objective-C block — compiled code, not a script; what was tried from inside `osascript`
 instead, and measured to fail, is in [Limits](#limits) below. `native/artwork.m` is that compiled
-code: built by clang at `make build` time, never shipped built, and loaded — not run — by
+code: built by clang — on your Mac when Homebrew installs, in CI for the
+[release tarball](install.md) — and loaded, not run, by
 `/usr/bin/perl` through `DynaLoader::dl_load_file`, the way
 [ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) (BSD-3-Clause) loads
 its own framework the same way. `src/core/system/artwork.js` is the rest: one function, artwork only,
@@ -76,8 +77,8 @@ This is not the dylib `osascript` refused ([Dead ends](#dead-ends) below): that 
 `osascript` itself, which is arm64e and only maps arm64e code back. Perl is plain arm64 and maps a
 plain arm64 bundle same as it always could, and perl — like osascript — is signed `com.apple.perl`,
 which is what macOS 15.4's Now Playing gate actually checks: the signature of the process asking,
-not of every image mapped into it. The bundle itself ships signed to no one: `codesign` shows
-`adhoc,linker-signed`, and it is built locally at install time, never distributed built.
+not of every image mapped into it. The bundle itself is signed to no one: `codesign` shows
+`adhoc,linker-signed`, built on the spot or taken from the tarball.
 
 ## Limits
 
@@ -92,8 +93,9 @@ not of every image mapped into it. The bundle itself ships signed to no one: `co
   app; only Apple's own Music is addressed as asked (measured on macOS 26.6).
 - Seeking needs the player's cooperation. YouTube in Chromium browsers, IINA and VLC work. A
   web page without a MediaSession `seekto` handler swallows the call; you get exit 2.
-- Private API. Tested on macOS 26.6 only. Apple can close this door in any update — run
-  `nowplayingseek doctor` while something is playing to find out.
+- Private API. Apple can close this door in any update. Which builds were run is on the
+  [compatibility page](compatibility.md); `nowplayingseek doctor`, while something is playing,
+  answers for this Mac.
 - No artwork bytes from `osascript` alone. `MRNowPlayingRequest.localNowPlayingItem.nowPlayingInfo`
   — the dictionary `--raw` prints — carries `ArtworkDataHeight`, `ArtworkDataWidth`,
   `ArtworkIdentifier` and `ArtworkMIMEType`, never `ArtworkData`; the item's own `artwork` accessor
@@ -143,7 +145,7 @@ Measured 2026-09-18 on macOS 26.6; do not retry.
 - **Chapters.** `MRMediaRemoteCommandNextChapter` / `PreviousChapter` (100, 101) are delivered and IINA
   ignores them: it registers no chapter handler with the system. `ChapterNumber` and
   `TotalChapterCount` can be read; chapter times cannot. Moving by chapter needs a driver for the
-  player, which the owner has ruled out.
+  player, which this project has ruled out.
 - **A helper dylib inside `osascript`.** Refused: "mapping process is a platform binary, but
   mapped file is not". perl, ruby and python load a plain arm64 one; it is `osascript` that wants arm64e.
 

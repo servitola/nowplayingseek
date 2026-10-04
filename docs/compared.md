@@ -10,12 +10,12 @@
 | Works while another app has the focus | yes | yes | yes | no |
 | Step grows while the key is held | `--progressive` | no | no | no |
 | `12:34` as a time | yes | seconds only | seconds only | — |
-| Metadata | everything macOS holds, as JSON; no artwork bytes | yes, with artwork | yes, with artwork | — |
+| Metadata | everything macOS holds, as JSON; the cover with `artwork` | yes, with artwork | yes, with artwork | — |
 | A stream of changes | `stream`, by polling | no | yes, pushed | — |
 | Install | one script, personal tap | homebrew-core | homebrew-core | — |
 
-If you need artwork or a stream of Now Playing updates for a status bar, take `media-control`.
-This tool is for moving through what plays.
+If a status bar needs every Now Playing update the instant it happens, take `media-control`: it is
+told, this tool asks. This tool is for moving through what plays.
 
 [nowplaying-cli]: https://github.com/kirtan-shah/nowplaying-cli
 [media-control]: https://github.com/ungive/media-control

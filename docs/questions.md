@@ -62,8 +62,9 @@ play in the app you mean, and the keys follow it. More in [Limits](how-it-works.
 
 ### It works in Terminal, but not from my hotkey app.
 
-Hotkey apps run commands with almost no environment. Use the full path,
-`/opt/homebrew/bin/nowplayingseek`.
+Hotkey apps run commands with almost no environment. Use the full path:
+`/opt/homebrew/bin/nowplayingseek` on Apple silicon, `/usr/local/bin/nowplayingseek` on an Intel
+Mac. `which nowplayingseek` prints yours.
 
 ### What do the exit codes mean?
 

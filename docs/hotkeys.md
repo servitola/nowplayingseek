@@ -2,6 +2,8 @@
 
 [← README](../README.md)
 
+<p align="center"><img src="images/banner-hotkeys.webp" alt="The panda presses a glowing fast-forward key; a thread of light runs from it to a glass player, where a car races ahead" width="100%"></p>
+
 The tool does not grab keys itself; bind it with whatever you already use. Give the
 full path — hotkey daemons run commands with a bare environment. The Karabiner-Elements rules
 spell out `nowplayingseek`; the other recipes use `nps`, the same tool under its short name.

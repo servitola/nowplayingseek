@@ -2,7 +2,7 @@
 
 [![test](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml/badge.svg)](https://github.com/servitola/nowplayingseek/actions/workflows/test.yml) [![release](https://img.shields.io/github/v/release/servitola/nowplayingseek?color=black)](https://github.com/servitola/nowplayingseek/releases) [![brew test-bot](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml/badge.svg)](https://github.com/servitola/homebrew-tap/actions/workflows/tests.yml) [![macOS](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fservitola%2Fnowplayingseek%2Fmain%2Fdocs%2Fcompat-badge.json)](docs/compatibility.md) [![licence](https://img.shields.io/github/license/servitola/nowplayingseek?color=black)](LICENSE)
 
-<p align="center"><img src="docs/images/banner.webp" alt="Logotip" width="70%"></p>
+<p align="center"><img src="docs/images/banner.webp" alt="The panda in headphones drags the handle of a glass player's progress bar" width="70%"></p>
 
 A command-line tool for macOS. It seeks whatever is playing.
 
@@ -91,7 +91,7 @@ Every command and flag, the ones for hotkeys included: `nps --help`.
 - **[Compatibility](docs/compatibility.md)** — which macOS builds it was tested on.
 - **[How it works](docs/how-it-works.md)** — why it is a script and not a binary, and why it exists.
 - **[Questions](docs/questions.md)** — the ones people type into a search box.
-- **[Development](docs/development.md)** — build, test, lint; what is left.
+- **[Development](docs/development.md)** — build, test, lint; the rules.
 
 ## Licence
 

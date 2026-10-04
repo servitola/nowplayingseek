@@ -78,9 +78,10 @@ check() {
 }
 
 validate_version() {
-	say "$1" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || die "\"$1\" is not YYYY.MM.DD"
+	# A second release on one day is YYYY.MM.DD.1; Homebrew orders it after the plain date.
+	say "$1" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$' || die "\"$1\" is not YYYY.MM.DD or YYYY.MM.DD.N"
 	current=$(current_version)
-	newest=$(printf '%s\n%s\n' "$current" "$1" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+	newest=$(printf '%s\n%s\n' "$current" "$1" | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1)
 	if [ "$1" = "$current" ] || [ "$newest" != "$1" ]; then die "$1 is not above the current $current"; fi
 	if git rev-parse -q --verify "refs/tags/v$1" >/dev/null; then die "tag v$1 already exists"; fi
 }

@@ -36,9 +36,8 @@ first (`nowplayingseek position`) and put it back when you are done.
 
 1. Read `git log --oneline v<last>..HEAD` and `CHANGELOG.md` → `## Unreleased`. Every user-visible
    change since the last tag has a line there; add the missing ones (Added / Changed / Fixed).
-2. The version is today's date, `YYYY.MM.DD` (Cyprus time). Releasing twice in one day is not
-   planned; if it ever happens, suffix the second release `.1` and first extend the version
-   regex in `scripts/release.sh`, which does not accept a fourth dot-part yet (see below).
+2. The version is today's date, `YYYY.MM.DD` (Cyprus time). A second release on the same day is
+   `YYYY.MM.DD.1`; `scripts/release.sh` accepts and orders that fourth part (first used 2026.10.04.1).
 3. `scripts/release.sh plan <version>` previews everything without writing (`--dry-run`, where
    used, is the first argument). Read the diff, then `scripts/release.sh bump <version>`.
 4. `make test` (the CLI tests compare `--version` with `src/cli.js`), then commit exactly

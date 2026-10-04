@@ -33,8 +33,9 @@ const files = [...pure, ...rest].map(file => {
 });
 const mentions = (text, name) => new RegExp(`(?<![\\w$.])${name.replace('$', '\\$')}(?![\\w$])`, 'g').exec(text) !== null;
 const tests = fs
-    .readdirSync('test')
-    .map(file => fs.readFileSync(`test/${file}`, 'utf8'))
+    .readdirSync('test', { withFileTypes: true })
+    .filter(entry => entry.isFile())
+    .map(entry => fs.readFileSync(`test/${entry.name}`, 'utf8'))
     .join('\n');
 
 function listsFor(group, platform) {

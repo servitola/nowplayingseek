@@ -127,9 +127,8 @@ manipulators:
 }
 ```
 
-Some knobs send a modifier with every click — one we have a recording of sends ⇧⌥ with each
-volume key, the way macOS takes a quarter step — and a rule without `"optional": ["any"]` only
-catches a key pressed alone, so that knob would go on changing the volume.
+`"optional": ["any"]` lets the rule catch a click that arrives with a modifier key — from the
+keyboard's firmware, or from another rule placed above it.
 
 The second one is the same with `volume_decrement` and `backward`. If the knob still changes the
 volume, check that Karabiner-Elements modifies that keyboard, under Settings → Devices.

@@ -8,22 +8,14 @@ version, so keep that heading as it is.
 ## 2026.10.04 — 2026-10-04
 
 ### Changed
-- A knob click reads the pace of that click alone, against two thresholds: up to `[knob] slow`
-  (18 clicks a second) it is one plain step, from `fast` (now 32) it is `max_multiplier` steps.
-  On recordings of a real knob the old averaged pace made a careful turn twice as long and kept a
-  spin's speed after the hand had slowed down. `make knob-replay` replays those turns.
-- A knob click is 5 s by default, not 2: the step the one person who turns a real knob with this
-  tool chose for himself, short enough to step past an ad, long enough that three spins cover
-  five minutes of film. A time in the command or `[knob] step` still overrides it.
-- The Karabiner-Elements rules for a knob catch a click that comes with a modifier: one knob
-  sends option+shift with every volume key.
+- A knob turns the way a hand expects: a careful turn moves 5 s a click, a fast spin up to 20 s
+  a click. Tuned on recordings of a real knob.
+- A knob click is 5 s by default, was 2. Keys and scripts still move 10 s.
+- The Karabiner-Elements knob rules in the docs also work when a modifier key comes with the click.
 
 ### Added
-- A flag typed with a dash in place of two hyphens works: `forward 5 —knob` is
-  `forward 5 --knob`. Phones and smart-quote editors make that dash out of a typed `--`.
-- [docs/compatibility.md](docs/compatibility.md) and the macOS badge in the README: which macOS
-  builds the live tests passed on (26.6.2 and 27.0), and which ones are expected to work because
-  Apple's diff of the Now Playing gate shows no change on the way from a tested build.
+- A dash typed in place of two hyphens works: `forward —knob` is `forward --knob`.
+- A compatibility page and a macOS badge in the README: the macOS versions the live tests passed on.
 
 ## 2026.09.20 — 2026-09-20
 

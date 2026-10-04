@@ -163,6 +163,18 @@ else
 	echo '  skipped: no Homebrew with tap trust here' >&2
 fi
 
+echo 'Karabiner-Elements'
+karabiner=https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/shell-command/
+if page=$(curl -fsSL --max-time 20 "$karabiner" 2>/dev/null); then
+	if printf '%s' "$page" | tr -s ' \n' ' ' | grep -q 'the running command is forcibly terminated'; then
+		holds 'a shell_command still running is stopped when the next one starts — why docs/hotkeys.md ends every command in &'
+	else
+		world_changed "$karabiner no longer says a running shell_command is terminated" 'docs/hotkeys.md links it for why every command ends in &'
+	fi
+else
+	world_changed "$karabiner does not answer" 'docs/hotkeys.md links it for why every command ends in &'
+fi
+
 if [ "$changed" -gt 0 ]; then
 	echo "$changed of $beliefs beliefs about the world no longer hold" >&2
 	exit 1

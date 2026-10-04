@@ -53,7 +53,7 @@ click for that binding in place of `step`.
 
 ```ini
 [knob]
-step = 2
+step = 5
 max_multiplier = 4
 slow = 18
 fast = 32

@@ -24,7 +24,7 @@ const SETTINGS = {
         streak_gap: setting('1', 'presses in one direction no further apart than this count as one hold'),
     },
     knob: {
-        step: setting('2', 'forward / backward --knob: one click of a keyboard knob', 'seconds or mm:ss above zero'),
+        step: setting('5', 'forward / backward --knob: one click of a keyboard knob', 'seconds or mm:ss above zero'),
         max_multiplier: setting('4', 'the faster the knob spins, the longer the step — up to this many times', 'a number above zero'),
         slow: setting('18', 'turned no faster than this, a click is one plain step', 'clicks a second above zero'),
         fast: setting('32', 'spun this fast or faster, a click is max_multiplier steps', 'clicks a second above zero'),

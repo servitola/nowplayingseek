@@ -34,8 +34,7 @@ while (args.length > 0) {
     }
 }
 
-// The friend who recorded these turns runs a 5 s knob step; everything else is the default.
-const ini = ['[knob]', 'step = 5'];
+const ini = [];
 for (const pair of overrides) {
     const [key, value] = pair.split('=');
     const [section, name] = key.split('.');

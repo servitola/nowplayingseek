@@ -175,7 +175,7 @@ for _ in 1 2 3 4 5; do
 	sleep 0.5
 done
 wait
-expect_move 'knob, slow clicks' 120 10 12
+expect_move 'knob, slow clicks' 120 25 30
 
 at 1:00
 # 30 ms apart: the pace of a recorded spin (test/knob), so most clicks are max_multiplier steps.
@@ -184,7 +184,7 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
 	sleep 0.03
 done
 wait
-expect_move 'knob, a flick' 60 40 74
+expect_move 'knob, a flick' 60 100 185
 
 at 4:50
 expect_exit 'forward near the end' 0 forward 30

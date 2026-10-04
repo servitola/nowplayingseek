@@ -3,7 +3,7 @@
 // A block is ordinary compiled code, so this file — built by clang, not shipped — is loaded into
 // /usr/bin/perl instead: since macOS 15.4 mediaremoted answers only a process whose own signing
 // identifier starts with com.apple., and perl (com.apple.perl) qualifies same as osascript does,
-// without osascript's arm64e requirement that turned away a plain dylib (AGENTS.md dead ends).
+// without osascript's arm64e requirement that turned away a plain dylib (docs/how-it-works.md, Dead ends).
 // The technique matches ungive/mediaremote-adapter (BSD-3-Clause), reimplemented from scratch and
 // minimally: one function, artwork only, no argv or XS boilerplate — a zero-argument C function
 // works as a Perl XSUB because dl_install_xsub calls it with extra arguments this one never reads.

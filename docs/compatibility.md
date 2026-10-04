@@ -10,7 +10,7 @@ Now Playing gate moved. Only a build marked *tested* was actually run.
 | macOS | Build | Status | How we know |
 | :-- | :-- | :-- | :-- |
 | 27.2 beta | 26B5086k | expected | not run here; the Now Playing gate in `mediaremoted` did not change on the way from a tested build ([diff from 26A428](https://github.com/blacktop/ipsw-diffs/tree/main/27_0_26A428_vs_27_2_26B5086k_Mac18%2C5)) |
-| 27.0 | 26A428 | tested | `make test-live` 70/70, twice, in a macOS 27.0 VM (tart), 2026-10-01 |
+| 27.0 | 26A428 | tested | `make test-live` 70/70, twice, in a macOS 27.0 VM, 2026-10-01 |
 | 26.7 | 25G227 | expected | not run here; the Now Playing gate in `mediaremoted` did not change on the way from a tested build ([diff from 25G224](https://github.com/blacktop/ipsw-diffs/tree/main/26_7_25G224_vs_26_7_25G227)) |
 | 26.6.2 | 25G83 | tested | `make test-live` 73/73 and the manual checklist, 2026-09-20 |
 

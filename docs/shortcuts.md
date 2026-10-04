@@ -137,8 +137,7 @@ highlighted](images/shortcuts-06-add-keyboard-shortcut.webp)
 3. Click **Add Keyboard Shortcut**.
 4. The panel grows a **Run with:** box, waiting. Press the combination you
    want. `⌃⌥⇧K` (Control + Option + Shift + K) is a safe one — it was used
-   to test this page. Avoid `⌃⌥←` and `⌃⌥→`: window managers like
-   Rectangle and Magnet take those by default.
+   to test this page.
 5. macOS ticks **Use as Quick Action** and **Services Menu** by itself at
    this point. That is how a key reaches a shortcut; leave them on.
 6. Close the editor window. There is no save button — it is already saved.

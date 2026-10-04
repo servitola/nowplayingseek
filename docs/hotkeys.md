@@ -66,9 +66,10 @@ key up ends it:
 }
 ```
 
-Every command ends in `>/dev/null 2>&1 &`. Karabiner waits until a command it ran closes its
-output, so a command that keeps it open holds back the ones after it: a knob spun fast lost all
-but its first click or two until its rule had this ending.
+Every command ends in `>/dev/null 2>&1 &`. Karabiner
+[stops a `shell_command` that is still running](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/shell-command/)
+when the next one starts, so a knob spun fast killed every click but the last one or two before it
+could seek. With this ending the shell Karabiner stops has already handed the command over and left.
 
 A tap is one step. Held, the key glides off in small steps, five a second, and with
 `--progressive` they grow — see [the curve](advanced.md#progressive-seek). The pace, the step and

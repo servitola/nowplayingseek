@@ -83,16 +83,15 @@ Every command and flag, the ones for hotkeys included: `nps --help`.
 
 ## More
 
-<table>
-<tr><td width="180"><a href="docs/hotkeys.md"><img src="docs/images/banner-hotkeys.webp" alt=""></a></td><td><b><a href="docs/hotkeys.md">Hotkeys, knobs and pedals</a></b><br>Shortcuts, Karabiner-Elements, Hammerspoon, skhd: a key, a hold, a knob.</td></tr>
-<tr><td width="180"><a href="docs/advanced.md"><img src="docs/images/banner-advanced.webp" alt=""></a></td><td><b><a href="docs/advanced.md">The curve, the knob, the config file</a></b><br>How a held key gathers pace, and every number that can be changed.</td></tr>
-<tr><td width="180"><a href="docs/scripting.md"><img src="docs/images/banner-scripting.webp" alt=""></a></td><td><b><a href="docs/scripting.md">For scripts and AI agents</a></b><br>One line in, JSON out, and an exit code that is the truth.</td></tr>
-<tr><td width="180"><a href="docs/migrating.md"><img src="docs/images/banner-migrating.webp" alt=""></a></td><td><b><a href="docs/migrating.md">Moving over</a></b><br>From nowplaying-cli, media-control, playerctl, mpc, shpotify: the same words work.</td></tr>
-<tr><td width="180"><a href="docs/compared.md"><img src="docs/images/banner-compared.webp" alt=""></a></td><td><b><a href="docs/compared.md">Compared with</a></b><br>nowplaying-cli, media-control, a player's own keys.</td></tr>
-<tr><td width="180"><a href="docs/how-it-works.md"><img src="docs/images/banner-how-it-works.webp" alt=""></a></td><td><b><a href="docs/how-it-works.md">How it works</a></b><br>Why it is a script and not a binary, and why it exists.</td></tr>
-<tr><td width="180"><a href="docs/questions.md"><img src="docs/images/banner-questions.webp" alt=""></a></td><td><b><a href="docs/questions.md">Questions</a></b><br>The ones people type into a search box.</td></tr>
-<tr><td width="180"><a href="docs/development.md"><img src="docs/images/banner-development.webp" alt=""></a></td><td><b><a href="docs/development.md">Development</a></b><br>Build, test, lint; what is left.</td></tr>
-</table>
+- **[Hotkeys, knobs and pedals](docs/hotkeys.md)** — Shortcuts, Karabiner-Elements, Hammerspoon, skhd: a key, a hold, a knob.
+- **[The curve, the knob, the config file](docs/advanced.md)** — how a held key gathers pace, and every number that can be changed.
+- **[For scripts and AI agents](docs/scripting.md)** — one line in, JSON out, and an exit code that is the truth.
+- **[Moving over](docs/migrating.md)** — from nowplaying-cli, media-control, playerctl, mpc, shpotify: the same words work.
+- **[Compared with](docs/compared.md)** — nowplaying-cli, media-control, a player's own keys.
+- **[Compatibility](docs/compatibility.md)** — which macOS builds it was tested on.
+- **[How it works](docs/how-it-works.md)** — why it is a script and not a binary, and why it exists.
+- **[Questions](docs/questions.md)** — the ones people type into a search box.
+- **[Development](docs/development.md)** — build, test, lint; what is left.
 
 ## Licence
 

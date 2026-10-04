@@ -5,6 +5,8 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+## 2026.10.04.1 — 2026-10-04
+
 ### Fixed
 - The Karabiner-Elements rules in the docs end every command in `>/dev/null 2>&1 &`. Karabiner
   stops a command still running when the next one starts, so a knob spun fast moved only by its

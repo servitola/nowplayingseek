@@ -125,6 +125,8 @@ files before it in its list.
   reads, calls and polling around them. `src/core/logic/` gets no `$` and no `ObjC`.
 - A new setting is one entry in `SETTINGS`: default, parser, `about` line. The config reader,
   `config`, `config init` and the unknown-key check all derive from that table.
+- A new command is one entry in `COMMANDS`: what it runs, whether it answers in JSON, what it takes.
+  `test/commands.test.sh` walks that table and fails until the entry is whole.
 - Argument errors are raised before the player is touched, so that they can be tested.
 - Comments say why, never what.
 - No `*.js` in `src/` or `test/` over 200 lines; functions at most 50 lines, 4 parameters,

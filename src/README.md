@@ -30,7 +30,7 @@ player.js  player-commands.js  player-artwork.js
            a step, a hold, a command: logic wired to system
 status.js  native-get.js
            the JSON of status, stream and get
-args.js    what a command may take: SPEAKING, FLAGS, seekCommand
+args.js    a time, the flags of forward and backward, unknown arguments
 output.js  how a command answers: a line, --json, --minify, --raw
 usage.js   the help page
 ```
@@ -68,21 +68,40 @@ A number a user may change in `config.ini`.
 
 ## Adding a command
 
-1. An entry in `COMMANDS` in `cli.js`: `(args, name, output) => …`.
-2. In `core/args.js`: into `SPEAKING` if it answers `--json`, `--minify` and `--raw`; into `FLAGS`
-   with the words it takes, or `null` if it checks its arguments itself — a command not in
-   `FLAGS` takes none; into `OFFLINE` if it works with nothing playing.
-3. A line in `core/usage.js`, cases in `test/cli.test.sh`.
+One entry in `COMMANDS` in `cli.js`, and `make test` names what is still missing.
+
+```js
+skip: {
+    answers: true,
+    takes: ['intro', 'credits'],
+    run(args, name, output) {
+        …
+    },
+},
+```
+
+| Key | What it says |
+| :-- | :-- |
+| `run(args, name, output)` | the command itself; `output` is how it was asked to answer |
+| `answers` | it takes `--json`, `--minify` and `--raw`, and answers through `show` or `showJson` |
+| `takes` | the words it accepts; with none listed it accepts no arguments |
+| `checksOwnArguments` | it reads a time or a path, so it refuses what it does not know itself |
+| `offline` | it works with nothing playing: Now Playing is not loaded for it |
+| `hidden` | it is left off the help page on purpose |
+
+`test/commands.test.sh` walks the table and fails until the command is whole: only these keys, a
+line on the help page (`core/usage.js`, at most 80 columns), a case that runs it, and a refusal
+of an argument it does not take.
 
 A command a hotkey never needs is a feature: its own folder under `features/`, its files in
-`FEATURES`, and `COMMANDS.<name> = …` at the bottom of its file.
+`FEATURES`, and `COMMANDS.<name> = { … }` at the bottom of its file.
 
 ## Keeping it working
 
 | | |
 | :-- | :-- |
 | `make lint` | style, the core and features boundary, names that cross files |
-| `make test` | unit tests of the logic, then every command against a player that is a file |
+| `make test` | unit tests of the logic, the command table, then every command against a player that is a file |
 | `make coverage` | lines of logic no unit test reaches |
 | `make test-live` | the built tool against a real player |
 

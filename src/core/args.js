@@ -14,41 +14,13 @@ function timeArgument(command, text, fallback) {
     return seconds;
 }
 
-const SPEAKING = [
-    'status',
-    'position',
-    'duration',
-    'forward',
-    'backward',
-    'seek',
-    'toggle',
-    'play',
-    'pause',
-    'next',
-    'previous',
-    'doctor',
-    'config',
-    'artwork',
-];
-
-const OFFLINE = ['config', 'release'];
 const DIRECTIONS = { forward: 1, backward: -1 };
-const FLAGS = {
-    get: null,
-    stream: null,
-    release: Object.keys(DIRECTIONS),
-    seek: null,
-    forward: null,
-    backward: null,
-    config: null,
-    artwork: null,
-};
 
-function rejectUnknownArguments(name, args) {
-    const allowed = Object.hasOwn(FLAGS, name) ? FLAGS[name] : [];
-    const unknown = allowed === null ? [] : args.filter(arg => !allowed.includes(arg));
+function rejectUnknownArguments(name, command, args) {
+    const allowed = command.takes || [];
+    const unknown = command.checksOwnArguments ? [] : args.filter(arg => !allowed.includes(arg));
     if (unknown.length > 0) {
-        const known = SPEAKING.includes(name) ? [...allowed, '--json', '--raw', '--minify'] : allowed;
+        const known = command.answers ? [...allowed, '--json', '--raw', '--minify'] : allowed;
         const takes = known.length > 0 ? `only ${known.join(', ')}` : 'no arguments';
         throw new Failure(EXIT.usage, `${name} takes ${takes}, got "${unknown.join(' ')}"`);
     }

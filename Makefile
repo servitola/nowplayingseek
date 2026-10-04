@@ -65,6 +65,7 @@ $(ARTWORK_BUNDLE_UNIVERSAL): $(ARTWORK_SRC)
 test: $(TARGET) $(FAKE_TARGET) $(TEST_TARGET) $(ARTWORK_BUNDLE)
 	osascript -l JavaScript $(TEST_TARGET) $(PURE)
 	sh test/cli.test.sh $(FAKE_TARGET)
+	sh test/commands.test.sh $(FAKE_TARGET)
 	sh test/fake.test.sh
 
 # Not part of `test`: wall-clock budgets are noise on a shared, loaded CI runner.

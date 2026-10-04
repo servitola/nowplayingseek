@@ -73,6 +73,8 @@ player true && told 'a bare release releases both keys' 0 '' release
 cases=$((cases + 1))
 [ -s "$work/fake/nowplayingseek.release-forward.json" ] && [ -s "$work/fake/nowplayingseek.release-backward.json" ] || fail 'a bare release did not write both'
 
+player true && told 'play' 0 'send 0;' play
+player true true && told 'toggle' 0 'send 2;' toggle
 player true && told 'pause' 0 'send 1;' pause
 player true && told 'next' 0 'send 4;' next
 player true && told 'previous' 0 'send 5;' previous

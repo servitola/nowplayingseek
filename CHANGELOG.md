@@ -5,6 +5,10 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Changed
+- `forward` and `backward` move 5 s by default, was 10 — the same as one click of a knob. A held
+  key starts from 5 s too and grows from there. `forward 10` still moves 10 s.
+
 ## 2026.10.04 — 2026-10-04
 
 ### Changed

@@ -201,7 +201,7 @@ fresh_home
 ini=$xdg/nowplayingseek/config.ini
 expect 'config set without a file writes one' 0 stdout "wrote knob.fast = 24 to $ini" config set knob.fast 24
 expect 'config set is in force' 0 stdout 'fast = 24' config
-grep -q '^; step = 10' "$ini" || fail 'config set left the other defaults out of the file it started'
+grep -q '^; step = 5' "$ini" || fail 'config set left the other defaults out of the file it started'
 expect 'config set again' 0 stdout "wrote knob.fast = 30 to $ini" config set knob.fast 30
 [ "$(grep -c '^fast = ' "$ini")" -eq 1 ] || fail 'config set twice wrote the key twice'
 cp "$ini" "$work/before"

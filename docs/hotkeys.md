@@ -30,7 +30,7 @@ key up ends it:
 
 ```json
 {
-  "description": "nowplayingseek ±10 s, hold to keep going",
+  "description": "nowplayingseek ±5 s, hold to keep going",
   "manipulators": [
     {
       "type": "basic",

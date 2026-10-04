@@ -6,13 +6,13 @@
 
 A command-line tool for macOS. It seeks whatever is playing.
 
-Ten seconds back. Ten seconds forward.
+Five seconds back. Five seconds forward.
 From a key, with any app in front: a browser tab, IINA, VLC, Music, Spotify.
 [A keyboard with a knob](#a-knob) turns into a jog wheel: flick it past the ad in a video, wind back over a line you missed.
 
 macOS has no such key. This is the command behind it.
 
-<p align="center"><img src="docs/images/demo.svg" alt="In a terminal: nowplayingseek status prints the position in bold, the length, a bar, the title, the chapter and the app; nowplayingseek backward moves ten seconds; nowplayingseek seek 1:02:03 jumps; nowplayingseek pause turns the sign and the bar from green to yellow; nowplayingseek status --json prints the same as coloured JSON" width="620"></p>
+<p align="center"><img src="docs/images/demo.svg" alt="In a terminal: nowplayingseek status prints the position in bold, the length, a bar, the title, the chapter and the app; nowplayingseek backward moves five seconds; nowplayingseek seek 1:02:03 jumps; nowplayingseek pause turns the sign and the bar from green to yellow; nowplayingseek status --json prints the same as coloured JSON" width="620"></p>
 
 ## Why
 
@@ -57,7 +57,7 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 
 | Command | |
 | --- | --- |
-| `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
+| `forward [time]`, `backward [time]` | by a step, 5 s unless told otherwise |
 | `forward --knob`, `backward --knob` | one click of a keyboard knob: 5 s, longer the faster it spins |
 | `status` | title, app, position / duration |
 | `watch` | stays: where it is, second by second, and what happens to it |

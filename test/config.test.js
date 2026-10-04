@@ -34,7 +34,7 @@ function testIni(core) {
 function testSettings(core) {
     const ini = '; comment\n# another\n\n[seek]\nstep = 1:30\r\n [ progressive ] \nramp=3\n';
     const defaults = core.resolveSettings([]);
-    same(defaults.values.seek.step, 10, 'settings: default step');
+    same(defaults.values.seek.step, 5, 'settings: default step');
     same(defaults.values.timing.poll_interval, 0.03, 'settings: default poll interval');
     same(defaults.values.hold.interval, 0.2, 'settings: default hold interval');
     same(defaults.values.hold.max_time, 60, 'settings: default hold fuse');
@@ -98,9 +98,9 @@ function testUnknownSettings(core) {
 function testTemplate(core) {
     const template = core.settingsTemplate();
     same(core.parseIni(template).length, 0, 'template: nothing in it is in force, so a later default still reaches its owner');
-    same(template.includes('; step = 10'), true, 'template: every key is there, commented, with its default');
+    same(template.includes('; step = 5'), true, 'template: every key is there, commented, with its default');
     same(template.includes('[hold]'), true, 'template: the sections are real');
-    const uncommented = template.replace('; step = 10', 'step = 7');
+    const uncommented = template.replace('; step = 5', 'step = 7');
     same(core.resolveSettings(core.parseIni(uncommented)).values.seek.step, 7, 'template: uncomment a line and it is in force');
 }
 function testSet(core) {

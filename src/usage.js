@@ -10,7 +10,7 @@ Look
 
 Move
   seek <time>                    to an exact place: seek 754, seek 12:34
-  forward [time]                 by a step, 10 s unless told
+  forward [time]                 by a step, 5 s unless told
   backward [time]
     <time> is seconds (90, 12.5) or a clock (1:30, 1:02:03)
 

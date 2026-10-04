@@ -6,7 +6,7 @@ const setting = (text, about, expects = 'seconds above zero') => ({ text, about,
 
 const SETTINGS = {
     seek: {
-        step: setting('10', 'forward / backward without a time', 'seconds or mm:ss above zero'),
+        step: setting('5', 'forward / backward without a time', 'seconds or mm:ss above zero'),
     },
     progressive: {
         max_multiplier: setting(

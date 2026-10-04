@@ -103,7 +103,7 @@ function testSkepticConfig(core) {
     const defaults = core.resolveSettings([]);
     same(
         JSON.stringify(defaults.values),
-        '{"seek":{"step":10},"progressive":{"max_multiplier":2.5,"start":0.4,"ramp":6,"streak_gap":1},"knob":{"step":5,"max_multiplier":4,"slow":18,"fast":32},"hold":{"interval":0.2,"max_time":60},"watch":{"interval":1},"timing":{"verify_timeout":2.5,"pending_seek_max":3,"command_delivery":0.3,"poll_interval":0.03}}',
+        '{"seek":{"step":5},"progressive":{"max_multiplier":2.5,"start":0.4,"ramp":6,"streak_gap":1},"knob":{"step":5,"max_multiplier":4,"slow":18,"fast":32},"hold":{"interval":0.2,"max_time":60},"watch":{"interval":1},"timing":{"verify_timeout":2.5,"pending_seek_max":3,"command_delivery":0.3,"poll_interval":0.03}}',
         'settings: every default'
     );
     const prototypeKey = core.resolveSettings(core.parseIni('[seek]\nconstructor = 5'));
@@ -112,10 +112,10 @@ function testSkepticConfig(core) {
         'line 2: unknown setting [seek] constructor — ignored',
         'settings: a key every object has is unknown too'
     );
-    same(prototypeKey.values.seek.step, 10, 'settings: it does not smuggle in through the prototype chain');
+    same(prototypeKey.values.seek.step, 5, 'settings: it does not smuggle in through the prototype chain');
     const printed = core.formatSettings(defaults.texts);
     same(
-        printed.startsWith('[seek]\n; forward / backward without a time\nstep = 10\n\n[progressive]\n; forward / backward --progressive'),
+        printed.startsWith('[seek]\n; forward / backward without a time\nstep = 5\n\n[progressive]\n; forward / backward --progressive'),
         true,
         'settings: the printed config explains each key, a blank line between sections'
     );

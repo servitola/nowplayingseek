@@ -97,9 +97,9 @@ sleep 1
 at 2:00
 expect_move 'seek 2:00' 0 119.5 120.5
 expect_exit 'forward' 0 forward
-expect_move 'forward' 120 10 10
-expect_exit 'backward 5' 0 backward 5
-expect_move 'backward 5' 120 5 5
+expect_move 'forward' 120 5 5
+expect_exit 'backward 2' 0 backward 2
+expect_move 'backward 2' 120 3 3
 
 at 2:00
 for _ in 1 2 3 4 5; do
@@ -107,7 +107,7 @@ for _ in 1 2 3 4 5; do
 	sleep 0.03
 done
 wait
-expect_move 'five presses 30 ms apart' 120 50 50
+expect_move 'five presses 30 ms apart' 120 25 25
 
 at 2:00
 guard
@@ -115,7 +115,7 @@ guard
 sleep 1.2
 "$bin" release forward
 wait
-expect_move 'hold for 1.2 s' 120 60 70
+expect_move 'hold for 1.2 s' 120 30 35
 
 at 2:00
 guard
@@ -123,7 +123,7 @@ guard
 sleep 0.08
 "$bin" release forward
 wait
-expect_move 'a tap on a hold key is one step' 120 10 10
+expect_move 'a tap on a hold key is one step' 120 5 5
 
 at 2:00
 guard
@@ -136,7 +136,7 @@ sleep 0.3
 sleep 1.2
 "$bin" release backward
 wait
-expect_move 'rolling from one key to the other keeps the second going' 120 -60 -20
+expect_move 'rolling from one key to the other keeps the second going' 120 -30 -10
 
 at 2:00
 guard
@@ -144,7 +144,7 @@ guard
 sleep 1
 "$bin" release
 wait
-expect_move 'a bare release stops it' 120 50 60
+expect_move 'a bare release stops it' 120 25 30
 
 at 1:00
 guard
@@ -152,7 +152,7 @@ guard
 sleep 3
 "$bin" release forward
 wait
-expect_move 'progressive hold for 3 s' 60 80 100
+expect_move 'progressive hold for 3 s' 60 40 50
 cases=$((cases + 1))
 grep -q '×0\.[789]' "$work/hold" || fail "progressive hold: the line does not end with ×0.8, got: $(cat "$work/hold")"
 
@@ -161,7 +161,7 @@ for _ in 1 2 3; do
 	"$bin" forward --progressive >/dev/null 2>&1
 	sleep 0.4
 done
-expect_move 'separate progressive presses are whole steps' 120 30 30
+expect_move 'separate progressive presses are whole steps' 120 15 15
 
 mkdir -p "$work/xdg/nowplayingseek"
 printf '[hold]\nmax_time = 1\n' >"$work/xdg/nowplayingseek/config.ini"

@@ -11,17 +11,17 @@ Nothing here is needed for everyday use.
 With `--progressive` the step grows the longer the key is held, a little at a time. A press is
 always one whole step. Keep the key down and it glides off in small steps, so a short hold stays
 short, then gathers pace and settles at two and a half times the step — twenty seconds of holding
-move about half an hour of film.
+move about a quarter of an hour of film.
 
 | held | each step | in total |
 | --- | --- | --- |
-| a tap | 10 s | 0:10 |
-| 1 s | 5 s | 0:26 |
-| 2 s | 6 s | 0:52 |
-| 3 s | 9 s | 1:28 |
-| 5 s | 14 s | 3:20 |
-| 7 s | 20 s | 6:10 |
-| 10 s | 24 s | 11:38 |
+| a tap | 5 s | 0:05 |
+| 1 s | 2.5 s | 0:13 |
+| 2 s | 3 s | 0:26 |
+| 3 s | 4.5 s | 0:44 |
+| 5 s | 7 s | 1:40 |
+| 7 s | 10 s | 3:05 |
+| 10 s | 12 s | 5:49 |
 
 The curve is `start + (max_multiplier − start) · (1 − e^−(held / ramp)²)`: where it begins, where
 it settles, and how long it takes to get about two thirds of the way.
@@ -34,7 +34,7 @@ ramp = 6
 ```
 
 The curve multiplies whatever step you give: `forward 30 --hold --progressive` is a 30 s press, then
-steps from 12 s up to 75 s — three times the pace of the table above. Lower `max_multiplier` if
+steps from 12 s up to 75 s — six times the pace of the table above. Lower `max_multiplier` if
 a long step makes a long hold too fast.
 
 Separate presses no further apart than `streak_gap` count as one hold and grow the same way, but

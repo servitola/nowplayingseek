@@ -16,6 +16,11 @@ version, so keep that heading as it is.
 - The Karabiner-Elements rules for a knob catch a click that comes with a modifier: one knob
   sends option+shift with every volume key.
 
+### Added
+- [docs/compatibility.md](docs/compatibility.md) and the macOS badge in the README: which macOS
+  builds the live tests passed on (26.6.2 and 27.0), and which ones are expected to work because
+  Apple's diff of the Now Playing gate shows no change on the way from a tested build.
+
 ## 2026.09.20 — 2026-09-20
 
 ### Changed

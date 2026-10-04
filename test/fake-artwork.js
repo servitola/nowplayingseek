@@ -1,4 +1,4 @@
-// Stands in for src/system/artwork.js: bytes come from a file next to the fake state, not perl.
+// Stands in for src/core/system/artwork.js: bytes come from a file next to the fake state, not perl.
 // Caches by identifier like the real one, so a test can see that `stream` fetches once per item.
 let fakeArtworkCache = null;
 

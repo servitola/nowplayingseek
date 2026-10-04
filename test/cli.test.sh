@@ -95,7 +95,7 @@ expect 'an error carries the name of the tool' 64 stderr 'nowplayingseek: unknow
 cases=$((cases + 1))
 # 84 columns is what GitHub shows of a code block without scrolling; a Karabiner rule spells out the
 # full path and name in a JSON string that cannot be wrapped, so JSON gets 96.
-awk '/^```/ { if (!code) lang = substr($0, 4); code = !code; next } code && length($0) > (lang == "json" ? 96 : 84) { print FILENAME ":" FNR; wide = 1 } END { exit wide }' README.md docs/*.md ||
+awk '/^```/ { if (!code) lang = substr($0, 4); code = !code; next } code && length($0) > (lang == "json" ? 96 : 84) { print FILENAME ":" FNR; wide = 1 } END { exit wide }' README.md docs/*.md src/README.md ||
 	fail 'a line of code in the docs is wider than GitHub shows: the reader has to scroll sideways'
 cases=$((cases + 1))
 "$bin" --help | awk 'length($0) > 80 { wide = 1 } END { exit wide }' || fail 'a line of the help is wider than 80 columns and will wrap'

@@ -1,6 +1,6 @@
 ObjC.import('Foundation');
 
-// Stands in for src/system/mediaremote.js: the state is a file, every command is a line in a log.
+// Stands in for src/core/system/mediaremote.js: the state is a file, every command is a line in a log.
 const KEY_PREFIX = 'kMRMediaRemoteNowPlayingInfo';
 const MR_COMMAND = { play: 0, pause: 1, toggle: 2, next: 4, previous: 5 };
 const FAKE = $.NSProcessInfo.processInfo.environment.objectForKey('NPS_FAKE').js;

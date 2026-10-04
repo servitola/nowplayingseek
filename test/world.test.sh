@@ -109,7 +109,7 @@ if [ -d /Applications/VLC.app ] && elect VLC org.videolan.vlc; then
 	if [ "$(raw PlaybackRate)" = 1 ] && [ "$(field playing)" = false ]; then
 		holds 'paused, it still reports PlaybackRate 1 — why playing comes from localIsPlaying'
 	else
-		world_changed 'VLC reports PlaybackRate 1 while paused' "it reports $(raw PlaybackRate): effectiveRate in src/logic/seek.js may no longer be needed for it"
+		world_changed 'VLC reports PlaybackRate 1 while paused' "it reports $(raw PlaybackRate): effectiveRate in src/core/logic/seek.js may no longer be needed for it"
 	fi
 	guard org.videolan.vlc
 	"$bin" seek 22.4 >/dev/null 2>&1

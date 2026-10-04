@@ -1,4 +1,4 @@
-// Appended to src/logic/time.js + item.js + paint.js: prints the README demo with the real painters.
+// Appended to src/core/logic/time.js + item.js + paint.js: prints the README demo with the real painters.
 function run() {
     const state = { title: 'Seven Samurai', artist: '', album: '', app: 'org.videolan.vlc', duration: 12420, position: 1857.4, playing: true, rate: 1, timestamp: 1789768358.106 };
     const back = { ...state, position: 1852.4 };

@@ -65,7 +65,7 @@ measure 'get --no-artwork' 180 "$bin get --no-artwork"
 measure 'artwork <path>' 180 "$bin artwork $work/artwork-out.jpg"
 measure 'forward 5' 320 "$bin forward 5"
 
-# The cache is claimed to fetch artwork once per item, not once per read (src/system/artwork.js):
+# The cache is claimed to fetch artwork once per item, not once per read (src/core/system/artwork.js):
 # `stream`'s loop calls payload() — and so artwork.base64 — on its own poll interval (0.2 s),
 # whether or not the item changed, so five silent polls with one fetch in calls.log proves the
 # cache held.

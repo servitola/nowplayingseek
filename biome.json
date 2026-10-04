@@ -71,14 +71,14 @@
         },
         {
             "includes": [
-                "src/logic/time.js",
-                "src/logic/seek.js",
-                "src/logic/hold.js",
-                "src/logic/stream.js",
-                "src/logic/item.js",
-                "src/logic/text.js",
-                "src/logic/paint.js",
-                "src/logic/config.js",
+                "src/core/logic/time.js",
+                "src/core/logic/seek.js",
+                "src/core/logic/hold.js",
+                "src/core/logic/stream.js",
+                "src/core/logic/item.js",
+                "src/core/logic/text.js",
+                "src/core/logic/paint.js",
+                "src/core/logic/config.js",
                 "src/features/config/settings-authoring.js",
                 "src/features/dialects/words.js",
                 "src/features/watch/change.js"
@@ -195,21 +195,21 @@
         },
         {
             "includes": [
-                "src/system/mediaremote.js",
-                "src/system/paths.js",
-                "src/system/artwork.js",
-                "src/system/files.js",
-                "src/system/terminal.js",
-                "src/player.js",
-                "src/player-commands.js",
-                "src/player-artwork.js",
-                "src/status.js",
-                "src/native-get.js",
-                "src/system/configfile.js",
-                "src/output.js",
-                "src/args.js",
+                "src/core/system/mediaremote.js",
+                "src/core/system/paths.js",
+                "src/core/system/artwork.js",
+                "src/core/system/files.js",
+                "src/core/system/terminal.js",
+                "src/core/player.js",
+                "src/core/player-commands.js",
+                "src/core/player-artwork.js",
+                "src/core/status.js",
+                "src/core/native-get.js",
+                "src/core/system/configfile.js",
+                "src/core/output.js",
+                "src/core/args.js",
                 "src/cli.js",
-                "src/usage.js",
+                "src/core/usage.js",
                 "src/features/config/configfile.js",
                 "src/features/config/command.js",
                 "src/features/dialects/nowplaying-cli.js",
@@ -403,7 +403,13 @@
             }
         },
         {
-            "includes": ["src/system/mediaremote.js", "src/status.js", "test/item.test.js", "test/watch.test.js", "test/config.test.js"],
+            "includes": [
+                "src/core/system/mediaremote.js",
+                "src/core/status.js",
+                "test/item.test.js",
+                "test/watch.test.js",
+                "test/config.test.js"
+            ],
             "linter": {
                 "rules": {
                     "security": {

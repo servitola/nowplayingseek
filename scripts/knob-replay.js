@@ -1,12 +1,12 @@
 // Replays recorded turns of a real keyboard knob (test/knob/*.json) through the knob logic of
-// src/logic and checks that each one feels the way it was turned. `make knob-replay`.
+// src/core/logic and checks that each one feels the way it was turned. `make knob-replay`.
 //
 //   node scripts/knob-replay.js "<pure files>" [--set knob.fast=30]... [--refresh 0.6] [--try draft.js] [--plain]
 //
 // The player is a model: it plays at rate 1 and Now Playing reports a seek --refresh seconds after
 // it (IINA 0.05-0.15, VLC about 0.6, see docs/how-it-works.md). Each click is one run of
 // `forward|backward --knob` at the moment the knob sent it; startup time is left out.
-// --try loads a file over src/logic, so a draft knobRate or knobMultiplier is judged before it
+// --try loads a file over src/core/logic, so a draft knobRate or knobMultiplier is judged before it
 // replaces the real one. --plain is a knob bound to `forward 5` without --knob: every click one step.
 const fs = require('node:fs');
 const path = require('node:path');

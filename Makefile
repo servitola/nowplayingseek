@@ -3,10 +3,10 @@ PREFIX ?= /usr/local
 # core: what a hotkey reaches on every command — logic, system, player, status, cli. A feature is
 # everything core never calls (docs/development.md#rules); the boundary is checked, not kept by discipline, in
 # scripts/globals.js's --check, which reads CORE and FEATURES back with `make print-<VAR>`.
-CORE_PURE := src/logic/time.js src/logic/seek.js src/logic/hold.js src/logic/stream.js src/logic/item.js src/logic/text.js src/logic/paint.js src/logic/config.js
+CORE_PURE := src/core/logic/time.js src/core/logic/seek.js src/core/logic/hold.js src/core/logic/stream.js src/core/logic/item.js src/core/logic/text.js src/core/logic/paint.js src/core/logic/config.js
 FEATURE_PURE := src/features/config/settings-authoring.js src/features/dialects/words.js src/features/watch/change.js
 PURE := $(CORE_PURE) $(FEATURE_PURE)
-CORE := $(CORE_PURE) src/system/mediaremote.js src/system/paths.js src/system/artwork.js src/system/files.js src/system/terminal.js src/player.js src/player-commands.js src/player-artwork.js src/status.js src/native-get.js src/system/configfile.js src/output.js src/args.js src/cli.js src/usage.js
+CORE := $(CORE_PURE) src/core/system/mediaremote.js src/core/system/paths.js src/core/system/artwork.js src/core/system/files.js src/core/system/terminal.js src/core/player.js src/core/player-commands.js src/core/player-artwork.js src/core/status.js src/core/native-get.js src/core/system/configfile.js src/core/output.js src/core/args.js src/cli.js src/core/usage.js
 FEATURES := $(FEATURE_PURE) src/features/config/configfile.js src/features/config/command.js src/features/dialects/nowplaying-cli.js src/features/dialects/media-control-help.js src/features/dialects/media-control.js src/features/dialects/shared.js src/features/dialects/playerctl.js src/features/dialects/mpc.js src/features/dialects/shpotify.js src/features/dialects/index.js src/features/watch/loop.js
 SOURCES := $(CORE) $(FEATURES)
 TESTS := test/harness.js test/core.test.js test/hold.test.js test/item.test.js test/dialects.test.js test/paint.test.js test/watch.test.js test/edges.test.js test/edges-text.test.js test/config.test.js
@@ -39,7 +39,7 @@ print-%:
 
 # The same tool with a player that is a file, so that no test of arguments — nor artwork —
 # can reach anything real.
-FAKE_SOURCES := $(subst src/system/artwork.js,test/fake-artwork.js,$(subst src/system/mediaremote.js,test/fake-mediaremote.js,$(SOURCES)))
+FAKE_SOURCES := $(subst src/core/system/artwork.js,test/fake-artwork.js,$(subst src/core/system/mediaremote.js,test/fake-mediaremote.js,$(SOURCES)))
 $(FAKE_TARGET): $(SOURCES) test/fake-mediaremote.js test/fake-artwork.js
 	@mkdir -p build
 	{ echo '#!/usr/bin/osascript -l JavaScript'; cat $(FAKE_SOURCES); } > $@
@@ -50,7 +50,7 @@ $(TEST_TARGET): $(TESTS)
 	cat $(TESTS) > $@
 
 # A real Objective-C block, which nothing inside osascript can build (docs/how-it-works.md);
-# loaded into /usr/bin/perl at run time by artwork.fetch() in src/system/artwork.js.
+# loaded into /usr/bin/perl at run time by artwork.fetch() in src/core/system/artwork.js.
 # Unsigned is fine: mediaremoted checks perl's own code signature, never this file's.
 $(ARTWORK_BUNDLE): $(ARTWORK_SRC)
 	@mkdir -p build
@@ -111,7 +111,7 @@ install: $(TARGET) $(ARTWORK_BUNDLE)
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/nowplayingseek $(DESTDIR)$(PREFIX)/bin/nps $(DESTDIR)$(PREFIX)/bin/nowplayingseek-artwork.bundle
 
-# The release asset: the built script, the universal artwork bundle beside it (src/system/paths.js
+# The release asset: the built script, the universal artwork bundle beside it (src/core/system/paths.js
 # resolves the bundle next to whatever path osascript was run from, so this only works if both
 # land in the same directory), LICENSE and README. touch -h fixes every mtime before the tar so
 # two runs over the same checkout produce the same bytes; gzip -n drops its own timestamp too.

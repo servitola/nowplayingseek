@@ -9,7 +9,7 @@ failures=0
 
 # SOURCES is built from CORE and FEATURES now, so its expansion comes from make itself (a
 # print-% target), not from re-parsing the Makefile text.
-sources=$(make print-SOURCES | sed 's|src/system/mediaremote.js|test/fake-mediaremote.js|; s|src/system/artwork.js|test/fake-artwork.js|')
+sources=$(make print-SOURCES | sed 's|src/core/system/mediaremote.js|test/fake-mediaremote.js|; s|src/core/system/artwork.js|test/fake-artwork.js|')
 # shellcheck disable=SC2086
 {
 	echo '#!/usr/bin/osascript -l JavaScript'

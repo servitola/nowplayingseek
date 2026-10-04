@@ -1,4 +1,4 @@
-// Which lines of src/logic the unit tests never reach. The logic is plain JavaScript, so node can
+// Which lines of src/core/logic the unit tests never reach. The logic is plain JavaScript, so node can
 // run it and V8 can count; osascript can do neither. `make coverage`.
 const fs = require('node:fs');
 const inspector = require('node:inspector');

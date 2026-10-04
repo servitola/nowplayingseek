@@ -68,7 +68,7 @@ instead, and measured to fail, is in [Limits](#limits) below. `native/artwork.m`
 code: built by clang at `make build` time, never shipped built, and loaded — not run — by
 `/usr/bin/perl` through `DynaLoader::dl_load_file`, the way
 [ungive/mediaremote-adapter](https://github.com/ungive/mediaremote-adapter) (BSD-3-Clause) loads
-its own framework the same way. `src/system/artwork.js` is the rest: one function, artwork only,
+its own framework the same way. `src/core/system/artwork.js` is the rest: one function, artwork only,
 no argv parsing or XS boilerplate — `nps_get_artwork` is a plain zero-argument C function, which
 works as a Perl XSUB because `dl_install_xsub` calls it with arguments it simply never reads.
 

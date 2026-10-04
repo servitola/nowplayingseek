@@ -1,13 +1,13 @@
 // Replays recorded turns of a real keyboard knob (test/knob/*.json) through the knob logic of
 // src/logic and checks that each one feels the way it was turned. `make knob-replay`.
 //
-//   node scripts/knob-replay.js "<pure files>" [--set knob.fast=30]... [--refresh 0.6] [--try draft.js]
+//   node scripts/knob-replay.js "<pure files>" [--set knob.fast=30]... [--refresh 0.6] [--try draft.js] [--plain]
 //
 // The player is a model: it plays at rate 1 and Now Playing reports a seek --refresh seconds after
 // it (IINA 0.05-0.15, VLC about 0.6, see docs/how-it-works.md). Each click is one run of
 // `forward|backward --knob` at the moment the knob sent it; startup time is left out.
 // --try loads a file over src/logic, so a draft knobRate or knobMultiplier is judged before it
-// replaces the real one.
+// replaces the real one. --plain is a knob bound to `forward 5` without --knob: every click one step.
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
@@ -18,12 +18,15 @@ args.shift().split(' ').filter(Boolean).forEach(load);
 
 const overrides = [];
 let refresh = 0.15;
+let plain = false;
 while (args.length > 0) {
     const flag = args.shift();
     if (flag === '--set') {
         overrides.push(args.shift());
     } else if (flag === '--refresh') {
         refresh = Number(args.shift());
+    } else if (flag === '--plain') {
+        plain = true;
     } else if (flag === '--try') {
         load(args.shift());
     } else {
@@ -84,7 +87,7 @@ function replay(clicks) {
         };
         const base = seekBase(state, lastSeek, now, settings.timing.pending_seek_max);
         const rate = knobRate(lastSeek, sign, now, settings.progressive.streak_gap);
-        const multiplier = knobMultiplier(rate, settings.knob);
+        const multiplier = plain ? 1 : knobMultiplier(rate, settings.knob);
         const target = nextHoldTarget(base, sign * settings.knob.step, multiplier, duration);
         if (isMissing(target)) {
             continue;

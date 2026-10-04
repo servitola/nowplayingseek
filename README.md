@@ -58,6 +58,7 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 | Command | |
 | --- | --- |
 | `forward [time]`, `backward [time]` | by a step, 10 s unless told otherwise |
+| `forward --knob`, `backward --knob` | one click of a keyboard knob: 5 s, longer the faster it spins |
 | `status` | title, app, position / duration |
 | `watch` | stays: where it is, second by second, and what happens to it |
 | `stream` | stays: every change as it happens; JSON lines in a pipe, [for scripts](docs/scripting.md#following-changes) |

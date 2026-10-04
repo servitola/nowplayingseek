@@ -39,10 +39,12 @@ key up ends it:
         "modifiers": { "mandatory": ["left_control", "left_option"] }
       },
       "to": [{
-        "shell_command": "/opt/homebrew/bin/nps forward --hold --progressive"
+        "shell_command":
+          "/opt/homebrew/bin/nps forward --hold --progressive >/dev/null 2>&1 &"
       }],
       "to_after_key_up": [{
-        "shell_command": "/opt/homebrew/bin/nps release forward"
+        "shell_command":
+          "/opt/homebrew/bin/nps release forward >/dev/null 2>&1 &"
       }]
     },
     {
@@ -52,15 +54,21 @@ key up ends it:
         "modifiers": { "mandatory": ["left_control", "left_option"] }
       },
       "to": [{
-        "shell_command": "/opt/homebrew/bin/nps backward --hold --progressive"
+        "shell_command":
+          "/opt/homebrew/bin/nps backward --hold --progressive >/dev/null 2>&1 &"
       }],
       "to_after_key_up": [{
-        "shell_command": "/opt/homebrew/bin/nps release backward"
+        "shell_command":
+          "/opt/homebrew/bin/nps release backward >/dev/null 2>&1 &"
       }]
     }
   ]
 }
 ```
+
+Every command ends in `>/dev/null 2>&1 &`. Karabiner waits until a command it ran closes its
+output, so a command that keeps it open holds back the ones after it: a knob spun fast lost all
+but its first click or two until its rule had this ending.
 
 A tap is one step. Held, the key glides off in small steps, five a second, and with
 `--progressive` they grow — see [the curve](advanced.md#progressive-seek). The pace, the step and
@@ -85,7 +93,8 @@ to keys you do not use, such as F13 and F14, and give those to `--knob`:
         "modifiers": { "optional": ["any"] }
       },
       "to": [{
-        "shell_command": "/opt/homebrew/bin/nps forward --knob"
+        "shell_command":
+          "/opt/homebrew/bin/nps forward --knob >/dev/null 2>&1 &"
       }]
     },
     {
@@ -95,7 +104,8 @@ to keys you do not use, such as F13 and F14, and give those to `--knob`:
         "modifiers": { "optional": ["any"] }
       },
       "to": [{
-        "shell_command": "/opt/homebrew/bin/nps backward --knob"
+        "shell_command":
+          "/opt/homebrew/bin/nps backward --knob >/dev/null 2>&1 &"
       }]
     }
   ]
@@ -123,7 +133,10 @@ manipulators:
     "consumer_key_code": "volume_increment",
     "modifiers": { "optional": ["any"] }
   },
-  "to": [{ "shell_command": "/opt/homebrew/bin/nps forward --knob" }],
+  "to": [{
+    "shell_command":
+      "/opt/homebrew/bin/nps forward --knob >/dev/null 2>&1 &"
+  }],
   "conditions": [{
     "type": "device_if",
     "identifiers": [{ "vendor_id": 1234, "product_id": 5678 }]

@@ -5,6 +5,10 @@ version, so keep that heading as it is.
 
 ## Unreleased
 
+### Fixed
+- The Karabiner-Elements rules in the docs end every command in `>/dev/null 2>&1 &`. Without it
+  Karabiner waits for each command, and a knob spun fast moved only by its first click or two.
+
 ### Changed
 - `forward` and `backward` move 5 s by default, was 10 — the same as one click of a knob. A held
   key starts from 5 s too and grows from there. `forward 10` still moves 10 s.

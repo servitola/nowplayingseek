@@ -31,5 +31,5 @@ function dialectFor(argv, ownCommands) {
     return !ownCommands.includes(name) && asMediaControl.knows(name) ? () => asMediaControl.run(argv) : null;
 }
 
-// core's cli.js checks dialectRouter.current, never this file by name — AGENTS.md's core/feature rule.
+// core's cli.js checks dialectRouter.current, never this file by name — the core/feature rule in docs/development.md#rules.
 dialectRouter.current = dialectFor;

@@ -3,7 +3,7 @@
 // from another, and the names it declares for others. `make globals`; `--check` only compares.
 //
 // It also enforces the core/feature boundary: a feature is a file a core file never calls
-// (AGENTS.md). CORE and FEATURES are read with `make print-<VAR>` rather than by re-parsing the
+// (docs/development.md#rules). CORE and FEATURES are read with `make print-<VAR>` rather than by re-parsing the
 // Makefile text, since SOURCES is itself built from other variables now.
 const fs = require('node:fs');
 const { execFileSync } = require('node:child_process');
@@ -102,7 +102,7 @@ function boundaryViolations() {
 const violations = boundaryViolations();
 if (violations.length > 0) {
     console.error(violations.join('\n'));
-    console.error('a core file may not depend on a feature — see AGENTS.md\'s core/feature rule');
+    console.error('a core file may not depend on a feature — see docs/development.md#rules');
     process.exit(1);
 }
 

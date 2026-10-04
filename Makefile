@@ -1,7 +1,7 @@
 PREFIX ?= /usr/local
 
 # core: what a hotkey reaches on every command — logic, system, player, status, cli. A feature is
-# everything core never calls (AGENTS.md); the boundary is checked, not kept by discipline, in
+# everything core never calls (docs/development.md#rules); the boundary is checked, not kept by discipline, in
 # scripts/globals.js's --check, which reads CORE and FEATURES back with `make print-<VAR>`.
 CORE_PURE := src/logic/time.js src/logic/seek.js src/logic/hold.js src/logic/stream.js src/logic/item.js src/logic/text.js src/logic/paint.js src/logic/config.js
 FEATURE_PURE := src/features/config/settings-authoring.js src/features/dialects/words.js src/features/watch/change.js

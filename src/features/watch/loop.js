@@ -75,6 +75,6 @@ const watching = {
 };
 
 // core's status.js checks RENDERERS.watch, never this file by name, and falls back to the plain
-// JSON stream when nothing has registered — AGENTS.md's core/feature rule.
+// JSON stream when nothing has registered — the core/feature rule in docs/development.md#rules.
 RENDERERS.watch = view => watching.run(view);
 COMMANDS.watch = () => RENDERERS.watch({ live: true });

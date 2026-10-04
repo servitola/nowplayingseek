@@ -176,6 +176,47 @@ A machine or a macOS upgrade moves every number here at once; re-run `make test-
 both this section and the budgets in the script together, or a budget from 2026 keeps guarding
 against a machine that no longer exists.
 
-Layout, gates, rules and settled decisions: [AGENTS.md](../AGENTS.md); the reasoning behind each
-decision and the dead ends behind it: [how-it-works.md](how-it-works.md). What is left:
-[BACKLOG.md](../BACKLOG.md). What changed: [CHANGELOG.md](../CHANGELOG.md).
+### Rules
+
+What stays true. The reasoning behind each, and the dead ends, are in
+[how-it-works.md](how-it-works.md); read it before touching `src/system/mediaremote.js` or
+`src/player.js` — each bullet there was a bug first.
+
+**Core and features.** `src/` is the core: reading Now Playing and moving it.
+`src/features/{config,dialects,watch}` are optional, everything a reader can decide not to look at.
+A feature is something core never calls — not a folder or a file name: core never names a feature
+file and never uses a symbol declared under `src/features/`, and `scripts/globals.js --check` fails
+`make lint` if it does. The `Makefile`'s `CORE`/`FEATURES` lists decide which file is which; a new
+file is not built or tested until it is in one of them. A file may only use symbols from the
+files before it in its list.
+
+**Code.**
+
+- A new decision goes into `src/logic/` as a pure function with a test; `player.js` only wires
+  reads, calls and polling around them. `src/logic/` gets no `$` and no `ObjC`.
+- A new setting is one entry in `SETTINGS`: default, parser, `about` line. The config reader,
+  `config`, `config init` and the unknown-key check all derive from that table.
+- Argument errors are raised before the player is touched, so that they can be tested.
+- Comments say why, never what.
+- No `*.js` in `src/` or `test/` over 200 lines; functions at most 50 lines, 4 parameters,
+  complexity 15. Biome runs every stable rule as an error; a rule is turned off only when it
+  cannot hold for JXA, and the commit says why.
+
+**Tests.** A change to the tests is proven by breaking the code once and watching them fail.
+Anything touching playback also gets a hand pass with a real player running: look at `playing`
+first, and put the position back after.
+
+**Settled.** Each has its evidence in [how-it-works.md](how-it-works.md):
+
+- Stay on JXA, no compiled binary: only an Apple-signed interpreter passes the Now Playing read
+  gate.
+- Only the app macOS elected is driven; every route to a chosen app is silently redirected to the
+  elected one.
+- Never call `SetOverriddenNowPlayingApplication`: it leaves `mediaremoted` electing nobody.
+- Chapters do not work: IINA registers no chapter handler.
+- No hotkeys of our own: a Carbon `RegisterEventHotKey` helper never received a press.
+- No Mac App Store: it loads a private framework, and review is public-API only.
+- No helper dylib inside `osascript`, which refuses a plain arm64 image; artwork goes through
+  `/usr/bin/perl`, which maps one.
+
+What changed: [CHANGELOG.md](../CHANGELOG.md).

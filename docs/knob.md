@@ -14,14 +14,45 @@ fast, every click is up to four times longer.
 
 ## 1. Find the keyboard's two numbers
 
-Open **Karabiner-EventViewer** — it comes with Karabiner-Elements — and its **Devices** tab.
-Find the keyboard with the knob and note its `vendor_id` and `product_id`.
+Karabiner-Elements tells one keyboard from another by two numbers, `vendor_id` and `product_id`.
+Every keyboard model has its own pair. To read yours:
+
+1. Open **Karabiner-EventViewer**: press `⌘ Space`, type `EventViewer`, press `Return`. It was
+   installed together with Karabiner-Elements.
+2. Open **Devices** in it. It lists everything connected to the Mac, a block for each.
+3. Find the block where `"product"` is the name of your keyboard:
+
+   ```json
+   {
+       "device_identifiers": {
+           "is_keyboard": true,
+           "product_id": 5678,
+           "vendor_id": 1234
+       },
+       "manufacturer": "Example",
+       "product": "Example Keyboard"
+   }
+   ```
+
+4. Write down the two numbers from that block. Here they are `1234` and `5678`; yours differ.
+
+A keyboard can be listed more than once; its numbers are the same every time. Not sure which
+block is yours? Unplug the keyboard and open the list again: the block that is gone was it.
+
+The same list in Terminal, if that is easier:
+
+```sh
+'/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_cli' \
+  --list-connected-devices
+```
 
 ## 2. Add the rule
 
 In Karabiner-Elements open **Complex Modifications** and press **Add your own rule**
 ([their page on it](https://karabiner-elements.pqrs.org/docs/manual/configuration/add-your-own-complex-modifications/)).
-Paste this, with your two numbers in both places:
+Paste this, then put your numbers in: your `vendor_id` where it says `1234`, your `product_id`
+where it says `5678`. Each stands twice, once for each direction of the knob — four numbers to
+replace in all. Numbers only, no quotes around them.
 
 ```json
 {
@@ -71,7 +102,8 @@ Play something and turn the knob: it winds what plays, in whatever app.
 
 - **The knob still changes the volume.** Karabiner-Elements gives a key to the first rule that
   takes it: move this rule above any rule that already rewrites the volume keys. Then check the
-  two numbers, and that Karabiner-Elements modifies that keyboard, under Settings → Devices.
+  four numbers against step 1, and that Karabiner-Elements modifies that keyboard, under
+  Settings → Devices.
 - **A fast spin moves only a few seconds.** A command has lost its ending, `>/dev/null 2>&1 &`.
 - **Nothing moves at all.** Run `nowplayingseek forward` in Terminal: it says what is wrong —
   nothing is playing, or the player does not seek.

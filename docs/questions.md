@@ -40,7 +40,7 @@ the key may want its own: Shortcuts needs Allow Running Scripts turned on in its
 ### Can the knob on my keyboard scrub a video?
 
 Yes. Bind its two directions to `forward --knob` and `backward --knob` — [the rule for
-Karabiner-Elements](hotkeys.md#a-knob-in-karabiner-elements). A careful click is 5 s; a fast spin
+Karabiner-Elements](knob.md). A careful click is 5 s; a fast spin
 makes every click up to 20 s, so three spins cover four to six minutes.
 
 ### I spin the knob fast and it still moves only a few seconds.

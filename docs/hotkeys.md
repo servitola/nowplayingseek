@@ -1,4 +1,4 @@
-# Hotkeys, knobs and pedals
+# Hotkeys and pedals
 
 [← README](../README.md)
 
@@ -28,7 +28,8 @@ Shortcuts tells a press, not a release, so a held key does nothing more than a p
 [Karabiner-Elements](https://karabiner-elements.pqrs.org/) is a free keyboard customiser for
 macOS. ⌃⌥→ and ⌃⌥←: Karabiner runs a `shell_command` once per press and does not
 repeat it while the key is held, so the key down starts a [`--hold`](advanced.md#hold) and the
-key up ends it:
+key up ends it. In Karabiner-Elements: **Complex Modifications** → **Add your own rule**, and
+paste:
 
 ```json
 {
@@ -68,91 +69,19 @@ key up ends it:
 }
 ```
 
-Every command here and [for the knob](#a-knob-in-karabiner-elements) ends in `>/dev/null 2>&1 &`.
-Karabiner
+Every command ends in `>/dev/null 2>&1 &`. Karabiner
 [stops a `shell_command` that is still running](https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/to/shell-command/)
-when the next one starts: a knob spun fast lost every click but the last one or two before they
-could seek. With this ending the shell Karabiner stops has already handed the command over and left.
+when the next one starts; with this ending the shell Karabiner stops has already handed the
+command over and left.
 
 A tap is one step. Held, the key glides off in small steps, five a second, and with
 `--progressive` they grow — see [the curve](advanced.md#progressive-seek). The pace, the step and
 how it grows are in the [config file](advanced.md#config-file).
 
-## A knob, in Karabiner-Elements
+## A knob
 
-<p align="center"><img src="images/banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along" width="100%"></p>
-
-A mechanical keyboard's knob is a jog wheel: two keys to the system, one per direction — volume
-up and down out of the box. Reassign them in the keyboard's firmware (VIA, QMK, the vendor's app)
-to keys you do not use, such as F13 and F14, and give those to `--knob`:
-
-```json
-{
-  "description": "nowplayingseek: the keyboard knob is a jog wheel",
-  "manipulators": [
-    {
-      "type": "basic",
-      "from": {
-        "key_code": "f14",
-        "modifiers": { "optional": ["any"] }
-      },
-      "to": [{
-        "shell_command":
-          "/opt/homebrew/bin/nowplayingseek forward --knob >/dev/null 2>&1 &"
-      }]
-    },
-    {
-      "type": "basic",
-      "from": {
-        "key_code": "f13",
-        "modifiers": { "optional": ["any"] }
-      },
-      "to": [{
-        "shell_command":
-          "/opt/homebrew/bin/nowplayingseek backward --knob >/dev/null 2>&1 &"
-      }]
-    }
-  ]
-}
-```
-
-Every click of the knob is one run of the command, and the tool reads the pace of the clicks: a
-careful click is 5 s, short enough to step past an ad without overshooting; a fast spin makes
-every click up to four times longer. What a click is, and how fast is fast, are `[knob]` in the
-[config file](advanced.md#knob); one command changes each: `nps config set knob.step 3`.
-
-Karabiner-Elements gives a key to the first rule that takes it, so put this rule above any rule
-that already rewrites the knob's keys — such as one that turns the volume keys into fine volume
-steps — or that rule takes every click and this one never sees it.
-
-If the firmware cannot be changed, take the volume keys themselves, but only from that
-keyboard, so the laptop's own volume keys stay volume. Karabiner-EventViewer, the Devices tab,
-shows each keyboard's `vendor_id` and `product_id`; put them in a `device_if` condition on both
-manipulators:
-
-```json
-{
-  "type": "basic",
-  "from": {
-    "consumer_key_code": "volume_increment",
-    "modifiers": { "optional": ["any"] }
-  },
-  "to": [{
-    "shell_command":
-      "/opt/homebrew/bin/nowplayingseek forward --knob >/dev/null 2>&1 &"
-  }],
-  "conditions": [{
-    "type": "device_if",
-    "identifiers": [{ "vendor_id": 1234, "product_id": 5678 }]
-  }]
-}
-```
-
-The second one is the same with `volume_decrement` and `backward`. If the knob still changes the
-volume, check that Karabiner-Elements modifies that keyboard, under Settings → Devices.
-
-`"optional": ["any"]`, in every knob rule here, lets it catch a click that arrives with a
-modifier key — from the keyboard's firmware, or from another rule placed above it.
+A keyboard's knob is two more keys, and the rule that makes it a jog wheel has its own page:
+[A keyboard knob as a jog wheel](knob.md).
 
 ## Other tools
 

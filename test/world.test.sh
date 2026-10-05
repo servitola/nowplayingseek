@@ -237,6 +237,16 @@ if page=$(curl -fsSL --max-time 20 "$karabiner" 2>/dev/null); then
 else
 	world_changed karabiner-stops-command "$karabiner does not answer" 'docs/hotkeys.md links it for why every command ends in &'
 fi
+own_rule=https://karabiner-elements.pqrs.org/docs/manual/configuration/add-your-own-complex-modifications/
+if page=$(curl -fsSL --max-time 20 "$own_rule" 2>/dev/null); then
+	if printf '%s' "$page" | tr -s ' \n' ' ' | grep -q 'Open Complex Modifications tab and press Add your own rule button'; then
+		holds karabiner-add-your-own-rule 'a rule is pasted under Complex Modifications, Add your own rule — the steps in docs/knob.md and docs/hotkeys.md'
+	else
+		world_changed karabiner-add-your-own-rule "$own_rule no longer names Complex Modifications and Add your own rule" 'docs/knob.md and docs/hotkeys.md send people to that button'
+	fi
+else
+	echo '  skipped: karabiner-elements.pqrs.org does not answer' >&2
+fi
 
 echo 'The tools whose words we speak'
 ours=$("$bin" media-control version | sed -n 's/^media-control \([^,]*\),.*/\1/p')

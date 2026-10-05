@@ -50,7 +50,7 @@ Hammerspoon, skhd, a Stream Deck, a foot pedal: [anything that runs a command](d
 
 <table><tr>
 <td width="50%"><img src="docs/images/banner-knob.webp" alt="The panda turns the big knob of a glass keyboard; the handle of the progress bar above slides along"></td>
-<td><b>A keyboard with a knob has a jog wheel.</b><br><br>Turned slowly, it moves by seconds. Flicked, by minutes.<br><br><a href="docs/hotkeys.md#a-knob-in-karabiner-elements">The Karabiner-Elements rule →</a></td>
+<td><b>A keyboard with a knob has a jog wheel.</b><br><br>Turned slowly, it moves by seconds. Flicked, by minutes.<br><br><a href="docs/knob.md">The Karabiner-Elements rule →</a></td>
 </tr></table>
 
 ## Commands
@@ -83,7 +83,8 @@ Every command and flag, the ones for hotkeys included: `nps --help`.
 
 ## More
 
-- **[Hotkeys, knobs and pedals](docs/hotkeys.md)** — Shortcuts, Karabiner-Elements, Hammerspoon, skhd: a key, a hold, a knob.
+- **[Hotkeys and pedals](docs/hotkeys.md)** — Shortcuts, Karabiner-Elements, Hammerspoon, skhd: a key, a hold.
+- **[A keyboard knob](docs/knob.md)** — the Karabiner-Elements rule that makes it a jog wheel, step by step.
 - **[The curve, the knob, the config file](docs/advanced.md)** — how a held key gathers pace, and every number that can be changed.
 - **[For scripts and AI agents](docs/scripting.md)** — one line in, JSON out, and an exit code that is the truth.
 - **[Moving over](docs/migrating.md)** — from nowplaying-cli, media-control, playerctl, mpc, shpotify: the same words work.
